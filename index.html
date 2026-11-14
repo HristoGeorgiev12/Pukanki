@@ -1202,6 +1202,12 @@
             color: #6ee7b7;
         }
 
+        .src-playtube {
+            background: rgba(239, 68, 68, 0.16);
+            border: 1px solid rgba(248, 113, 113, 0.4);
+            color: #fca5a5;
+        }
+
         .modal-sources-row {
             display: flex;
             align-items: center;
@@ -3222,7 +3228,21 @@
                 playerSelect.value = curPlayer;
             }
 
-            const sourceNames = ["Filmi9", "ZenoPlay", "Filmifen", "Filmizip", "Filmi2k"];
+            const defaultOrder = ["Filmi9", "ZenoPlay", "Filmifen", "Filmizip", "Filmi2k", "PlayTube"];
+            const sourceNames = Array.from(sourceCounts.keys()).sort((a, b) => {
+                const idxA = defaultOrder.indexOf(a);
+                const idxB = defaultOrder.indexOf(b);
+                if (idxA !== -1 && idxB !== -1) {
+                    return idxA - idxB;
+                }
+                if (idxA !== -1) {
+                    return -1;
+                }
+                if (idxB !== -1) {
+                    return 1;
+                }
+                return (sourceCounts.get(b) ?? 0) - (sourceCounts.get(a) ?? 0);
+            });
             let sourceOptionsHtml = `<option value="">Всички източници</option>`;
             for (const sName of sourceNames) {
                 const count = sourceCounts.get(sName) ?? 0;
@@ -4830,6 +4850,9 @@
                     if (!Array.isArray(matched.origins)) {
                         matched.origins = ["ZenoPlay"];
                     }
+                    if (!matched.tmdb_id && fItem.tmdb_id) {
+                        matched.tmdb_id = fItem.tmdb_id;
+                    }
                     if (!matched.origins.includes(sourceName)) {
                         matched.origins.push(sourceName);
                     }
@@ -5073,6 +5096,13 @@
             await loadScriptAsync(`data/filmi9_data.js?v=${v}`);
             if (Array.isArray(window.FILMI9_DATA) && window.FILMI9_DATA.length > 0) {
                 mergeFilmi2kCatalog(combined, window.FILMI9_DATA, "Filmi9");
+                updateTabCounts();
+            }
+
+            // 8. Load PlayTube Movies & Series
+            await loadScriptAsync(`data/playtube_bg_data.js?v=${v}`);
+            if (Array.isArray(window.PLAYTUBE_BG_DATA) && window.PLAYTUBE_BG_DATA.length > 0) {
+                mergeFilmi2kCatalog(combined, window.PLAYTUBE_BG_DATA, "PlayTube");
                 updateTabCounts();
             }
 
