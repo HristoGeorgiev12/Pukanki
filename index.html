@@ -647,10 +647,32 @@
             border-radius: 11px;
             box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75), 0 0 16px rgba(124, 58, 237, 0.2);
             z-index: 250;
-            overflow: hidden;
+            max-height: min(390px, 60vh);
+            overflow-y: auto;
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
             padding: 6px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(124, 58, 237, 0.6) rgba(15, 18, 32, 0.85);
+        }
+
+        .search-suggestions::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .search-suggestions::-webkit-scrollbar-track {
+            background: rgba(15, 18, 32, 0.85);
+            border-radius: 6px;
+        }
+
+        .search-suggestions::-webkit-scrollbar-thumb {
+            background: rgba(124, 58, 237, 0.6);
+            border-radius: 6px;
+        }
+
+        .search-suggestions::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.9);
         }
 
         .search-suggestions-header {
@@ -1206,6 +1228,114 @@
             background: rgba(239, 68, 68, 0.16);
             border: 1px solid rgba(248, 113, 113, 0.4);
             color: #fca5a5;
+        }
+
+        .studio-badge, .studio-pill {
+            font-size: 0.64rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 5px;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .studio-marvel {
+            background: rgba(226, 54, 54, 0.22);
+            border: 1px solid rgba(239, 68, 68, 0.6);
+            color: #fca5a5;
+        }
+
+        .studio-disney {
+            background: rgba(14, 165, 233, 0.22);
+            border: 1px solid rgba(56, 189, 248, 0.6);
+            color: #7dd3fc;
+        }
+
+        .studio-pixar {
+            background: rgba(6, 182, 212, 0.22);
+            border: 1px solid rgba(34, 211, 238, 0.6);
+            color: #67e8f9;
+        }
+
+        .studio-netflix {
+            background: rgba(229, 9, 20, 0.22);
+            border: 1px solid rgba(239, 68, 68, 0.6);
+            color: #fca5a5;
+        }
+
+        .studio-hbo {
+            background: rgba(147, 51, 234, 0.22);
+            border: 1px solid rgba(168, 85, 247, 0.6);
+            color: #d8b4fe;
+        }
+
+        .studio-warnerbros, .studio-warner {
+            background: rgba(234, 179, 8, 0.2);
+            border: 1px solid rgba(250, 204, 21, 0.6);
+            color: #fde047;
+        }
+
+        .studio-dc, .studio-dcstudios {
+            background: rgba(37, 99, 235, 0.22);
+            border: 1px solid rgba(96, 165, 250, 0.6);
+            color: #93c5fd;
+        }
+
+        .studio-universal {
+            background: rgba(16, 185, 129, 0.22);
+            border: 1px solid rgba(52, 211, 153, 0.6);
+            color: #6ee7b7;
+        }
+
+        .studio-paramount {
+            background: rgba(2, 132, 199, 0.22);
+            border: 1px solid rgba(56, 189, 248, 0.6);
+            color: #7dd3fc;
+        }
+
+        .studio-sony, .studio-sonypictures {
+            background: rgba(245, 158, 11, 0.22);
+            border: 1px solid rgba(251, 191, 36, 0.6);
+            color: #fde68a;
+        }
+
+        .studio-dreamworks {
+            background: rgba(99, 102, 241, 0.22);
+            border: 1px solid rgba(129, 140, 248, 0.6);
+            color: #c7d2fe;
+        }
+
+        .studio-20thcentury, .studio-fox {
+            background: rgba(217, 119, 6, 0.22);
+            border: 1px solid rgba(245, 158, 11, 0.6);
+            color: #fcd34d;
+        }
+
+        .studio-lionsgate {
+            background: rgba(234, 88, 12, 0.22);
+            border: 1px solid rgba(249, 115, 22, 0.6);
+            color: #fdba74;
+        }
+
+        .studio-appletv, .studio-apple {
+            background: rgba(148, 163, 184, 0.2);
+            border: 1px solid rgba(203, 213, 225, 0.5);
+            color: #e2e8f0;
+        }
+
+        .studio-amazon, .studio-amazonmgm, .studio-mgm {
+            background: rgba(13, 148, 136, 0.22);
+            border: 1px solid rgba(45, 212, 191, 0.6);
+            color: #99f6e4;
+        }
+
+        .studio-a24 {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #ffffff;
         }
 
         .modal-sources-row {
@@ -2438,6 +2568,12 @@
 
         const SEARCH_FIELD_SUGGESTIONS = [
             {
+                prefix: "студио:",
+                label: "Студио / Платформа",
+                icon: "🏢",
+                desc: "Търси по студио (Disney, Marvel, Netflix, HBO, Warner, Pixar...)"
+            },
+            {
                 prefix: "сюжет:",
                 label: "Сюжет / Описание",
                 icon: "📖",
@@ -2475,6 +2611,25 @@
             }
         ];
 
+        const MAJOR_STUDIOS = [
+            { id: "disney", name: "Disney", aliases: ["дисни", "disney+"], icon: "✨", desc: "Walt Disney Pictures & Animation" },
+            { id: "marvel", name: "Marvel", aliases: ["марвел", "mcu"], icon: "🦸", desc: "Marvel Studios (MCU, Отмъстителите...)" },
+            { id: "dc", name: "DC Studios", aliases: ["dc", "диси"], icon: "🦇", desc: "DC Studios / DC Extended Universe" },
+            { id: "pixar", name: "Pixar", aliases: ["пиксар"], icon: "🎈", desc: "Pixar Animation Studios" },
+            { id: "warner", name: "Warner Bros", aliases: ["уорнър", "warner", "wb"], icon: "🏰", desc: "Warner Bros. Pictures" },
+            { id: "universal", name: "Universal", aliases: ["юнивърсъл"], icon: "🌍", desc: "Universal Pictures" },
+            { id: "paramount", name: "Paramount", aliases: ["парамаунт"], icon: "⛰️", desc: "Paramount Pictures" },
+            { id: "sony", name: "Sony Pictures", aliases: ["сони", "columbia", "колумбия"], icon: "🎥", desc: "Sony Pictures / Columbia" },
+            { id: "dreamworks", name: "DreamWorks", aliases: ["дриймуъркс"], icon: "🌙", desc: "DreamWorks Animation" },
+            { id: "20thcentury", name: "20th Century", aliases: ["fox", "фокс", "20th"], icon: "🗽", desc: "20th Century Studios / Fox" },
+            { id: "lionsgate", name: "Lionsgate", aliases: ["лайънсгейт"], icon: "🦁", desc: "Lionsgate Films" },
+            { id: "netflix", name: "Netflix", aliases: ["нетфликс"], icon: "🔴", desc: "Netflix Originals" },
+            { id: "hbo", name: "HBO", aliases: ["хбо", "max"], icon: "👑", desc: "HBO / Max Originals" },
+            { id: "appletv", name: "Apple TV+", aliases: ["apple", "епъл"], icon: "🍏", desc: "Apple Studios / Apple Original Films" },
+            { id: "amazon", name: "Amazon / MGM", aliases: ["amazon", "mgm", "амазон", "prime"], icon: "📦", desc: "Amazon MGM Studios / Prime Video" },
+            { id: "a24", name: "A24", aliases: ["а24"], icon: "💎", desc: "A24 Films (Indie, Oscar winners)" }
+        ];
+
         let activeSuggestionIndex = -1;
         let currentSuggestions = [];
 
@@ -2505,9 +2660,7 @@
                 return;
             }
 
-            if (activeSuggestionIndex >= currentSuggestions.length) {
-                activeSuggestionIndex = 0;
-            }
+            activeSuggestionIndex = 0;
 
             let html = `<div class="search-suggestions-header">Бързи филтри (натисни Tab или Enter):</div>`;
             for (let i = 0; i < currentSuggestions.length; i++) {
@@ -2529,9 +2682,80 @@
             searchSuggestions.style.display = "flex";
         }
 
+        function renderStudioSuggestions(triggerChar, filterTerm) {
+            if (!searchSuggestions) {
+                return;
+            }
+            const cleanTerm = (filterTerm || "").toLowerCase().trim();
+            currentSuggestions = [];
+            for (const st of MAJOR_STUDIOS) {
+                const matchName = st.name.toLowerCase().includes(cleanTerm);
+                const matchId = st.id.toLowerCase().includes(cleanTerm);
+                const matchAlias = Array.isArray(st.aliases) && st.aliases.some(a => a.toLowerCase().includes(cleanTerm));
+                if (!cleanTerm || matchName || matchId || matchAlias) {
+                    currentSuggestions.push({
+                        isStudio: true,
+                        id: st.id,
+                        name: st.name,
+                        icon: st.icon,
+                        desc: st.desc
+                    });
+                }
+            }
+
+            if (currentSuggestions.length === 0) {
+                hideSearchSuggestions();
+                return;
+            }
+
+            if (cleanTerm) {
+                currentSuggestions.sort((a, b) => {
+                    const aStart = a.name.toLowerCase().startsWith(cleanTerm) ? 0 : 1;
+                    const bStart = b.name.toLowerCase().startsWith(cleanTerm) ? 0 : 1;
+                    return aStart - bStart;
+                });
+            }
+
+            activeSuggestionIndex = 0;
+
+            let html = `<div class="search-suggestions-header">Избери студио / платформа (Tab/Enter):</div>`;
+            for (let i = 0; i < currentSuggestions.length; i++) {
+                const s = currentSuggestions[i];
+                const activeCls = i === activeSuggestionIndex ? "active" : "";
+                html = `${html}
+                    <div class="search-suggestion-item ${activeCls}" data-index="${i}">
+                        <div class="suggestion-left">
+                            <span class="suggestion-icon">${s.icon}</span>
+                            <span class="suggestion-prefix">${triggerChar}студио:</span>
+                            <span class="suggestion-label">${s.name}</span>
+                        </div>
+                        <span class="suggestion-desc">${s.desc}</span>
+                    </div>
+                `;
+            }
+
+            searchSuggestions.innerHTML = html;
+            searchSuggestions.style.display = "flex";
+        }
+
         function selectSuggestion(index, triggerChar) {
             const item = currentSuggestions[index];
             if (!item) {
+                return;
+            }
+            if (item.isStudio) {
+                searchInput.value = `${triggerChar}студио: ${item.name}`;
+                hideSearchSuggestions();
+                searchInput.focus();
+                applyFilters();
+                return;
+            }
+            if (item.prefix === "студио:") {
+                searchInput.value = `${triggerChar}студио: `;
+                searchInput.focus();
+                activeSuggestionIndex = 0;
+                renderStudioSuggestions(triggerChar, "");
+                applyFilters();
                 return;
             }
             const prefix = `${triggerChar}${item.prefix} `;
@@ -2547,7 +2771,11 @@
             }
             const items = searchSuggestions.querySelectorAll(".search-suggestion-item");
             for (let i = 0; i < items.length; i++) {
-                items[i].classList.toggle("active", i === activeSuggestionIndex);
+                const isActive = i === activeSuggestionIndex;
+                items[i].classList.toggle("active", isActive);
+                if (isActive) {
+                    items[i].scrollIntoView({ block: "nearest", behavior: "smooth" });
+                }
             }
         }
         const genreBadgesBar = document.getElementById("genreBadgesBar");
@@ -3282,13 +3510,295 @@
             return origins.includes(selectedSource);
         }
 
+        function getItemStudios(item) {
+            if (!item) {
+                return [];
+            }
+            if (Array.isArray(item._studiosCache)) {
+                return item._studiosCache;
+            }
+
+            const recognized = [];
+            const rawStudios = Array.isArray(item.studios) ? item.studios : (Array.isArray(item.production_companies) ? item.production_companies : []);
+            for (const s of rawStudios) {
+                const sName = typeof s === "string" ? s : (s && s.name ? s.name : "");
+                if (sName && !recognized.includes(sName)) {
+                    recognized.push(sName);
+                }
+            }
+
+            const rawNetworks = Array.isArray(item.networks) ? item.networks : [];
+            for (const n of rawNetworks) {
+                const nName = typeof n === "string" ? n : (n && n.name ? n.name : "");
+                if (nName && !recognized.includes(nName)) {
+                    recognized.push(nName);
+                }
+            }
+
+            const tags = Array.isArray(item.tags) ? item.tags.join(" ") : "";
+            const genres = Array.isArray(item.genres) ? item.genres.join(" ") : "";
+            const blob = `${item.title ?? ""} ${item.original_title ?? ""} ${item.overview ?? ""} ${tags} ${genres}`.toLowerCase();
+
+            if (!recognized.some(s => s.toLowerCase().includes("marvel"))) {
+                if (/\b(?:marvel|марвел|avengers|отмъстителите|iron\s*man|железният\s*човек|spider-?man|спайдър-?мен|спайди|captain\s*america|капитан\s*америка|black\s*panther|черната\s*пантера|doctor\s*strange|доктор\s*стрейндж|guardians\s+of\s+the\s+galaxy|пазители\s+на\s+галактиката|ant-?man|deadpool|дедпул|wolverine|върколак|x-?men|х-?мен|wandavision|eternals|вечните|venom|венъм|daredevil|punisher|наказателят)\b/i.test(blob)) {
+                    recognized.push("Marvel");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("disney"))) {
+                if (/\b(?:disney|дисни|walt\s*disney|уолт\s*дисни|disney\+|lion\s*king|цар\s*лъв|крал\s*лъв|frozen|замръзналото\s*кралство|aladdin|аладин|moana|ваяна|mulan|мулан|zootopia|зоотрополис|encanto|енканто|рапунцел|tangled|малката\s*русалка|little\s*mermaid|снежанка|snow\s*white|пепеляшка|cinderella|пинокио|pinocchio|bambi|dumbo|tarzan|тарзан|hercules|херкулес|покахонтас|pocahontas|101\s*далматинци|dalmatians)\b/i.test(blob)) {
+                    recognized.push("Disney");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("pixar"))) {
+                if (/\b(?:pixar|пиксар|toy\s*story|играта\s*на\s*играчките|finding\s*nemo|търсенето\s*на\s*немо|finding\s*dory|търсенето\s*на\s*дори|monsters\s*inc|таласъми\s*оод|incredibles|феноменалните|ratatouille|рататуи|inside\s*out|отвътре\s*навън|тайната\s*на\s*коко|\bcoco\s*\(2017\)|\bкоко\s*\(2017\)|храбро\s*сърце|brave|лука|luca|elemental|стихии|elio|елио|turning\s*red|меей\s*червената\s*панда|колите|cars\b|уол-?и|wall-?e)\b/i.test(blob)) {
+                    recognized.push("Pixar");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("hbo"))) {
+                if (/\b(?:hbo|хбо|hbo\s*max|game\s*of\s*thrones|игра\s*на\s*тронове|house\s*of\s*the\s*dragon|домът\s*на\s*дракона|чернобил|chernobyl|the\s*last\s*of\s*us|останалите\s*от\s*нас|euphoria|еуфория|sopranos|сопрано|succession|наследници|true\s*detective|истински\s*детектив|white\s*lotus|белият\s*лотос|westworld|западен\s*свят|band\s*of\s*brothers|братя\s*по\s*оръжие|sex\s*and\s*the\s*city|сексът\s*и\s*градът|peacemaker|миротвореца|the\s*penguin|пингвинът)\b/i.test(blob)) {
+                    recognized.push("HBO");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("netflix"))) {
+                if (/\b(?:netflix|нетфликс|stranger\s*things|опаки\s*неща|squid\s*game|игра\s*на\s*калмари|wednesday|уенздей|witcher|вещерът|money\s*heist|хартиената\s*къща|casa\s*de\s*papel|bridgerton|бриджъртън|black\s*mirror|черно\s*огледало|narcos|наркос|the\s*crown|короната|ozark|озарк|cobra\s*kai|кобра\s*кай|sex\s*education|секс\s*образование|enola\s*holmes|енола\s*холмс|red\s*notice|червена\s*бюлетина|extraction|евакуация)\b/i.test(blob)) {
+                    recognized.push("Netflix");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("warner"))) {
+                if (/\b(?:warner|уорнър|warner\s*bros|harry\s*potter|хари\s*потър|fantastic\s*beasts|фантастични\s*животни|lord\s*of\s*the\s*rings|властелинът\s*на\s*пръстените|hobbit|хобит|the\s*matrix|матрицата|inception|генезис|interstellar|интерстелар|dune|дюн|barbie|барби|oppenheimer|опенхаймер|looney\s*tunes|шантави\s*рисунки)\b/i.test(blob)) {
+                    recognized.push("Warner Bros");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("dc"))) {
+                if (/\b(?:dc\s*comics|dc\s*extended|batman|батман|joker|жокера|superman|супермен|wonder\s*woman|жената\s*чудо|aquaman|аквамен|justice\s*league|лигата\s*на\s*справедливостта|suicide\s*squad|отряд\s*самоубийци|shazam|шазам|gotham|готъм|titans|титани)\b/i.test(blob)) {
+                    recognized.push("DC");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("universal"))) {
+                if (/\b(?:universal|юнивърсъл|fast\s*&\s*furious|бързи\s*и\s*яростни|jurassic|джурасик|minions|миньони|despicable\s*me|аз\s*проклетникът|jaws|челюсти|back\s*to\s*the\s*future|завръщане\s*в\s*бъдещето|oppenheimer|опенхаймер|wicked)\b/i.test(blob)) {
+                    recognized.push("Universal");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("paramount"))) {
+                if (/\b(?:paramount|парамаунт|mission\s*impossible|мисията\s*невъзможна|transformers|трансформърс|top\s*gun|топ\s*гън|star\s*trek|стар\s*трек|sonic|соник|gladiator|гладиатор|godfather|кръстникът|titanic|титаник|interstellar|интерстелар|a\s*quiet\s*place|тихо\s*място)\b/i.test(blob)) {
+                    recognized.push("Paramount");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("sony") || s.toLowerCase().includes("columbia"))) {
+                if (/\b(?:sony\s*pictures|columbia\s*pictures|сони|spider-?man|спайдър-?мен|venom|венъм|jumanji|джуманджи|men\s*in\s*black|мъже\s*в\s*черно|ghostbusters|ловци\s*на\s*духове|bad\s*boys|лоши\s*момчета|karate\s*kid|карате\s*кид|hotel\s*transylvania|хотел\s*трансилвания|uncharted)\b/i.test(blob)) {
+                    recognized.push("Sony Pictures");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("dreamworks"))) {
+                if (/\b(?:dreamworks|дриймуъркс|shrek|шрек|kung\s*fu\s*panda|кунг-?фу\s*панда|madagascar|мадагаскар|how\s*to\s*train\s*your\s*dragon|как\s*да\s*си\s*дресираш\s*дракон|puss\s*in\s*boots|котаракът\s*в\s*чизми|boss\s*baby|бебе\s*бос|megamind|мегаум|trolls|тролчета)\b/i.test(blob)) {
+                    recognized.push("DreamWorks");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("20th century") || s.toLowerCase().includes("fox"))) {
+                if (/\b(?:20th\s*century|20th\s*century\s*fox|avatar|аватар|alien|пришълец|predator|хищникът|planet\s*of\s*the\s*apes|планетата\s*на\s*маймуните|die\s*hard|умирай\s*трудно|home\s*alone|сам\s*вкъщи|ice\s*age|ледена\s*епоха|kingsman|bohemian\s*rhapsody)\b/i.test(blob)) {
+                    recognized.push("20th Century");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("lionsgate"))) {
+                if (/\b(?:lionsgate|лайънсгейт|hunger\s*games|игрите\s*на\s*глада|john\s*wick|джон\s*уик|twilight|здрач|saw|убийствен\s*пъзел|now\s*you\s*see\s*me|зрителна\s*измама|divergent|дивергенти|expendables|непобедимите|rambo|рамбо)\b/i.test(blob)) {
+                    recognized.push("Lionsgate");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("apple"))) {
+                if (/\b(?:apple\s*tv|apple\s*studios|apple\s*original|ted\s*lasso|тед\s*ласо|severance|разделение|morning\s*show|сутрешното\s*шоу|foundation|фондацията|for\s*all\s*mankind|silo|slow\s*horses|бавни\s*коне|killers\s*of\s*the\s*flower\s*moon|coda)\b/i.test(blob)) {
+                    recognized.push("Apple TV+");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("amazon") || s.toLowerCase().includes("mgm"))) {
+                if (/\b(?:amazon\s*studios|amazon\s*mgm|prime\s*video|mgm|metro-?goldwyn|the\s*boys|момчетата|rings\s*of\s*power|пръстените\s*на\s*властта|reacher|ричър|fallout|invincible|james\s*bond|джеймс\s*бонд|creed|крийд|robocop|робокоп)\b/i.test(blob)) {
+                    recognized.push("Amazon / MGM");
+                }
+            }
+
+            if (!recognized.some(s => s.toLowerCase().includes("a24"))) {
+                if (/\b(?:a24|everything\s*everywhere|всичко\s*навсякъде|hereditary|наследствено|midsommar|еньовден|the\s*whale|китът|moonlight|лунна\s*светлина|lady\s*bird|ex\s*machina|the\s*witch|вещицата|civil\s*war|гражданска\s*война|past\s*lives|минали\s*животи|talk\s*to\s*me)\b/i.test(blob)) {
+                    recognized.push("A24");
+                }
+            }
+
+            item._studiosCache = recognized;
+            return recognized;
+        }
+
+        function matchQueryInText(text, cleanQuery) {
+            if (!text || !cleanQuery) {
+                return false;
+            }
+            const textLower = text.toLowerCase();
+            if (textLower.includes(cleanQuery)) {
+                if (cleanQuery.length <= 4) {
+                    const escaped = cleanQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                    const rx = new RegExp(`(^|[^a-zA-Z0-9а-яА-ЯёЁ\\u0400-\\u04FF])${escaped}`, "i");
+                    return rx.test(text);
+                }
+                return true;
+            }
+
+            const words = cleanQuery.split(/\s+/).filter(Boolean);
+            if (words.length > 1) {
+                for (let i = 0; i < words.length; i++) {
+                    const w = words[i];
+                    const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                    const rx = new RegExp(`(^|[^a-zA-Z0-9а-яА-ЯёЁ\\u0400-\\u04FF])${escaped}`, "i");
+                    if (!rx.test(text)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            return false;
+        }
+
         function matchesMovieQuery(item, query) {
             if (!query) {
                 return true;
             }
 
             const raw = query.trim();
-            if (!raw || raw === "#" || raw === "@" || ((raw.startsWith("#") || raw.startsWith("@")) && !raw.includes(" ") && !raw.includes(":"))) {
+            if (!raw || raw === "#" || raw === "@") {
+                return true;
+            }
+
+            const directStudioShortcut = raw.match(/^[#@](marvel|марвел|disney|дисни|pixar|пиксар|netflix|нетфликс|hbo|хбо|warner(?:\s*bros)?|уорнър|dc|universal|юнивърсъл|paramount|парамаунт|sony(?:\s*pictures)?|сони|dreamworks|дриймуъркс|20thcentury|fox|фокс|lionsgate|лайънсгейт|appletv|apple|епъл|amazon|mgm|амазон|a24)$/i);
+            if (directStudioShortcut) {
+                const targetText = directStudioShortcut[1].trim().toLowerCase();
+                const studios = getItemStudios(item);
+                for (const st of studios) {
+                    const stLower = st.toLowerCase();
+                    if (stLower.includes(targetText) || targetText.includes(stLower)) {
+                        return true;
+                    }
+                    if (targetText === "марвел" && stLower.includes("marvel")) {
+                        return true;
+                    }
+                    if (targetText === "дисни" && stLower.includes("disney")) {
+                        return true;
+                    }
+                    if (targetText === "пиксар" && stLower.includes("pixar")) {
+                        return true;
+                    }
+                    if (targetText === "нетфликс" && stLower.includes("netflix")) {
+                        return true;
+                    }
+                    if (targetText === "хбо" && stLower.includes("hbo")) {
+                        return true;
+                    }
+                    if (targetText === "уорнър" && stLower.includes("warner")) {
+                        return true;
+                    }
+                    if (targetText === "юнивърсъл" && stLower.includes("universal")) {
+                        return true;
+                    }
+                    if (targetText === "парамаунт" && stLower.includes("paramount")) {
+                        return true;
+                    }
+                    if (targetText === "сони" && stLower.includes("sony")) {
+                        return true;
+                    }
+                    if (targetText === "дриймуъркс" && stLower.includes("dreamworks")) {
+                        return true;
+                    }
+                    if ((targetText === "фокс" || targetText === "fox" || targetText === "20thcentury") && (stLower.includes("20th") || stLower.includes("fox"))) {
+                        return true;
+                    }
+                    if (targetText === "лайънсгейт" && stLower.includes("lionsgate")) {
+                        return true;
+                    }
+                    if ((targetText === "епъл" || targetText === "apple" || targetText === "appletv") && stLower.includes("apple")) {
+                        return true;
+                    }
+                    if ((targetText === "амазон" || targetText === "amazon" || targetText === "mgm") && (stLower.includes("amazon") || stLower.includes("mgm"))) {
+                        return true;
+                    }
+                    if (targetText === "a24" && stLower.includes("a24")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            const studioMatch = raw.match(/^[#@](?:студио|студия|studio|studios|платформа|network)[:\s]+(.*)$/i);
+            if (studioMatch) {
+                const targetText = studioMatch[1].trim().toLowerCase();
+                if (!targetText) {
+                    return true;
+                }
+                const studios = getItemStudios(item);
+                for (const st of studios) {
+                    const stLower = st.toLowerCase();
+                    if (stLower.includes(targetText) || targetText.includes(stLower)) {
+                        return true;
+                    }
+                    if (targetText === "марвел" && stLower.includes("marvel")) {
+                        return true;
+                    }
+                    if (targetText === "дисни" && stLower.includes("disney")) {
+                        return true;
+                    }
+                    if (targetText === "пиксар" && stLower.includes("pixar")) {
+                        return true;
+                    }
+                    if (targetText === "нетфликс" && stLower.includes("netflix")) {
+                        return true;
+                    }
+                    if (targetText === "хбо" && stLower.includes("hbo")) {
+                        return true;
+                    }
+                    if (targetText === "уорнър" && stLower.includes("warner")) {
+                        return true;
+                    }
+                    if (targetText === "юнивърсъл" && stLower.includes("universal")) {
+                        return true;
+                    }
+                    if (targetText === "парамаунт" && stLower.includes("paramount")) {
+                        return true;
+                    }
+                    if (targetText === "сони" && stLower.includes("sony")) {
+                        return true;
+                    }
+                    if (targetText === "дриймуъркс" && stLower.includes("dreamworks")) {
+                        return true;
+                    }
+                    if ((targetText === "фокс" || targetText === "fox" || targetText === "20thcentury") && (stLower.includes("20th") || stLower.includes("fox"))) {
+                        return true;
+                    }
+                    if (targetText === "лайънсгейт" && stLower.includes("lionsgate")) {
+                        return true;
+                    }
+                    if ((targetText === "епъл" || targetText === "apple" || targetText === "appletv") && stLower.includes("apple")) {
+                        return true;
+                    }
+                    if ((targetText === "амазон" || targetText === "amazon" || targetText === "mgm") && (stLower.includes("amazon") || stLower.includes("mgm"))) {
+                        return true;
+                    }
+                    if (targetText === "a24" && stLower.includes("a24")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            if ((raw.startsWith("#") || raw.startsWith("@")) && !raw.includes(" ") && !raw.includes(":")) {
                 return true;
             }
 
@@ -3386,35 +3896,11 @@
             }
 
             const cleanQuery = raw.toLowerCase();
-            const titleText = `${item.title ?? ""}`.toLowerCase();
-            if (titleText.includes(cleanQuery)) {
+            if (matchQueryInText(item.title, cleanQuery)) {
                 return true;
             }
-
-            const origTitleText = `${item.original_title ?? ""}`.toLowerCase();
-            if (origTitleText.includes(cleanQuery)) {
+            if (matchQueryInText(item.original_title, cleanQuery)) {
                 return true;
-            }
-
-            const slugText = `${item.slug ?? ""}`.toLowerCase();
-            if (slugText.includes(cleanQuery)) {
-                return true;
-            }
-
-            if (Array.isArray(item.actors)) {
-                for (const actor of item.actors) {
-                    if (`${actor}`.toLowerCase().includes(cleanQuery)) {
-                        return true;
-                    }
-                }
-            }
-
-            if (Array.isArray(item.directors)) {
-                for (const director of item.directors) {
-                    if (`${director}`.toLowerCase().includes(cleanQuery)) {
-                        return true;
-                    }
-                }
             }
 
             return false;
@@ -3893,6 +4379,12 @@
                     sourceBadgesHtml = `${sourceBadgesHtml}<span class="src-pill src-${origClass}">${orig}</span>`;
                 }
 
+                const itemStudios = getItemStudios(item);
+                for (const st of itemStudios) {
+                    const stCls = st.toLowerCase().replace(/[^a-z0-9]/g, "");
+                    sourceBadgesHtml = `${sourceBadgesHtml}<span class="studio-badge studio-${stCls}" title="Студио / Платформа: ${escapeHtml(st)}">${escapeHtml(st)}</span>`;
+                }
+
                 cardsHtml = `${cardsHtml}
                     <article class="movie-card" tabindex="0" data-movie-index="${i}">
                         <div class="poster-wrap">
@@ -4346,6 +4838,11 @@
                 const origClass = orig.toLowerCase().replace(/[^a-z0-9]/g, "");
                 metaHtml = `${metaHtml}<span class="src-pill src-${origClass}">${orig}</span>`;
             }
+            const interStudios = getItemStudios(item);
+            for (const st of interStudios) {
+                const stCls = st.toLowerCase().replace(/[^a-z0-9]/g, "");
+                metaHtml = `${metaHtml}<button type="button" class="crew-search-btn studio-pill studio-${stCls}" data-search-query="@студио: ${escapeHtml(st)}" title="Търси филми от ${escapeHtml(st)}">🏢 ${escapeHtml(st)}</button>`;
+            }
             if (intermediateMetaRow) {
                 intermediateMetaRow.innerHTML = metaHtml;
             }
@@ -4492,6 +4989,14 @@
                                 <span class="modal-sources-label">Източници:</span>
                                 ${modalSourcesHtml}
                             </div>
+                            ${Array.isArray(getItemStudios(item)) && getItemStudios(item).length > 0 ? `
+                                <div class="modal-crew-row">
+                                    <strong class="modal-crew-label">🏢 Студио:</strong>
+                                    <div class="modal-crew-chips">
+                                        ${getItemStudios(item).map(s => `<button type="button" class="crew-search-btn studio-pill studio-${s.toLowerCase().replace(/[^a-z0-9]/g, "")}" data-search-query="@студио: ${escapeHtml(s)}" title="Търси филми от ${escapeHtml(s)}">${escapeHtml(s)}</button>`).join("")}
+                                    </div>
+                                </div>
+                            ` : ""}
                             <div class="modal-overview-wrap">
                                 <p class="modal-overview" id="modalOverviewText">${escapeHtml(item.overview ?? "Няма налично описание.")}</p>
                                 <button type="button" class="modal-expand-btn" id="modalOverviewToggle" style="display: none;">Виж още ▾</button>
@@ -5155,21 +5660,36 @@
 
         searchInput.addEventListener("input", () => {
             const val = searchInput.value;
-            if (val.startsWith("#") || val.startsWith("@")) {
-                const trigger = val[0];
-                const after = val.slice(1);
-                if (!after.includes(" ")) {
-                    const filterTerm = after.replace(":", "").trim();
-                    if (activeSuggestionIndex < 0) {
-                        activeSuggestionIndex = 0;
-                    }
-                    renderSearchSuggestions(trigger, filterTerm);
-                } else {
-                    hideSearchSuggestions();
-                }
-            } else {
+            if (!val.startsWith("#") && !val.startsWith("@")) {
                 hideSearchSuggestions();
+                applyFilters();
+                return;
             }
+
+            const trigger = val[0];
+            const after = val.slice(1);
+            const studioPrefixMatch = after.match(/^(?:студио|студия|studio|studios)[:\s]*(.*)$/i);
+            if (studioPrefixMatch) {
+                const filterTerm = studioPrefixMatch[1].trim();
+                if (activeSuggestionIndex < 0) {
+                    activeSuggestionIndex = 0;
+                }
+                renderStudioSuggestions(trigger, filterTerm);
+                applyFilters();
+                return;
+            }
+
+            if (after.includes(" ")) {
+                hideSearchSuggestions();
+                applyFilters();
+                return;
+            }
+
+            const filterTerm = after.replace(":", "").trim();
+            if (activeSuggestionIndex < 0) {
+                activeSuggestionIndex = 0;
+            }
+            renderSearchSuggestions(trigger, filterTerm);
             applyFilters();
         });
 
@@ -5210,6 +5730,7 @@
         });
 
         searchSuggestions.addEventListener("click", (event) => {
+            event.stopPropagation();
             const itemEl = event.target.closest(".search-suggestion-item");
             if (!itemEl) {
                 return;
@@ -5621,6 +6142,20 @@
         }
 
         if (intermediateScreen) {
+            intermediateScreen.addEventListener("click", (event) => {
+                const crewBtn = event.target.closest(".crew-search-btn");
+                if (crewBtn) {
+                    const query = crewBtn.getAttribute("data-search-query");
+                    if (query) {
+                        closeIntermediateScreen(false);
+                        searchInput.value = query;
+                        state.searchQuery = query;
+                        applyFilters();
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                }
+            });
+
             intermediateScreen.addEventListener("keydown", (event) => {
                 if (event.key === "ArrowRight") {
                     if (document.activeElement === intermediatePlayBtn && intermediateInfoBtn) {
