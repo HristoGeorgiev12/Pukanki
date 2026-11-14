@@ -107,12 +107,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/350060"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/a64273fcc1892bad75fb48cc8834f2b1"
       }
     ],
     "is_bg_audio": false,
@@ -238,12 +232,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/9837"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/7b18b584738d4f52b3d4dfce78c1827e"
       }
     ],
     "is_bg_audio": true,
@@ -370,12 +358,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/253257"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/aefc383bedd083223ba6ec37b14875cb"
       }
     ],
     "is_bg_audio": false,
@@ -502,12 +484,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1083782"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/9eca6659a8b78c13386f85bb3fbb70a2"
       }
     ],
     "is_bg_audio": false,
@@ -631,12 +607,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1813355"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/99d4eaef9991695d7ad94b83ad5c5223"
       }
     ],
     "is_bg_audio": false,
@@ -761,12 +731,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1368337"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/f15f63c20752f53718ca375b02b47153"
       }
     ],
     "is_bg_audio": false,
@@ -888,12 +852,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/639254"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/5345cdf98f50b6b010bd814d6ce6aa19"
       }
     ],
     "is_bg_audio": true,
@@ -1016,12 +974,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/784410"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/3f303beb7ef4103a8d98099cfa127975"
       }
     ],
     "is_bg_audio": true,
@@ -1146,12 +1098,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/50573"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/537f656bcf18ee9855da98b28157857a"
       }
     ],
     "is_bg_audio": false,
@@ -1271,12 +1217,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1593380"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/a0851c2a81f3b106242e08d54365233d"
       }
     ],
     "is_bg_audio": false,
@@ -1401,12 +1341,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/72356"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/d5e95a3c9f187c3d683594cce22fc4b0"
       }
     ],
     "is_bg_audio": false,
@@ -1528,12 +1462,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1403676"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/bdd8ed95b54e6d5e0a2a642e70fe40b2"
       }
     ],
     "is_bg_audio": false,
@@ -1654,12 +1582,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1792170"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/04c165998a3bfee2c2b46a8d8840dacc"
       }
     ],
     "is_bg_audio": false,
@@ -1785,12 +1707,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1244523"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/d7d7085403aeb65a1c55781e89e29abf"
       }
     ],
     "is_bg_audio": false,
@@ -1913,12 +1829,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1570488"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/0b8f15cd3409fa0e444932e54f81aff0"
       }
     ],
     "is_bg_audio": false,
@@ -2041,12 +1951,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1263337"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/303d834ae7ba59a8233f9b0bd60998fe"
       }
     ],
     "is_bg_audio": false,
@@ -2163,12 +2067,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1093994"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/3e3c7e0018567873b322c3c00e51deda"
       }
     ],
     "is_bg_audio": true,
@@ -2290,12 +2188,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/1686178"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/ef550dcce21575f93d8595c44f220121"
       }
     ],
     "is_bg_audio": false,
@@ -2413,12 +2305,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/290595"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/67efce7bbed5fa3ea002e27e0387fa1e"
       }
     ],
     "is_bg_audio": true,
@@ -2543,12 +2429,6 @@
         "name": "VidCore",
         "group": "en",
         "embed_url": "https://vidcore.org/embed/movie/58595"
-      },
-      {
-        "id": "custom-1",
-        "name": "BG Player",
-        "group": "bg",
-        "embed_url": "https://rollo.uno/video/b0ecf0bdb382e142ee2b8b30efe437da"
       }
     ],
     "is_bg_audio": true,

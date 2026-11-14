@@ -568,21 +568,35 @@
             }
 
             .modal-backdrop {
-                padding: 8px;
-                align-items: flex-end;
+                padding: 0;
+                align-items: stretch;
             }
 
             .modal-content {
-                border-radius: 16px 16px 0 0;
-                max-height: 94vh;
-                padding-bottom: max(50px, calc(env(safe-area-inset-bottom, 20px) + 30px));
+                border-radius: 0;
+                min-height: 100vh;
+                max-height: none;
+                padding-bottom: max(60px, calc(env(safe-area-inset-bottom, 20px) + 30px));
             }
 
+            .movie-page-topbar {
+                padding: 10px 14px;
+            }
+
+            .movie-page-back-btn {
+                padding: 8px 14px;
+                font-size: 0.92rem;
+            }
+
+            .movie-page-topbar-title {
+                display: none;
+            }
+
+            .movie-page-close-btn,
             .modal-close {
-                top: 14px;
-                right: 14px;
-                z-index: 10;
-                background: rgba(9, 10, 16, 0.88);
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
             }
 
             .modal-player-section {
@@ -873,10 +887,15 @@
             transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
         }
 
-        .movie-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(124, 58, 237, 0.6);
-            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+        .movie-card:hover,
+        .movie-card:focus,
+        .movie-card:focus-visible {
+            transform: translateY(-6px) scale(1.02);
+            border-color: #8b5cf6;
+            outline: 3px solid #a78bfa;
+            outline-offset: 2px;
+            box-shadow: 0 16px 36px rgba(124, 58, 237, 0.45), 0 0 20px rgba(139, 92, 246, 0.5);
+            z-index: 5;
         }
 
         .poster-wrap {
@@ -1068,7 +1087,7 @@
         .badge-age {
             position: absolute;
             bottom: 10px;
-            right: 44px;
+            right: 10px;
             z-index: 2;
             background: rgba(220, 38, 38, 0.9);
             color: #fff;
@@ -1278,32 +1297,305 @@
             color: var(--text-muted);
         }
 
+        body.movie-page-active {
+            overflow: hidden;
+        }
+
         .modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(5, 6, 10, 0.86);
-            backdrop-filter: blur(8px);
+            background: #07090e;
             display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 1000;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            z-index: 9999;
+            padding: 0;
+            margin: 0;
         }
 
         .modal-backdrop.open {
-            display: flex;
+            display: block;
         }
 
         .modal-content {
-            background: var(--bg-panel);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            max-width: 1000px;
+            background: #0b0d14;
+            border: none;
+            border-radius: 0;
+            max-width: 1280px;
+            margin: 0 auto;
             width: 100%;
-            max-height: 92vh;
-            overflow-y: auto;
+            min-height: 100vh;
+            overflow: visible;
             position: relative;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.85);
+            padding-bottom: 90px;
+        }
+
+        /* Intermediate Action Screen */
+        .intermediate-screen-backdrop {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #07090e;
+            background-size: cover;
+            background-position: center top;
+            display: none;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            z-index: 9998;
+            padding: 0;
+            margin: 0;
+        }
+
+        .intermediate-screen-backdrop.open {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .intermediate-screen-backdrop::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 65% 30%, rgba(13, 16, 28, 0.72) 0%, rgba(7, 9, 14, 0.96) 80%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .intermediate-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 36px 60px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: center;
+        }
+
+        .intermediate-topbar {
+            margin-bottom: 24px;
+        }
+
+        .intermediate-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 44px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .intermediate-container {
+                padding: 16px 16px 40px;
+                justify-content: flex-start;
+            }
+            .intermediate-topbar {
+                margin-bottom: 16px;
+            }
+            .intermediate-content {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .intermediate-poster-wrap {
+                max-width: 180px;
+                margin: 0 auto;
+            }
+            .intermediate-title {
+                font-size: 1.5rem !important;
+                text-align: center;
+            }
+            .intermediate-meta-row {
+                justify-content: center;
+            }
+            .intermediate-actions-row {
+                justify-content: center;
+            }
+        }
+
+        .intermediate-poster {
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+        }
+
+        .intermediate-title {
+            font-size: 2.3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #ffffff;
+            margin-bottom: 14px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+        }
+
+        .intermediate-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+
+        .intermediate-overview {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #94a3b8;
+            max-width: 740px;
+            margin-bottom: 34px;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .intermediate-actions-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .intermediate-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 36px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            border: 2px solid transparent;
+        }
+
+        .intermediate-play-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: #ffffff;
+            border-color: rgba(167, 139, 250, 0.7);
+            box-shadow: 0 8px 24px rgba(109, 40, 217, 0.5);
+        }
+
+        .intermediate-play-btn:hover,
+        .intermediate-play-btn:focus,
+        .intermediate-play-btn:focus-visible {
+            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+            color: #ffffff;
+            border-color: #ffffff;
+            outline: 3px solid #ffffff;
+            outline-offset: 3px;
+            box-shadow: 0 0 35px rgba(139, 92, 246, 0.85), 0 8px 30px rgba(0, 0, 0, 0.6);
+            transform: scale(1.06);
+        }
+
+        .intermediate-info-btn {
+            background: rgba(30, 41, 59, 0.85);
+            color: #f1f5f9;
+            border-color: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
+        }
+
+        .intermediate-info-btn:hover,
+        .intermediate-info-btn:focus,
+        .intermediate-info-btn:focus-visible {
+            background: #334155;
+            color: #ffffff;
+            border-color: #ffffff;
+            outline: 3px solid #ffffff;
+            outline-offset: 3px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.45), 0 8px 30px rgba(0, 0, 0, 0.6);
+            transform: scale(1.06);
+        }
+
+        .intermediate-btn .btn-icon {
+            font-size: 1.3rem;
+        }
+
+        .movie-page-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 24px;
+            background: rgba(11, 13, 20, 0.96);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .movie-page-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 22px;
+            background: #1c2033;
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 10px;
+            border: 2px solid rgba(139, 92, 246, 0.4);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .movie-page-back-btn:hover,
+        .movie-page-back-btn:focus,
+        .movie-page-back-btn:focus-visible {
+            background: #7c3aed;
+            color: #ffffff;
+            border-color: #c4b5fd;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.5), 0 4px 20px rgba(0, 0, 0, 0.4);
+            outline: 2px solid #a78bfa;
+            transform: scale(1.03);
+        }
+
+        .movie-page-topbar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+            flex: 1;
+            padding: 0 10px;
+        }
+
+        .movie-page-close-btn,
+        .modal-close {
+            position: static;
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: #1c2033;
+            color: #ffffff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .movie-page-close-btn:hover,
+        .movie-page-close-btn:focus,
+        .movie-page-close-btn:focus-visible,
+        .modal-close:hover,
+        .modal-close:focus,
+        .modal-close:focus-visible {
+            background: #dc2626;
+            border-color: #ef4444;
+            outline: 2px solid #f87171;
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.4);
         }
 
         .modal-hero {
@@ -1319,21 +1611,6 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(180deg, rgba(18, 20, 32, 0.75) 0%, rgba(18, 20, 32, 0.98) 100%);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            z-index: 2;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            background: rgba(9, 10, 16, 0.75);
-            color: var(--text-main);
-            font-size: 1.2rem;
-            cursor: pointer;
         }
 
         .modal-layout {
@@ -1873,22 +2150,45 @@
 
         .exit-theater-btn {
             display: none;
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            z-index: 100000;
-            background: rgba(0, 0, 0, 0.85);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            padding: 7px 14px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
+            position: fixed !important;
+            top: 20px !important;
+            right: 24px !important;
+            z-index: 2147483647 !important;
+            background: rgba(17, 20, 36, 0.94);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            border: 2px solid #8b5cf6;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(139, 92, 246, 0.6);
+            transition: all 0.2s ease;
         }
 
-        .player-frame-box.theater-mode .exit-theater-btn {
-            display: block;
+        .exit-theater-btn:hover,
+        .exit-theater-btn:focus,
+        .exit-theater-btn:focus-visible {
+            background: #7c3aed;
+            color: #ffffff;
+            border-color: #c4b5fd;
+            outline: 2px solid #a78bfa;
+            transform: scale(1.05);
+        }
+
+        .player-frame-box.theater-mode .exit-theater-btn,
+        .player-frame-box.is-fullscreen .exit-theater-btn,
+        .player-frame-box:fullscreen .exit-theater-btn {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-frame-box:-webkit-full-screen .exit-theater-btn {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 8px;
         }
 
         /* Suppress Netlify injected badge and feedback overlays */
@@ -2031,9 +2331,47 @@
         </div>
     </div>
 
-    <div id="movieModal" class="modal-backdrop" role="dialog" aria-modal="true">
-        <div class="modal-content">
-            <button type="button" id="closeModalBtn" class="modal-close" aria-label="Затвори">✕</button>
+    <div id="movieIntermediateScreen" class="intermediate-screen-backdrop" role="dialog" aria-modal="true" style="display: none;">
+        <div class="intermediate-container">
+            <div class="intermediate-topbar">
+                <button type="button" id="intermediateBackBtn" class="movie-page-back-btn" aria-label="Назад към каталога" title="Назад към списъка с филми">
+                    <span class="back-icon">←</span>
+                    <span class="back-text">Назад към филмите</span>
+                </button>
+            </div>
+            <div class="intermediate-content">
+                <div class="intermediate-poster-wrap">
+                    <img id="intermediatePoster" class="intermediate-poster" src="" alt="" onerror="this.classList.add('img-fallback')">
+                </div>
+                <div class="intermediate-info">
+                    <h1 id="intermediateTitle" class="intermediate-title"></h1>
+                    <div id="intermediateMetaRow" class="intermediate-meta-row"></div>
+                    <p id="intermediateOverview" class="intermediate-overview"></p>
+                    <div class="intermediate-actions-row">
+                        <button type="button" id="intermediatePlayBtn" class="intermediate-btn intermediate-play-btn" title="Пусни филма на цял екран">
+                            <span class="btn-icon">▶</span>
+                            <span>Гледай</span>
+                        </button>
+                        <button type="button" id="intermediateInfoBtn" class="intermediate-btn intermediate-info-btn" title="Виж подробна информация за филма">
+                            <span class="btn-icon">ℹ</span>
+                            <span>Информация</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="movieModal" class="modal-backdrop movie-page-view" role="dialog" aria-modal="true">
+        <div class="modal-content movie-page-container">
+            <div class="movie-page-topbar">
+                <button type="button" id="moviePageBackBtn" class="movie-page-back-btn" aria-label="Назад към филмите" title="Назад към списъка с филми">
+                    <span class="back-icon">←</span>
+                    <span class="back-text">Назад към филмите</span>
+                </button>
+                <div class="movie-page-topbar-title" id="moviePageTopbarTitle"></div>
+                <button type="button" id="closeModalBtn" class="movie-page-close-btn" aria-label="Затвори" title="Затвори страницата">✕</button>
+            </div>
             <div id="modalBody"></div>
         </div>
     </div>
@@ -2116,6 +2454,7 @@
             selectedGenres: new Set(),
             excludedGenres: new Set(),
             watchlist: new Set(),
+            activeIntermediateItem: null,
             activeModalItem: null,
             activeSeasonIndex: 0,
             activeEpisodeIndex: 0,
@@ -2272,6 +2611,14 @@
         const movieModal = document.getElementById("movieModal");
         const modalBody = document.getElementById("modalBody");
         const closeModalBtn = document.getElementById("closeModalBtn");
+        const intermediateScreen = document.getElementById("movieIntermediateScreen");
+        const intermediatePoster = document.getElementById("intermediatePoster");
+        const intermediateTitle = document.getElementById("intermediateTitle");
+        const intermediateMetaRow = document.getElementById("intermediateMetaRow");
+        const intermediateOverview = document.getElementById("intermediateOverview");
+        const intermediatePlayBtn = document.getElementById("intermediatePlayBtn");
+        const intermediateInfoBtn = document.getElementById("intermediateInfoBtn");
+        const intermediateBackBtn = document.getElementById("intermediateBackBtn");
 
         function loadWatchlistFromStorage() {
             try {
@@ -3620,10 +3967,6 @@
                     : `<span class="badge-media-type badge-type-movie">🎬 ФИЛМ</span>`;
                 const ageBadge = item.age_rating ? `<span class="badge-age">${escapeHtml(item.age_rating)}</span>` : "";
 
-                const saved = isInWatchlist(item);
-                const savedClass = saved ? "saved" : "";
-                const watchTitle = saved ? "Премахни от За по-късно" : "Запази за гледане по-късно";
-
                 let genresHtml = "";
                 const rawGenres = Array.isArray(item.genres) ? item.genres : [];
                 const displayGenres = [];
@@ -3657,8 +4000,7 @@
                             </div>
                             ${typeBadge}
                             ${ageBadge}
-                            <button type="button" class="card-watchlist-btn ${savedClass}" data-watchlist-index="${i}" title="${watchTitle}">🔖</button>
-                            <button type="button" class="card-play-fullscreen-btn" data-movie-index="${i}" aria-label="Пусни на голям екран" title="Пусни на голям екран">▶</button>
+                            <button type="button" class="card-play-fullscreen-btn" data-movie-index="${i}" aria-label="Пусни на голям екран" title="Пусни на голям екран" tabindex="-1" aria-hidden="true">▶</button>
                         </div>
                         <div class="card-body">
                             <h3 class="card-title" title="${title}">${title}</h3>
@@ -3712,6 +4054,48 @@
             return sources;
         }
 
+        function isBgPlayerSource(source) {
+            if (!source) {
+                return false;
+            }
+            if (source.group === "bg") {
+                return true;
+            }
+            const name = `${source.name ?? ""}`.toLowerCase();
+            if (name.includes("bg") || name.includes("бг") || name.includes("български") || name.includes("🇧🇬")) {
+                return true;
+            }
+            const origin = `${source.origin ?? source.source_origin ?? ""}`.toLowerCase();
+            if (origin.includes("bg") || origin.includes("filmizip") || origin.includes("bg_serials")) {
+                return true;
+            }
+            if ((origin.includes("filmi2k") || origin.includes("filmifen")) && !origin.includes("sub")) {
+                return true;
+            }
+            return false;
+        }
+
+        function sortPlayerSources(sources) {
+            if (!Array.isArray(sources) || sources.length <= 1) {
+                return sources;
+            }
+            const getPriority = (s) => {
+                const isDirect = s.direct_embed !== false && Boolean(s.embed_url);
+                const isBg = isBgPlayerSource(s);
+                if (isDirect && isBg) {
+                    return 0;
+                }
+                if (isDirect && !isBg) {
+                    return 1;
+                }
+                if (!isDirect && isBg) {
+                    return 2;
+                }
+                return 3;
+            };
+            return [...sources].sort((a, b) => getPriority(a) - getPriority(b));
+        }
+
         function getActivePlayerSources(item) {
             const rawSources = Array.isArray(item.player_sources) ? item.player_sources : [];
             const active = [];
@@ -3749,10 +4133,7 @@
                 }
             }
 
-            if (active.length > 0) {
-                return active;
-            }
-            return rawSources;
+            return sortPlayerSources(active.length > 0 ? active : rawSources);
         }
 
         function buildPlayerSectionMarkup(item) {
@@ -3831,7 +4212,7 @@
                 }
 
                 const multiSources = buildTvEpisodeSources(item.tmdb_id, sNum, eNum, epUrl);
-                sources = [...bgEpisodeSources, ...multiSources];
+                sources = sortPlayerSources([...bgEpisodeSources, ...multiSources]);
             }
 
             let embeddedTabsHtml = "";
@@ -3943,18 +4324,166 @@
                             <button type="button" class="theater-fullscreen-btn" id="theaterFullscreenBtn" title="Цял екран на плеъра">⛶ Цял екран</button>
                         </div>
                         <div class="player-frame-box" id="mainPlayerFrameBox">
-                            <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Изход от цял екран">✕ Затвори цял екран</button>
-                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; accelerometer; gyroscope" allowfullscreen playsinline="true" webkit-playsinline="true"></iframe>
+                            <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра (Изход от цял екран)">↙ Свий плеъра</button>
+                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
                         </div>
                     ` : ""}
                 </div>
             `;
         }
 
+        function getMovieIdentifier(item) {
+            if (item.slug) {
+                return item.slug;
+            }
+            if (item.post_id) {
+                return `${item.post_id}`;
+            }
+            if (item.title) {
+                return item.title;
+            }
+            return "movie";
+        }
+
+        function openIntermediateScreen(item) {
+            state.activeIntermediateItem = item;
+            state.savedScrollY = window.scrollY;
+
+            const movieIdentifier = getMovieIdentifier(item);
+            const targetHash = `#movie=${encodeURIComponent(movieIdentifier)}`;
+            if (window.location.hash !== targetHash) {
+                window.history.pushState({ page: "intermediate", id: movieIdentifier }, "", targetHash);
+            }
+
+            const title = escapeHtml(item.title ?? "Без заглавие");
+            const poster = escapeHtml(item.poster_url ?? "");
+            const year = item.year ? `${item.year}` : "";
+            const isTv = item.type === "tv";
+
+            if (intermediateTitle) {
+                intermediateTitle.textContent = title;
+            }
+            if (intermediatePoster) {
+                intermediatePoster.src = poster;
+                intermediatePoster.alt = title;
+            }
+
+            const bgUrl = item.backdrop_url || item.poster_url || "";
+            if (intermediateScreen) {
+                if (bgUrl) {
+                    intermediateScreen.style.backgroundImage = `url('${escapeHtml(bgUrl)}')`;
+                } else {
+                    intermediateScreen.style.backgroundImage = "none";
+                }
+            }
+
+            let metaHtml = "";
+            metaHtml = `${metaHtml}<span class="modal-type-pill ${isTv ? "modal-type-tv" : "modal-type-movie"}">${isTv ? "📺 Сериал" : "🎬 Филм"}</span>`;
+            if (hasBgSource(item)) {
+                metaHtml = `${metaHtml}<span class="modal-bg-pill">🇧🇬 БГ Аудио</span>`;
+            }
+            if (year) {
+                metaHtml = `${metaHtml}<span>📅 ${year}</span>`;
+            }
+            if (!isTv && item.duration_minutes) {
+                metaHtml = `${metaHtml}<span>⏱ ${item.duration_minutes} мин</span>`;
+            }
+            if (isTv) {
+                const sNum = item.seasons_count || getItemSeasonsCount(item) || 1;
+                metaHtml = `${metaHtml}<span>📺 ${sNum === 1 ? "1 сезон" : `${sNum} сезона`}</span>`;
+            }
+            if (item.rating) {
+                metaHtml = `${metaHtml}<span class="modal-rating-pill">★ ${item.rating}</span>`;
+            }
+            const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
+            for (const orig of origins) {
+                const origClass = orig.toLowerCase().replace(/[^a-z0-9]/g, "");
+                metaHtml = `${metaHtml}<span class="src-pill src-${origClass}">${orig}</span>`;
+            }
+            if (intermediateMetaRow) {
+                intermediateMetaRow.innerHTML = metaHtml;
+            }
+
+            if (intermediateOverview) {
+                intermediateOverview.textContent = item.overview || "Няма налично описание.";
+            }
+
+            if (intermediateScreen) {
+                intermediateScreen.style.display = "flex";
+                intermediateScreen.classList.add("open");
+            }
+            document.body.classList.add("movie-page-active");
+
+            setTimeout(() => {
+                if (intermediatePlayBtn) {
+                    intermediatePlayBtn.focus();
+                }
+            }, 60);
+        }
+
+        function closeIntermediateScreen(fromPopstate = false) {
+            if (!fromPopstate && window.location.hash.startsWith("#movie=")) {
+                window.history.back();
+                return;
+            }
+            if (intermediateScreen) {
+                intermediateScreen.classList.remove("open");
+                intermediateScreen.style.display = "none";
+            }
+            document.body.classList.remove("movie-page-active");
+            state.activeIntermediateItem = null;
+            if (typeof state.savedScrollY === "number") {
+                window.scrollTo({ top: state.savedScrollY, behavior: "instant" });
+            }
+            if (state.lastFocusedCardIndex !== null) {
+                const prevCard = moviesContainer.querySelector(`.movie-card[data-movie-index="${state.lastFocusedCardIndex}"]`);
+                if (prevCard) {
+                    prevCard.focus();
+                }
+            }
+        }
+
+        function handleIntermediatePlay() {
+            const item = state.activeIntermediateItem;
+            if (!item) {
+                return;
+            }
+            if (intermediateScreen) {
+                intermediateScreen.classList.remove("open");
+                intermediateScreen.style.display = "none";
+            }
+            openMovieModal(item);
+            const box = document.getElementById("mainPlayerFrameBox");
+            if (box) {
+                setTimeout(() => {
+                    enterPlayerFullscreen(box);
+                }, 80);
+            }
+        }
+
+        function handleIntermediateInfo() {
+            const item = state.activeIntermediateItem;
+            if (!item) {
+                return;
+            }
+            if (intermediateScreen) {
+                intermediateScreen.classList.remove("open");
+                intermediateScreen.style.display = "none";
+            }
+            openMovieModal(item);
+        }
+
         function openMovieModal(item) {
+            state.savedScrollY = window.scrollY;
             state.activeModalItem = item;
             state.activeSeasonIndex = 0;
             state.activeEpisodeIndex = 0;
+
+            const movieIdentifier = getMovieIdentifier(item);
+            const targetHash = `#movie=${encodeURIComponent(movieIdentifier)}`;
+            if (window.location.hash !== targetHash) {
+                window.history.pushState({ page: "movie", id: movieIdentifier }, "", targetHash);
+            }
 
             const title = escapeHtml(item.title ?? "");
             const poster = escapeHtml(item.poster_url ?? "");
@@ -4065,26 +4594,61 @@
             `;
 
             movieModal.classList.add("open");
+            document.body.classList.add("movie-page-active");
+            const topbarTitle = document.getElementById("moviePageTopbarTitle");
+            if (topbarTitle) {
+                topbarTitle.textContent = item.title ? `${item.title}${item.year ? ` (${item.year})` : ""}` : "";
+            }
             checkAndClampModalContent();
+            movieModal.scrollTop = 0;
             const modalContent = movieModal.querySelector(".modal-content");
             if (modalContent) {
                 modalContent.scrollTop = 0;
             }
+            const backBtn = document.getElementById("moviePageBackBtn");
+            if (backBtn) {
+                setTimeout(() => {
+                    backBtn.focus();
+                }, 60);
+            }
         }
 
-        function closeMovieModal() {
-            if (document.fullscreenElement) {
-                try {
-                    document.exitFullscreen().catch(() => {});
-                } catch (e) {}
-            }
+        function handleMovieBack() {
             const box = document.getElementById("mainPlayerFrameBox");
-            if (box) {
-                box.classList.remove("theater-mode");
+            if (box && (box.classList.contains("theater-mode") || box.classList.contains("is-fullscreen") || document.fullscreenElement || document.webkitFullscreenElement)) {
+                exitPlayerFullscreen(box);
+                return;
             }
+            if (movieModal.classList.contains("open")) {
+                closeMovieModal(false);
+                return;
+            }
+            if (intermediateScreen && intermediateScreen.classList.contains("open")) {
+                closeIntermediateScreen(false);
+                return;
+            }
+            if (window.location.hash.startsWith("#movie=")) {
+                window.history.back();
+            }
+        }
+
+        function closeMovieModal(fromPopstate = false) {
+            if (!fromPopstate && window.location.hash.startsWith("#movie=")) {
+                window.history.back();
+                return;
+            }
+            exitPlayerFullscreen();
             movieModal.classList.remove("open");
+            document.body.classList.remove("movie-page-active");
             modalBody.innerHTML = "";
             state.activeModalItem = null;
+            const topbarTitle = document.getElementById("moviePageTopbarTitle");
+            if (topbarTitle) {
+                topbarTitle.textContent = "";
+            }
+            if (typeof state.savedScrollY === "number") {
+                window.scrollTo({ top: state.savedScrollY, behavior: "instant" });
+            }
             if (state.lastFocusedCardIndex !== null) {
                 const prevCard = moviesContainer.querySelector(`.movie-card[data-movie-index="${state.lastFocusedCardIndex}"]`);
                 if (prevCard) {
@@ -4093,11 +4657,47 @@
             }
         }
 
+        function checkUrlMovieHash() {
+            if (!window.location.hash.startsWith("#movie=")) {
+                if (movieModal.classList.contains("open")) {
+                    closeMovieModal(true);
+                }
+                if (intermediateScreen && intermediateScreen.classList.contains("open")) {
+                    closeIntermediateScreen(true);
+                }
+                return;
+            }
+            if (state.activeModalItem || state.activeIntermediateItem) {
+                return;
+            }
+            const rawTarget = decodeURIComponent(window.location.hash.slice(7)).trim();
+            if (!rawTarget || !Array.isArray(state.items) || state.items.length === 0) {
+                return;
+            }
+            const target = rawTarget.toLowerCase();
+            const foundItem = state.items.find((m) => {
+                if (m.slug && m.slug.toLowerCase() === target) {
+                    return true;
+                }
+                if (m.post_id && `${m.post_id}` === target) {
+                    return true;
+                }
+                if (m.title && m.title.toLowerCase() === target) {
+                    return true;
+                }
+                return false;
+            });
+            if (foundItem) {
+                openIntermediateScreen(foundItem);
+            }
+        }
+
         function setCatalogItems(itemsList) {
             state.items = itemsList;
             updateTabCounts();
             populateFilterOptions(state.items);
             applyFilters();
+            checkUrlMovieHash();
         }
 
         function normalizeTitleKey(rawTitle) {
@@ -4749,38 +5349,6 @@
         });
 
         moviesContainer.addEventListener("click", (event) => {
-            const watchBtn = event.target.closest(".card-watchlist-btn");
-            if (watchBtn) {
-                event.stopPropagation();
-                const idx = Number(watchBtn.dataset.watchlistIndex);
-                const item = state.filtered[idx];
-                if (!item) {
-                    return;
-                }
-                const nowSaved = toggleWatchlistItem(item);
-                watchBtn.classList.toggle("saved", nowSaved);
-                if (state.typeFilter === "watchlist") {
-                    applyFilters();
-                }
-                return;
-            }
-
-            const posterArea = event.target.closest(".poster-wrap");
-            const posterCard = posterArea ? posterArea.closest(".movie-card") : null;
-            if (posterArea && posterCard) {
-                event.stopPropagation();
-                const idx = Number(posterCard.dataset.movieIndex);
-                const selectedItem = state.filtered[idx];
-                if (!selectedItem) {
-                    return;
-                }
-                state.lastFocusedCardIndex = idx;
-                openMovieModal(selectedItem);
-                const box = document.getElementById("mainPlayerFrameBox");
-                enterPlayerFullscreen(box, false);
-                return;
-            }
-
             const card = event.target.closest(".movie-card");
             if (!card) {
                 return;
@@ -4791,64 +5359,127 @@
                 return;
             }
             state.lastFocusedCardIndex = index;
-            openMovieModal(selectedItem);
+            openIntermediateScreen(selectedItem);
         });
 
-        function enterPlayerFullscreen(box, allowToggle) {
-            if (!box) {
-                return;
-            }
-            const applyFallback = () => {
-                if (allowToggle) {
-                    box.classList.toggle("theater-mode");
+        moviesContainer.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                const card = event.target.closest(".movie-card");
+                if (!card) {
                     return;
                 }
-                box.classList.add("theater-mode");
-            };
-            const req = box.requestFullscreen || box.webkitRequestFullscreen || box.mozRequestFullScreen || box.msRequestFullscreen;
-            if (!req) {
-                applyFallback();
-                return;
-            }
-            try {
-                const promise = req.call(box);
-                if (promise && typeof promise.catch === "function") {
-                    promise.catch(applyFallback);
+                event.preventDefault();
+                const index = Number(card.dataset.movieIndex);
+                const selectedItem = state.filtered[index];
+                if (!selectedItem) {
+                    return;
                 }
-            } catch (err) {
-                applyFallback();
+                state.lastFocusedCardIndex = index;
+                openIntermediateScreen(selectedItem);
+            }
+        });
+
+        function updateTheaterButtonsState(isTheater) {
+            const theaterBtn = document.getElementById("theaterFullscreenBtn");
+            if (theaterBtn) {
+                theaterBtn.innerHTML = isTheater ? "↙ Свий екран" : "⛶ Цял екран";
+                theaterBtn.title = isTheater ? "Свий плеъра (нормален размер)" : "Разпъни плеъра на цял екран";
             }
         }
 
-        document.addEventListener("fullscreenchange", () => {
-            if (document.fullscreenElement) {
+        function exitPlayerFullscreen(box) {
+            const targetBox = box || document.getElementById("mainPlayerFrameBox");
+            if (targetBox) {
+                targetBox.classList.remove("theater-mode");
+                targetBox.classList.remove("is-fullscreen");
+            }
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                try {
+                    const exitFn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+                    if (exitFn) {
+                        exitFn.call(document).catch(() => {});
+                    }
+                } catch (e) {}
+            }
+            updateTheaterButtonsState(false);
+        }
+
+        function enterPlayerFullscreen(box) {
+            if (!box) {
                 return;
             }
-            const box = document.getElementById("mainPlayerFrameBox");
-            if (box) {
-                box.classList.remove("theater-mode");
+            if (box.classList.contains("theater-mode") || box.classList.contains("is-fullscreen")) {
+                exitPlayerFullscreen(box);
+                return;
             }
+            const req = box.requestFullscreen || box.webkitRequestFullscreen || box.mozRequestFullScreen || box.msRequestFullscreen;
+            if (req) {
+                try {
+                    const promise = req.call(box);
+                    if (promise && typeof promise.catch === "function") {
+                        promise.then(() => {
+                            box.classList.add("is-fullscreen");
+                            updateTheaterButtonsState(true);
+                        }).catch(() => {
+                            box.classList.add("theater-mode");
+                            updateTheaterButtonsState(true);
+                        });
+                    } else {
+                        box.classList.add("is-fullscreen");
+                        updateTheaterButtonsState(true);
+                    }
+                } catch (err) {
+                    box.classList.add("theater-mode");
+                    updateTheaterButtonsState(true);
+                }
+                return;
+            }
+            box.classList.add("theater-mode");
+            updateTheaterButtonsState(true);
+        }
+
+        const fullscreenEvents = ["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "MSFullscreenChange"];
+        for (const evt of fullscreenEvents) {
+            document.addEventListener(evt, () => {
+                const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+                const box = document.getElementById("mainPlayerFrameBox");
+                if (box) {
+                    box.classList.toggle("is-fullscreen", isFs);
+                    if (!isFs) {
+                        box.classList.remove("theater-mode");
+                    }
+                }
+                updateTheaterButtonsState(isFs || (box && box.classList.contains("theater-mode")));
+            });
+        }
+
+        window.addEventListener("message", (event) => {
+            if (!event.data) {
+                return;
+            }
+            try {
+                const dataStr = typeof event.data === "string" ? event.data : JSON.stringify(event.data);
+                if (dataStr.includes("exitFullscreen") || dataStr.includes("exit_fullscreen")) {
+                    exitPlayerFullscreen();
+                }
+            } catch (e) {}
         });
 
         modalBody.addEventListener("click", (event) => {
             const theaterBtn = event.target.closest("#theaterFullscreenBtn");
             if (theaterBtn) {
                 const box = document.getElementById("mainPlayerFrameBox");
-                enterPlayerFullscreen(box, true);
+                if (box && box.classList.contains("theater-mode")) {
+                    exitPlayerFullscreen(box);
+                    return;
+                }
+                enterPlayerFullscreen(box);
                 return;
             }
 
             const exitTheaterBtn = event.target.closest("#exitTheaterBtn");
             if (exitTheaterBtn) {
-                if (document.fullscreenElement) {
-                    try {
-                        document.exitFullscreen().catch(() => {});
-                    } catch (e) {}
-                }
-                const box = document.getElementById("mainPlayerFrameBox");
-                if (box) {
-                    box.classList.remove("theater-mode");
-                }
+                exitPlayerFullscreen();
                 return;
             }
 
@@ -4975,17 +5606,89 @@
             }
         });
 
-        closeModalBtn.addEventListener("click", closeMovieModal);
-        movieModal.addEventListener("click", (event) => {
-            if (event.target === movieModal) {
-                closeMovieModal();
+        const moviePageBackBtn = document.getElementById("moviePageBackBtn");
+        if (moviePageBackBtn) {
+            moviePageBackBtn.addEventListener("click", handleMovieBack);
+        }
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener("click", handleMovieBack);
+        }
+
+        if (intermediatePlayBtn) {
+            intermediatePlayBtn.addEventListener("click", handleIntermediatePlay);
+        }
+        if (intermediateInfoBtn) {
+            intermediateInfoBtn.addEventListener("click", handleIntermediateInfo);
+        }
+        if (intermediateBackBtn) {
+            intermediateBackBtn.addEventListener("click", () => closeIntermediateScreen(false));
+        }
+
+        if (intermediateScreen) {
+            intermediateScreen.addEventListener("keydown", (event) => {
+                if (event.key === "ArrowRight") {
+                    if (document.activeElement === intermediatePlayBtn && intermediateInfoBtn) {
+                        event.preventDefault();
+                        intermediateInfoBtn.focus();
+                    }
+                }
+                if (event.key === "ArrowLeft") {
+                    if (document.activeElement === intermediateInfoBtn && intermediatePlayBtn) {
+                        event.preventDefault();
+                        intermediatePlayBtn.focus();
+                    }
+                }
+                if (event.key === "ArrowUp") {
+                    if (document.activeElement === intermediatePlayBtn || document.activeElement === intermediateInfoBtn) {
+                        if (intermediateBackBtn) {
+                            event.preventDefault();
+                            intermediateBackBtn.focus();
+                        }
+                    }
+                }
+                if (event.key === "ArrowDown") {
+                    if (document.activeElement === intermediateBackBtn && intermediatePlayBtn) {
+                        event.preventDefault();
+                        intermediatePlayBtn.focus();
+                    }
+                }
+            });
+        }
+
+        window.addEventListener("popstate", () => {
+            if (window.location.hash.startsWith("#movie=")) {
+                checkUrlMovieHash();
+                return;
+            }
+            if (movieModal.classList.contains("open")) {
+                closeMovieModal(true);
+            }
+            if (intermediateScreen && intermediateScreen.classList.contains("open")) {
+                closeIntermediateScreen(true);
             }
         });
 
         document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape" && movieModal.classList.contains("open")) {
-                event.preventDefault();
-                closeMovieModal();
+            const isBackKey = event.key === "Escape" ||
+                event.key === "GoBack" ||
+                event.keyCode === 27 ||
+                event.keyCode === 4 ||
+                event.keyCode === 10009 ||
+                event.keyCode === 461;
+
+            if (isBackKey) {
+                const box = document.getElementById("mainPlayerFrameBox");
+                if (box && (box.classList.contains("theater-mode") || box.classList.contains("is-fullscreen") || document.fullscreenElement || document.webkitFullscreenElement)) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    exitPlayerFullscreen(box);
+                    return;
+                }
+                if (movieModal.classList.contains("open") || (intermediateScreen && intermediateScreen.classList.contains("open"))) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    handleMovieBack();
+                }
             }
         });
 
@@ -4994,7 +5697,7 @@
             if (crewBtn) {
                 const query = crewBtn.getAttribute("data-search-query");
                 if (query) {
-                    closeMovieModal();
+                    handleMovieBack();
                     searchInput.value = query;
                     state.searchQuery = query;
                     applyFilters();
@@ -5014,6 +5717,7 @@
         }
 
         loadInitialData();
+        checkUrlMovieHash();
     </script>
 </body>
 </html>

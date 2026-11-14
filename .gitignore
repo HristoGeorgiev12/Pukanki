@@ -4,6 +4,8 @@ __pycache__/
 *.bak
 *.zip
 scratch/
+player_health_cache.json
 .env
 .DS_Store
 Thumbs.db
+
