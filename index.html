@@ -156,74 +156,7 @@
             font-size: 0.76rem;
         }
 
-        .unique-sites-bar {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px;
-            margin-top: -6px;
-            margin-bottom: 16px;
-            padding: 10px 14px;
-            background: rgba(124, 58, 237, 0.08);
-            border: 1px solid rgba(124, 58, 237, 0.25);
-            border-radius: 12px;
-        }
 
-        .unique-site-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.84rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .unique-site-btn:hover {
-            color: var(--text-main);
-            border-color: rgba(124, 58, 237, 0.5);
-        }
-
-        .unique-site-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-        }
-
-        .unique-filter-toggle {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            user-select: none;
-            white-space: nowrap;
-            padding: 8px 12px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            transition: all 0.2s;
-        }
-
-        .unique-filter-toggle:hover {
-            color: var(--text-main);
-            border-color: rgba(124, 58, 237, 0.4);
-        }
-
-        .unique-filter-toggle input {
-            cursor: pointer;
-            accent-color: var(--accent);
-            width: 16px;
-            height: 16px;
-        }
 
         .filters-panel {
             background: var(--bg-panel);
@@ -2239,18 +2172,10 @@
             <button type="button" class="type-tab-btn" data-type-filter="tv">
                 📺 Сериали <span class="tab-count" id="countTv">0</span>
             </button>
-            <button type="button" class="type-tab-btn" data-type-filter="filmi9">
-                🍿 Filmi9 <span class="tab-count" id="countFilmi9">0</span>
-            </button>
-            <button type="button" class="type-tab-btn" data-type-filter="unique">
-                ⭐ Уникални по сайт <span class="tab-count" id="countUnique">0</span>
-            </button>
             <button type="button" class="type-tab-btn" data-type-filter="watchlist">
                 🔖 За по-късно <span class="tab-count" id="countWatchlist">0</span>
             </button>
         </nav>
-
-        <div id="uniqueSitesBar" class="unique-sites-bar" style="display: none;"></div>
 
         <section class="filters-panel">
             <div class="filters-row filters-row-primary">
@@ -2304,9 +2229,6 @@
                 <select id="sourceSelect" class="select-control" aria-label="Филтър по източник">
                     <option value="">Всички източници</option>
                 </select>
-                <label class="unique-filter-toggle" title="Покажи само филми, които са налични единствено в този сайт">
-                    <input type="checkbox" id="uniqueOnlyCheckbox"> ⭐ Само уникални
-                </label>
             </div>
 
             <div id="genresCollapsible" class="genres-collapsible">
@@ -2485,8 +2407,6 @@
             filtered: [],
             visibleCount: PAGE_BATCH_SIZE,
             typeFilter: "all",
-            uniqueSiteFilter: "",
-            uniqueOnly: false,
             audioSubFilter: "",
             episodesFilter: "",
             allGenres: [],
@@ -2501,16 +2421,12 @@
         };
 
         const typeTabsBar = document.getElementById("typeTabsBar");
-        const uniqueSitesBar = document.getElementById("uniqueSitesBar");
         const countAll = document.getElementById("countAll");
         const countMovies = document.getElementById("countMovies");
         const countTv = document.getElementById("countTv");
         const countSub = document.getElementById("countSub");
         const countBgAudio = document.getElementById("countBgAudio");
-        const countFilmi9 = document.getElementById("countFilmi9");
-        const countUnique = document.getElementById("countUnique");
         const countWatchlist = document.getElementById("countWatchlist");
-        const uniqueOnlyCheckbox = document.getElementById("uniqueOnlyCheckbox");
         const searchInput = document.getElementById("searchInput");
         const searchSuggestions = document.getElementById("searchSuggestions");
 
@@ -2745,13 +2661,6 @@
                 if (data.sort && sortSelect) {
                     sortSelect.value = data.sort;
                 }
-                if (data.uniqueOnly && uniqueOnlyCheckbox) {
-                    state.uniqueOnly = true;
-                    uniqueOnlyCheckbox.checked = true;
-                }
-                if (data.uniqueSiteFilter) {
-                    state.uniqueSiteFilter = data.uniqueSiteFilter;
-                }
                 if (data.searchQuery && searchInput) {
                     searchInput.value = data.searchQuery;
                     state.searchQuery = data.searchQuery;
@@ -2766,8 +2675,6 @@
                 const isDefault = state.typeFilter === "all" &&
                     !state.audioSubFilter &&
                     !state.episodesFilter &&
-                    !state.uniqueOnly &&
-                    !state.uniqueSiteFilter &&
                     state.selectedGenres.size === 0 &&
                     state.excludedGenres.size === 0 &&
                     !yearFromSelect.value &&
@@ -2789,8 +2696,6 @@
 
                 const payload = {
                     typeFilter: state.typeFilter || "all",
-                    uniqueOnly: state.uniqueOnly || false,
-                    uniqueSiteFilter: state.uniqueSiteFilter || "",
                     audioSubFilter: state.audioSubFilter || "",
                     episodesFilter: state.episodesFilter || "",
                     yearFrom: yearFromSelect ? yearFromSelect.value : "",
@@ -2813,8 +2718,6 @@
             const hasActiveFilters = state.typeFilter !== "all" ||
                 Boolean(state.audioSubFilter) ||
                 Boolean(state.episodesFilter) ||
-                Boolean(state.uniqueOnly) ||
-                Boolean(state.uniqueSiteFilter) ||
                 state.selectedGenres.size > 0 ||
                 state.excludedGenres.size > 0 ||
                 (yearFromSelect && Boolean(yearFromSelect.value)) ||
@@ -2835,17 +2738,11 @@
             }
 
             state.typeFilter = "all";
-            state.uniqueSiteFilter = "";
-            state.uniqueOnly = false;
             state.audioSubFilter = "";
             state.episodesFilter = "";
             state.selectedGenres.clear();
             state.excludedGenres.clear();
             state.searchQuery = "";
-
-            if (uniqueOnlyCheckbox) {
-                uniqueOnlyCheckbox.checked = false;
-            }
 
             if (typeTabsBar) {
                 const allBtns = typeTabsBar.querySelectorAll(".type-tab-btn");
@@ -3176,15 +3073,6 @@
                 if (hasBgSource(item)) {
                     bgAudioCount++;
                 }
-                const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
-                if (origins.includes("Filmi9")) {
-                    filmi9Count++;
-                }
-                if (origins.length === 1) {
-                    uniqueCount++;
-                    const s = origins[0];
-                    uniqueBySite.set(s, (uniqueBySite.get(s) || 0) + 1);
-                }
                 if (isInWatchlist(item)) {
                     watchlistCount++;
                 }
@@ -3199,41 +3087,7 @@
             if (countBgAudio) {
                 countBgAudio.textContent = `${bgAudioCount}`;
             }
-            if (countFilmi9) {
-                countFilmi9.textContent = `${filmi9Count}`;
-            }
-            if (countUnique) {
-                countUnique.textContent = `${uniqueCount}`;
-            }
             countWatchlist.textContent = `${watchlistCount}`;
-            renderUniqueSitesBar(uniqueBySite);
-        }
-
-        function renderUniqueSitesBar(uniqueBySite) {
-            if (!uniqueSitesBar) {
-                return;
-            }
-            const shouldShow = state.typeFilter === "unique" || state.uniqueOnly;
-            uniqueSitesBar.style.display = shouldShow ? "flex" : "none";
-            if (!shouldShow) {
-                return;
-            }
-
-            const siteList = ["all", "Filmi9", "ZenoPlay", "Filmifen", "Filmizip", "Filmi2k"];
-            let html = "";
-            let totalUnique = 0;
-            for (const count of uniqueBySite.values()) {
-                totalUnique += count;
-            }
-
-            for (const site of siteList) {
-                const label = site === "all" ? "Всички сайтове" : site;
-                const count = site === "all" ? totalUnique : (uniqueBySite.get(site) || 0);
-                const isCur = (!state.uniqueSiteFilter && site === "all") || (state.uniqueSiteFilter === site);
-                const activeCls = isCur ? "active" : "";
-                html = `${html}<button type="button" class="unique-site-btn ${activeCls}" data-site="${site}">${label} <span class="tab-count">${count}</span></button>`;
-            }
-            uniqueSitesBar.innerHTML = html;
         }
 
         function renderGenreBadges() {
@@ -3400,20 +3254,11 @@
             return false;
         }
 
-        function matchesSelectedSource(item, selectedSource, uniqueOnly) {
-            const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
-            if (uniqueOnly || state.uniqueOnly) {
-                if (origins.length !== 1) {
-                    return false;
-                }
-                if (selectedSource && origins[0] !== selectedSource) {
-                    return false;
-                }
-                return true;
-            }
+        function matchesSelectedSource(item, selectedSource) {
             if (!selectedSource) {
                 return true;
             }
+            const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
             return origins.includes(selectedSource);
         }
 
@@ -3599,19 +3444,6 @@
             }
             if (state.typeFilter === "tv") {
                 return item.type === "tv";
-            }
-            if (state.typeFilter === "filmi9") {
-                return Array.isArray(item.origins) && item.origins.includes("Filmi9");
-            }
-            if (state.typeFilter === "unique") {
-                const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
-                if (origins.length !== 1) {
-                    return false;
-                }
-                if (state.uniqueSiteFilter && origins[0] !== state.uniqueSiteFilter) {
-                    return false;
-                }
-                return true;
             }
             if (state.typeFilter === "watchlist") {
                 return isInWatchlist(item);
@@ -5368,38 +5200,9 @@
             durationSelect.addEventListener("change", applyFilters);
         }
         playerSelect.addEventListener("change", applyFilters);
-        sourceSelect.addEventListener("change", () => {
-            if (sourceSelect.value && state.typeFilter === "unique") {
-                state.uniqueSiteFilter = sourceSelect.value;
-                updateTabCounts();
-            }
-            applyFilters();
-        });
+        sourceSelect.addEventListener("change", applyFilters);
         sortSelect.addEventListener("change", applyFilters);
 
-        if (uniqueOnlyCheckbox) {
-            uniqueOnlyCheckbox.addEventListener("change", () => {
-                state.uniqueOnly = Boolean(uniqueOnlyCheckbox.checked);
-                updateTabCounts();
-                applyFilters();
-            });
-        }
-
-        if (uniqueSitesBar) {
-            uniqueSitesBar.addEventListener("click", (event) => {
-                const btn = event.target.closest(".unique-site-btn");
-                if (!btn) {
-                    return;
-                }
-                const site = btn.dataset.site;
-                state.uniqueSiteFilter = site === "all" ? "" : site;
-                if (sourceSelect && site !== "all") {
-                    sourceSelect.value = site;
-                }
-                updateTabCounts();
-                applyFilters();
-            });
-        }
 
         if (audioSubFilterSelect) {
             audioSubFilterSelect.addEventListener("change", () => {
