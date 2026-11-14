@@ -1,0 +1,5019 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Пуканки</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍿</text></svg>">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg-main: #090a10;
+            --bg-panel: #121420;
+            --bg-card: #171a29;
+            --bg-input: #1e2235;
+            --accent: #7c3aed;
+            --accent-hover: #6d28d9;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: rgba(255, 255, 255, 0.08);
+            --gold: #fbbf24;
+            --bg-badge: #10b981;
+            --tv-badge: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo-icon {
+            width: 36px;
+            height: 36px;
+            display: inline-block;
+            filter: drop-shadow(0 3px 8px rgba(220, 38, 38, 0.4));
+        }
+
+        .brand-title-text {
+            background: linear-gradient(90deg, #ffffff, #c4b5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .header-actions #sortSelect {
+            width: auto;
+            min-width: 220px;
+        }
+
+        .stats-pill {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 10px 22px;
+            border-radius: 999px;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+            letter-spacing: 0.01em;
+        }
+
+        .stats-pill strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .type-tabs-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .type-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .type-tab-btn:hover {
+            color: var(--text-main);
+            border-color: rgba(124, 58, 237, 0.5);
+        }
+
+        .type-tab-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
+        }
+
+        .tab-count {
+            background: rgba(0, 0, 0, 0.28);
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+        }
+
+        .unique-sites-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-top: -6px;
+            margin-bottom: 16px;
+            padding: 10px 14px;
+            background: rgba(124, 58, 237, 0.08);
+            border: 1px solid rgba(124, 58, 237, 0.25);
+            border-radius: 12px;
+        }
+
+        .unique-site-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .unique-site-btn:hover {
+            color: var(--text-main);
+            border-color: rgba(124, 58, 237, 0.5);
+        }
+
+        .unique-site-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .unique-filter-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            padding: 8px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .unique-filter-toggle:hover {
+            color: var(--text-main);
+            border-color: rgba(124, 58, 237, 0.4);
+        }
+
+        .unique-filter-toggle input {
+            cursor: pointer;
+            accent-color: var(--accent);
+            width: 16px;
+            height: 16px;
+        }
+
+        .filters-panel {
+            background: var(--bg-panel);
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .filters-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .filters-row-primary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filters-row-primary .search-input-wrapper {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .filters-actions-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .filters-row-secondary {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .audio-sub-filter-select {
+            display: inline-flex;
+            align-items: center;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            outline: none;
+            color-scheme: dark;
+        }
+
+        .audio-sub-filter-select:hover {
+            border-color: rgba(16, 185, 129, 0.6);
+        }
+
+        .audio-sub-filter-select.has-value {
+            border-color: #10b981;
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .audio-sub-filter-select option {
+            background-color: #161928;
+            color: #f3f4f6;
+        }
+
+        .genre-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 11px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .genre-toggle-btn:hover {
+            border-color: rgba(124, 58, 237, 0.5);
+            color: #fff;
+        }
+
+        .genre-toggle-btn.has-active {
+            border-color: var(--accent);
+            color: #c4b5fd;
+            background: rgba(124, 58, 237, 0.15);
+        }
+
+        .reset-filters-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 11px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .reset-filters-btn:hover {
+            border-color: rgba(239, 68, 68, 0.6);
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        .reset-filters-btn.active-filters {
+            border-color: rgba(251, 191, 36, 0.65);
+            color: var(--gold);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .episodes-filter-select {
+            display: inline-flex;
+            align-items: center;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .episodes-filter-select:hover {
+            border-color: rgba(168, 85, 247, 0.6);
+        }
+
+        .episodes-filter-select.has-value {
+            border-color: #a855f7;
+            color: #d8b4fe;
+            background: rgba(168, 85, 247, 0.15);
+        }
+
+        select, .episodes-filter-select {
+            color-scheme: dark;
+        }
+
+        .episodes-filter-select option,
+        select option {
+            background-color: #161928;
+            color: #f3f4f6;
+        }
+
+        .genre-active-badge {
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 999px;
+            line-height: 1.2;
+        }
+
+        .genre-toggle-arrow {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+        }
+
+        .genres-collapsible {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .genres-collapsible.collapsed {
+            display: none;
+        }
+
+        .year-range-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .year-range-sep {
+            color: var(--text-muted);
+            font-weight: 700;
+            user-select: none;
+        }
+
+        @media (max-width: 900px) {
+            .filters-row-primary {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filters-actions-group {
+                justify-content: flex-end;
+            }
+            .filters-row-secondary {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px 12px 50px;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                margin-bottom: 14px;
+                padding-bottom: 14px;
+            }
+
+            .brand h1 {
+                font-size: 1.5rem;
+            }
+
+            .brand p {
+                font-size: 0.82rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .header-actions #sortSelect {
+                flex: 1;
+                min-width: 0;
+                font-size: 0.85rem;
+                padding: 8px 10px;
+            }
+
+            .stats-pill {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+
+            .type-tabs-bar {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding-bottom: 4px;
+                gap: 8px;
+            }
+
+            .type-tabs-bar::-webkit-scrollbar {
+                display: none;
+            }
+
+            .type-tab-btn {
+                flex-shrink: 0;
+                padding: 8px 12px;
+                font-size: 0.84rem;
+            }
+
+            .filters-actions-group {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                width: 100%;
+            }
+
+            .filters-actions-group button,
+            .filters-actions-group select {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+                font-size: 0.82rem;
+                padding: 9px 8px;
+            }
+
+            .filters-row-secondary {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .input-control, .select-control {
+                font-size: 16px;
+                padding: 9px 12px;
+            }
+
+            .movies-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .movie-card {
+                border-radius: 10px;
+            }
+
+            .movie-card .card-body {
+                padding: 8px 8px 10px;
+            }
+
+            .movie-card .card-title {
+                font-size: 0.84rem;
+                line-height: 1.25;
+                margin-bottom: 4px;
+            }
+
+            .movie-card .card-meta {
+                font-size: 0.74rem;
+                gap: 3px;
+                margin-bottom: 6px;
+            }
+
+            .movie-card .card-sources {
+                gap: 3px;
+            }
+
+            .movie-card .src-pill {
+                font-size: 0.62rem;
+                padding: 2px 5px;
+            }
+
+            .movie-card .card-genres {
+                display: none;
+            }
+
+            .modal-backdrop {
+                padding: 8px;
+                align-items: flex-end;
+            }
+
+            .modal-content {
+                border-radius: 16px 16px 0 0;
+                max-height: 94vh;
+                padding-bottom: max(50px, calc(env(safe-area-inset-bottom, 20px) + 30px));
+            }
+
+            .modal-close {
+                top: 14px;
+                right: 14px;
+                z-index: 10;
+                background: rgba(9, 10, 16, 0.88);
+            }
+
+            .modal-player-section {
+                padding: 14px 12px 30px;
+            }
+
+            .player-frame-box {
+                min-height: 210px;
+            }
+
+            .modal-hero {
+                padding: 16px 14px;
+            }
+
+            .modal-layout {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .modal-poster {
+                max-width: 130px;
+                margin: 0 auto;
+                display: block;
+                border-radius: 8px;
+            }
+
+            .modal-info h2 {
+                font-size: 1.3rem;
+                text-align: center;
+            }
+
+            .modal-submeta {
+                justify-content: center;
+                font-size: 0.8rem;
+                gap: 8px;
+            }
+
+            .modal-sources-row {
+                justify-content: center;
+            }
+
+            .modal-overview {
+                font-size: 0.88rem;
+                line-height: 1.5;
+            }
+
+            .modal-player-section {
+                padding: 14px 12px 65px;
+                margin-bottom: 25px;
+            }
+
+            .tv-episodes-bar {
+                max-height: 160px;
+                gap: 5px;
+            }
+
+            .episode-btn {
+                padding: 6px 10px;
+                font-size: 0.78rem;
+            }
+
+            .player-tab {
+                padding: 7px 11px;
+                font-size: 0.8rem;
+            }
+        }
+
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #7c3aed;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+            transition: opacity 0.25s, transform 0.25s;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            z-index: 950;
+        }
+
+        .scroll-top-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .scroll-top-btn:hover {
+            background: #6d28d9;
+            transform: translateY(-2px);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #151828;
+            border: 1px solid rgba(124, 58, 237, 0.45);
+            border-radius: 11px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75), 0 0 16px rgba(124, 58, 237, 0.2);
+            z-index: 250;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+        }
+
+        .search-suggestions-header {
+            padding: 6px 10px 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .search-suggestion-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            user-select: none;
+        }
+
+        .search-suggestion-item:hover,
+        .search-suggestion-item.active {
+            background: rgba(124, 58, 237, 0.25);
+            color: #fff;
+        }
+
+        .suggestion-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suggestion-icon {
+            font-size: 1.05rem;
+            width: 22px;
+            text-align: center;
+        }
+
+        .suggestion-prefix {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-weight: 700;
+            color: var(--gold);
+            background: rgba(251, 191, 36, 0.12);
+            padding: 2px 7px;
+            border-radius: 6px;
+            border: 1px solid rgba(251, 191, 36, 0.35);
+        }
+
+        .suggestion-label {
+            font-weight: 600;
+        }
+
+        .suggestion-desc {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+
+        .input-control, .select-control {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 11px 14px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-control:focus, .select-control:focus {
+            border-color: var(--accent);
+        }
+
+        .genre-badges-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 4px;
+        }
+
+        .genre-filter-badge {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 13px;
+            border-radius: 999px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.18s ease;
+        }
+
+        .genre-filter-badge:hover {
+            border-color: rgba(124, 58, 237, 0.5);
+            color: var(--text-main);
+        }
+
+        .genre-filter-badge.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+        }
+
+        .genre-filter-badge.excluded {
+            background: rgba(220, 38, 38, 0.22);
+            border-color: #ef4444;
+            color: #fca5a5;
+            font-weight: 600;
+            text-decoration: line-through;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+        }
+
+        .filter-culprit {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.55), 0 0 16px rgba(239, 68, 68, 0.45) !important;
+        }
+
+        .culprit-reasons-box {
+            margin-top: 12px;
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.14);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .genre-hint {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .genre-hint span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 20px;
+        }
+
+        .movie-card {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(124, 58, 237, 0.6);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .poster-wrap {
+            position: relative;
+            aspect-ratio: 2 / 3;
+            background: #111422;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .poster-wrap::before {
+            content: "🎬";
+            position: absolute;
+            font-size: 2.4rem;
+            opacity: 0.2;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .poster-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .poster-wrap img.img-fallback {
+            display: none;
+        }
+
+        .movie-card:hover .poster-wrap img {
+            transform: scale(1.04);
+        }
+
+        .badge-rating {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 3;
+            background: rgba(9, 10, 16, 0.88);
+            backdrop-filter: blur(6px);
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 0.82rem;
+            padding: 4px 9px;
+            border-radius: 8px;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .poster-badges-top-right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+            z-index: 2;
+        }
+
+        .badge-bg-audio {
+            background: rgba(16, 185, 129, 0.95);
+            color: #042f1a;
+            font-weight: 800;
+            font-size: 0.72rem;
+            padding: 3px 7px;
+            border-radius: 6px;
+            letter-spacing: 0.04em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .badge-sub {
+            background: rgba(168, 85, 247, 0.95);
+            color: #2e1065;
+            font-weight: 800;
+            font-size: 0.72rem;
+            padding: 3px 7px;
+            border-radius: 6px;
+            letter-spacing: 0.04em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .badge-cast {
+            background: rgba(14, 165, 233, 0.92);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.68rem;
+            padding: 3px 6px;
+            border-radius: 6px;
+            letter-spacing: 0.03em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .modal-cast-pill {
+            background: rgba(14, 165, 233, 0.22);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            color: #7dd3fc;
+            font-weight: 700;
+            font-size: 0.78rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-media-type {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-weight: 800;
+            font-size: 0.68rem;
+            padding: 3px 7px;
+            border-radius: 6px;
+            letter-spacing: 0.03em;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            z-index: 2;
+        }
+
+        .badge-type-movie {
+            background: rgba(124, 58, 237, 0.92);
+            color: #fff;
+            border: 1px solid rgba(167, 139, 250, 0.4);
+        }
+
+        .badge-type-tv {
+            background: rgba(59, 130, 246, 0.92);
+            color: #fff;
+            border: 1px solid rgba(147, 197, 253, 0.4);
+        }
+
+        .modal-type-pill {
+            font-weight: 700;
+            font-size: 0.78rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .modal-type-movie {
+            background: rgba(124, 58, 237, 0.25);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            color: #c4b5fd;
+        }
+
+        .modal-type-tv {
+            background: rgba(59, 130, 246, 0.25);
+            border: 1px solid rgba(96, 165, 250, 0.5);
+            color: #93c5fd;
+        }
+
+        .modal-bg-pill {
+            background: rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #6ee7b7;
+            font-weight: 700;
+            font-size: 0.78rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-age {
+            position: absolute;
+            bottom: 10px;
+            right: 44px;
+            z-index: 2;
+            background: rgba(220, 38, 38, 0.9);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.72rem;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        .card-watchlist-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(9, 10, 16, 0.82);
+            backdrop-filter: blur(6px);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 3;
+        }
+
+        .card-watchlist-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--gold);
+            color: #fff;
+        }
+
+        .card-watchlist-btn.saved {
+            background: rgba(251, 191, 36, 0.95);
+            border-color: var(--gold);
+            color: #111827;
+        }
+
+        .card-play-fullscreen-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.85);
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.85);
+            background: rgba(124, 58, 237, 0.9);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 4px;
+            cursor: pointer;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7);
+            transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+            z-index: 4;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .poster-wrap:hover .card-play-fullscreen-btn,
+        .movie-card:focus-within .card-play-fullscreen-btn {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .card-play-fullscreen-btn:hover {
+            background: #6d28d9;
+            border-color: #fff;
+            transform: translate(-50%, -50%) scale(1.12);
+            box-shadow: 0 8px 28px rgba(124, 58, 237, 0.85);
+        }
+
+        @media (max-width: 640px) {
+            .card-play-fullscreen-btn {
+                opacity: 0.88;
+                pointer-events: auto;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+                padding-left: 3px;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .card-body {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .card-meta-rating {
+            color: var(--gold);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .card-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: auto;
+            padding-top: 8px;
+        }
+
+        .genre-pill {
+            background: rgba(255, 255, 255, 0.06);
+            color: #d1d5db;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .card-sources {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .src-pill {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 5px;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .src-zenoplay {
+            background: rgba(124, 58, 237, 0.16);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            color: #c4b5fd;
+        }
+
+        .src-filmi2k {
+            background: rgba(249, 115, 22, 0.16);
+            border: 1px solid rgba(251, 146, 60, 0.4);
+            color: #fdba74;
+        }
+
+        .src-filmifen {
+            background: rgba(14, 165, 233, 0.16);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            color: #7dd3fc;
+        }
+
+        .src-filmizip {
+            background: rgba(16, 185, 129, 0.16);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            color: #6ee7b7;
+        }
+
+        .modal-sources-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .modal-sources-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-panel);
+            border-radius: 16px;
+            border: 1px dashed var(--border);
+            color: var(--text-muted);
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 6, 10, 0.86);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-backdrop.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-hero {
+            position: relative;
+            padding: 32px;
+            background-size: cover;
+            background-position: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(18, 20, 32, 0.75) 0%, rgba(18, 20, 32, 0.98) 100%);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            z-index: 2;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(9, 10, 16, 0.75);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .modal-layout {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 28px;
+        }
+
+        @media (max-width: 680px) {
+            .modal-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .modal-poster {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .modal-submeta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .modal-rating-pill {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .modal-overview-wrap {
+            margin-bottom: 14px;
+        }
+
+        .modal-overview {
+            color: #e5e7eb;
+            margin-bottom: 4px;
+            font-size: 0.96rem;
+            line-height: 1.5;
+            transition: max-height 0.2s ease;
+        }
+
+        .modal-overview.is-clamped {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .modal-expand-btn {
+            background: none;
+            border: none;
+            color: #a78bfa;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 3px 6px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-expand-btn:hover {
+            background: rgba(167, 139, 250, 0.14);
+            color: #c4b5fd;
+        }
+
+        .modal-crew-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 6px;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .modal-crew-label {
+            color: var(--text-main);
+            margin-right: 4px;
+            font-size: 0.9rem;
+            padding-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .modal-crew-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .modal-crew-chips.is-clamped {
+            max-height: 30px;
+            overflow: hidden;
+        }
+
+        .modal-chips-row {
+            margin-bottom: 10px;
+        }
+
+        .chip-list.modal-collapsible-chips.is-clamped {
+            max-height: 32px;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+
+        .crew-search-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e5e7eb;
+            font-size: 0.8rem;
+            padding: 3px 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .crew-search-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .chip {
+            background: rgba(124, 58, 237, 0.16);
+            border: 1px solid rgba(124, 58, 237, 0.35);
+            color: #ddd6fe;
+            padding: 4px 11px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+        }
+
+        .chip-tag {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .modal-actions-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .watchlist-modal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 9px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .watchlist-modal-btn.saved {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .modal-player-section {
+            padding: 24px 32px 32px;
+        }
+
+        .tv-seasons-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .season-btn {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .season-btn.active {
+            background: var(--tv-badge);
+            border-color: var(--tv-badge);
+            color: #fff;
+        }
+
+        .tv-episodes-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 4px 2px;
+        }
+
+        .episode-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .episode-btn:hover {
+            border-color: var(--tv-badge);
+        }
+
+        .episode-btn.active {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: var(--tv-badge);
+            color: #93c5fd;
+            font-weight: 700;
+        }
+
+        details.player-accordion {
+            margin-bottom: 12px;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        details.player-accordion-external {
+            border-color: rgba(16, 185, 129, 0.22);
+            background: rgba(16, 185, 129, 0.03);
+        }
+
+        details.player-accordion summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            user-select: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        details.player-accordion summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details.player-accordion summary:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        details.player-accordion[open] > summary {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .player-accordion-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .active-player-name {
+            display: inline-block;
+            background: #7c3aed;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.74rem;
+            text-transform: none;
+            font-weight: 600;
+            letter-spacing: normal;
+        }
+
+        .accordion-chevron {
+            font-size: 0.9rem;
+            color: var(--primary);
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        details.player-accordion[open] .accordion-chevron {
+            transform: rotate(180deg);
+        }
+
+        details.player-accordion .player-tabs {
+            padding: 12px;
+            margin-bottom: 0;
+        }
+
+        .player-tabs-group {
+            margin-bottom: 14px;
+        }
+
+        .player-tabs-group-external {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.12);
+        }
+
+        .player-tabs-label {
+            display: block;
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .player-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .player-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: 9px;
+            font-size: 0.84rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .player-tab:hover {
+            border-color: var(--accent);
+        }
+
+        .player-tab.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .player-tab-relation {
+            background: rgba(16, 185, 129, 0.16);
+            border-color: rgba(16, 185, 129, 0.45);
+            color: #6ee7b7;
+            font-weight: 600;
+        }
+
+        .player-tab-relation:hover {
+            background: rgba(16, 185, 129, 0.28);
+            border-color: var(--bg-badge);
+            color: #fff;
+        }
+
+        .player-tab-bg-embed {
+            border-color: rgba(16, 185, 129, 0.65);
+            color: #6ee7b7;
+            font-weight: 700;
+        }
+
+        .player-tab-bg-embed.active {
+            background: var(--green);
+            border-color: var(--green);
+            color: #fff;
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.45);
+        }
+
+        .player-tab-sub-embed {
+            border-color: rgba(56, 189, 248, 0.55);
+            color: #7dd3fc;
+            font-weight: 600;
+        }
+
+        .player-tab-sub-embed.active {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #fff;
+            box-shadow: 0 0 16px rgba(14, 165, 233, 0.45);
+        }
+
+        .zeno-relation-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 9px 16px;
+            border-radius: 10px;
+            transition: background 0.2s;
+        }
+
+        .zeno-relation-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .player-frame-box {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            min-height: 220px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .player-frame-box iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
+
+        .player-frame-box:fullscreen,
+        .player-frame-box:-webkit-full-screen,
+        .player-frame-box:-moz-full-screen,
+        .player-frame-box:-ms-fullscreen {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            border-radius: 0 !important;
+            border: 0 !important;
+            background: #000 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .player-frame-box:fullscreen iframe,
+        .player-frame-box:-webkit-full-screen iframe,
+        .player-frame-box:-moz-full-screen iframe,
+        .player-frame-box:-ms-fullscreen iframe {
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 0 !important;
+        }
+
+        .player-toolbar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 0 2px;
+        }
+
+        .player-current-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .theater-fullscreen-btn {
+            background: rgba(124, 58, 237, 0.18);
+            border: 1px solid rgba(124, 58, 237, 0.45);
+            color: #c4b5fd;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .theater-fullscreen-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .player-frame-box.theater-mode {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            z-index: 99999 !important;
+            border-radius: 0 !important;
+            border: none !important;
+            background: #000 !important;
+        }
+
+        .exit-theater-btn {
+            display: none;
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 100000;
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .player-frame-box.theater-mode .exit-theater-btn {
+            display: block;
+        }
+
+        /* Suppress Netlify injected badge and feedback overlays */
+        #netlify-badge,
+        .netlify-badge,
+        [data-netlify-drawer],
+        [class*="netlify-drawer"],
+        [id*="netlify-drawer"],
+        [class*="netlify-feedback"],
+        [id*="netlify-feedback"],
+        iframe[src*="netlify.com/feedback"],
+        iframe[title*="Netlify"],
+        div[data-netlify-identity-menu] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            z-index: -9999 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <h1>
+                    <img src="favicon.svg" alt="🍿" class="brand-logo-icon">
+                    <span class="brand-title-text">Пуканки</span>
+                </h1>
+                <p>Филми, сериали и списък за гледане по-късно</p>
+            </div>
+            <div class="header-actions">
+                <select id="sortSelect" class="select-control" aria-label="Сортиране">
+                    <option value="default">По ред на добавяне</option>
+                    <option value="rating_desc">Рейтинг (най-висок)</option>
+                    <option value="year_desc">Година (най-нови)</option>
+                    <option value="year_asc">Година (най-стари)</option>
+                    <option value="duration_desc">Времетраене / Сезони</option>
+                    <option value="title_asc">Заглавие (А - Я)</option>
+                </select>
+                <div class="stats-pill" id="statsCounter">Намерени: <strong>0</strong> от <strong>0</strong></div>
+            </div>
+        </header>
+
+        <nav class="type-tabs-bar" id="typeTabsBar">
+            <button type="button" class="type-tab-btn active" data-type-filter="all">
+                Всички <span class="tab-count" id="countAll">0</span>
+            </button>
+            <button type="button" class="type-tab-btn" data-type-filter="movie">
+                🎬 Филми <span class="tab-count" id="countMovies">0</span>
+            </button>
+            <button type="button" class="type-tab-btn" data-type-filter="tv">
+                📺 Сериали <span class="tab-count" id="countTv">0</span>
+            </button>
+            <button type="button" class="type-tab-btn" data-type-filter="filmi9">
+                🍿 Filmi9 <span class="tab-count" id="countFilmi9">0</span>
+            </button>
+            <button type="button" class="type-tab-btn" data-type-filter="unique">
+                ⭐ Уникални по сайт <span class="tab-count" id="countUnique">0</span>
+            </button>
+            <button type="button" class="type-tab-btn" data-type-filter="watchlist">
+                🔖 За по-късно <span class="tab-count" id="countWatchlist">0</span>
+            </button>
+        </nav>
+
+        <div id="uniqueSitesBar" class="unique-sites-bar" style="display: none;"></div>
+
+        <section class="filters-panel">
+            <div class="filters-row filters-row-primary">
+                <div class="search-input-wrapper">
+                    <input type="search" id="searchInput" class="input-control" placeholder="Търси по заглавие (натисни # или @ за полета)..." autocomplete="off">
+                    <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
+                </div>
+                <div class="filters-actions-group">
+                    <select id="audioSubFilterSelect" class="audio-sub-filter-select" aria-label="Превод / Аудио">
+                        <option value="">Всички</option>
+                        <option value="bg-audio">БГ Аудио</option>
+                        <option value="sub">БГ Субс</option>
+                    </select>
+                    <select id="episodesFilterSelect" class="episodes-filter-select" aria-label="Филтър по брой епизоди">
+                        <option value="">⚡ Брой епизоди (всички)</option>
+                        <option value="1-6">⚡ До 6 еп. (Минисериал)</option>
+                        <option value="1-8">⚡ До 8 еп. (Минисериал)</option>
+                        <option value="1-10">⚡ До 10 еп. (Кратък сериал)</option>
+                        <option value="11-20">🌿 11 – 20 еп. (Стандартен)</option>
+                        <option value="21+">📚 21+ еп. (Дълъг сериал)</option>
+                    </select>
+                    <button type="button" id="toggleGenresBtn" class="genre-toggle-btn" title="Покажи или скрий значките за жанрове">
+                        🎭 Жанрове <span id="genreToggleBadge" class="genre-active-badge" style="display: none;">0</span> <span id="genreToggleArrow" class="genre-toggle-arrow">▾</span>
+                    </button>
+                    <button type="button" id="resetFiltersBtn" class="reset-filters-btn" title="Изчисти всички активни филтри">
+                        ↺ Нулирай
+                    </button>
+                </div>
+            </div>
+
+            <div class="filters-row filters-row-secondary">
+                <div class="year-range-group">
+                    <select id="yearFromSelect" class="select-control" aria-label="От година">
+                        <option value="">От година</option>
+                    </select>
+                    <span class="year-range-sep">—</span>
+                    <select id="yearToSelect" class="select-control" aria-label="До година">
+                        <option value="">До година</option>
+                    </select>
+                </div>
+                <select id="durationSelect" class="select-control" aria-label="Времетраене">
+                    <option value="">⏱ Времетраене</option>
+                    <option value="0-90">Кратки (&lt; 90 мин)</option>
+                    <option value="90-120">Стандартни (90 – 120 мин)</option>
+                    <option value="120-150">Дълги (120 – 150 мин)</option>
+                    <option value="150+">Епични (&gt; 150 мин)</option>
+                </select>
+                <select id="playerSelect" class="select-control" aria-label="Филтър по плеър">
+                    <option value="">Всички плеъри</option>
+                </select>
+                <select id="sourceSelect" class="select-control" aria-label="Филтър по източник">
+                    <option value="">Всички източници</option>
+                </select>
+                <label class="unique-filter-toggle" title="Покажи само филми, които са налични единствено в този сайт">
+                    <input type="checkbox" id="uniqueOnlyCheckbox"> ⭐ Само уникални
+                </label>
+            </div>
+
+            <div id="genresCollapsible" class="genres-collapsible">
+                <div class="genre-hint">
+                    <span>💡 <strong>1 клик</strong> = Включи жанр (<strong>+</strong>)</span>
+                    <span><strong>2 клика (или десен бутон)</strong> = Изключи нежелан жанр (<strong>✕</strong>)</span>
+                    <span><strong>3 клика</strong> = Нулирай</span>
+                </div>
+                <div id="genreBadgesBar" class="genre-badges-bar"></div>
+            </div>
+        </section>
+
+        <main id="moviesContainer" class="movies-grid"></main>
+        <div id="loadMoreWrap" style="text-align: center; margin-top: 28px; display: none;">
+            <button type="button" id="loadMoreBtn" class="zeno-relation-btn" style="border: 0; cursor: pointer; padding: 12px 28px; font-size: 0.95rem;">
+                Покажи още
+            </button>
+        </div>
+    </div>
+
+    <div id="movieModal" class="modal-backdrop" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <button type="button" id="closeModalBtn" class="modal-close" aria-label="Затвори">✕</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <button type="button" id="scrollTopBtn" class="scroll-top-btn" aria-label="Върни се горе" title="Върни се в началото">↑</button>
+
+    <!-- Fast initial paint: load main catalog first (<1s) -->
+    <script src="data/movies_data.js?v=20261113_v4"></script>
+    <script>
+        const PAGE_BATCH_SIZE = 60;
+        const WATCHLIST_STORAGE_KEY = "local_media_watchlist_v1";
+
+        const TV_EMBED_TEMPLATES = [
+            { id: "vidsrc", name: "VidSrc", tpl: "https://vidsrc.sh/embed/tv/{tmdb}/{s}/{e}?autoplay=true" },
+            { id: "1src", name: "1Src", tpl: "https://www.1src.org/embed/tv/{tmdb}/{s}/{e}" },
+            { id: "embedmaster", name: "EmbedMaster", tpl: "https://embedmaster.link/tv/{tmdb}/{s}/{e}?autoplay=true" },
+            { id: "vidsrc2", name: "VidSrc2", tpl: "https://vidsrc.ru/tv/{tmdb}/{s}/{e}?autoplay=true" },
+            { id: "vidapi", name: "VidAPI", tpl: "https://vaplayer.ru/embed/tv/{tmdb}/{s}/{e}" },
+            { id: "2embed", name: "2Embed", tpl: "https://www.2embed.cc/embedtv/{tmdb}&s={s}&e={e}" },
+            { id: "vidlink", name: "VidLink", tpl: "https://vidlink.pro/tv/{tmdb}/{s}/{e}" },
+            { id: "videasy", name: "Videasy", tpl: "https://videasy.xyz/embed/tv/{tmdb}/{s}/{e}" },
+            { id: "vidy", name: "Vidy", tpl: "https://www.vidy.st/tv/{tmdb}/{s}/{e}" },
+            { id: "cinesrc", name: "CineSRC", tpl: "https://cinesrc.st/embed/tv/{tmdb}?s={s}&e={e}" },
+            { id: "vidcore", name: "VidCore", tpl: "https://vidcore.org/embed/tv/{tmdb}/{s}/{e}" }
+        ];
+
+        const MOVIE_EMBED_TEMPLATES = [
+            { id: "vidsrc", name: "VidSrc", tpl: "https://vidsrc.sh/embed/movie/{tmdb}?autoplay=true" },
+            { id: "1src", name: "1Src", tpl: "https://www.1src.org/embed/movie/{tmdb}" },
+            { id: "embedmaster", name: "EmbedMaster", tpl: "https://embedmaster.link/movie/{tmdb}?autoplay=true" },
+            { id: "vidsrc2", name: "VidSrc2", tpl: "https://vidsrc.ru/movie/{tmdb}?autoplay=true" },
+            { id: "vidapi", name: "VidAPI", tpl: "https://vaplayer.ru/embed/movie/{tmdb}" },
+            { id: "2embed", name: "2Embed", tpl: "https://www.2embed.cc/embed/{tmdb}" },
+            { id: "vidlink", name: "VidLink", tpl: "https://vidlink.pro/movie/{tmdb}" },
+            { id: "videasy", name: "Videasy", tpl: "https://videasy.xyz/embed/movie/{tmdb}" },
+            { id: "vidy", name: "Vidy", tpl: "https://www.vidy.st/movie/{tmdb}" },
+            { id: "cinesrc", name: "CineSRC", tpl: "https://cinesrc.st/embed/movie/{tmdb}" },
+            { id: "vidcore", name: "VidCore", tpl: "https://vidcore.org/embed/movie/{tmdb}" }
+        ];
+
+        const DISABLED_PLAYERS = new Set([
+            "🇧🇬 IceyFile",
+            "🇧🇬 Streamsb",
+            "🇧🇬 Vudeo",
+            "🇧🇬 Embedorigin",
+            "Vidzee",
+            "YapGrid"
+        ]);
+
+        const CAST_PLAYER_NAMES = new Set([
+            "EmbedMaster"
+        ]);
+
+        function isCastPlayer(playerName) {
+            if (!playerName) {
+                return false;
+            }
+            if (CAST_PLAYER_NAMES.has(playerName)) {
+                return true;
+            }
+            const clean = playerName.replace(/^🇧🇬\s*/, "").trim().toLowerCase();
+            for (const cp of CAST_PLAYER_NAMES) {
+                if (cp.replace(/^🇧🇬\s*/, "").trim().toLowerCase() === clean) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        const state = {
+            items: [],
+            filtered: [],
+            visibleCount: PAGE_BATCH_SIZE,
+            typeFilter: "all",
+            uniqueSiteFilter: "",
+            uniqueOnly: false,
+            audioSubFilter: "",
+            episodesFilter: "",
+            allGenres: [],
+            selectedGenres: new Set(),
+            excludedGenres: new Set(),
+            watchlist: new Set(),
+            activeModalItem: null,
+            activeSeasonIndex: 0,
+            activeEpisodeIndex: 0,
+            lastFocusedCardIndex: null
+        };
+
+        const typeTabsBar = document.getElementById("typeTabsBar");
+        const uniqueSitesBar = document.getElementById("uniqueSitesBar");
+        const countAll = document.getElementById("countAll");
+        const countMovies = document.getElementById("countMovies");
+        const countTv = document.getElementById("countTv");
+        const countSub = document.getElementById("countSub");
+        const countBgAudio = document.getElementById("countBgAudio");
+        const countFilmi9 = document.getElementById("countFilmi9");
+        const countUnique = document.getElementById("countUnique");
+        const countWatchlist = document.getElementById("countWatchlist");
+        const uniqueOnlyCheckbox = document.getElementById("uniqueOnlyCheckbox");
+        const searchInput = document.getElementById("searchInput");
+        const searchSuggestions = document.getElementById("searchSuggestions");
+
+        const SEARCH_FIELD_SUGGESTIONS = [
+            {
+                prefix: "сюжет:",
+                label: "Сюжет / Описание",
+                icon: "📖",
+                desc: "Търси само в сюжета на филма"
+            },
+            {
+                prefix: "актьор:",
+                label: "Актьор / В ролите",
+                icon: "🎭",
+                desc: "Търси по име на актьор"
+            },
+            {
+                prefix: "режисьор:",
+                label: "Режисьор",
+                icon: "🎬",
+                desc: "Търси по име на режисьор"
+            },
+            {
+                prefix: "държава:",
+                label: "Държава",
+                icon: "🌍",
+                desc: "Търси по държава на производство"
+            },
+            {
+                prefix: "времетраене:",
+                label: "Времетраене (мин)",
+                icon: "⏱",
+                desc: "Търси по минути (напр. #времетраене:>100 или <90)"
+            },
+            {
+                prefix: "id:",
+                label: "TMDB ID",
+                icon: "🔢",
+                desc: "Търси по TMDB номер"
+            }
+        ];
+
+        let activeSuggestionIndex = -1;
+        let currentSuggestions = [];
+
+        function hideSearchSuggestions() {
+            if (!searchSuggestions) {
+                return;
+            }
+            searchSuggestions.style.display = "none";
+            searchSuggestions.innerHTML = "";
+            activeSuggestionIndex = -1;
+            currentSuggestions = [];
+        }
+
+        function renderSearchSuggestions(triggerChar, filterTerm) {
+            if (!searchSuggestions) {
+                return;
+            }
+            const cleanTerm = (filterTerm || "").toLowerCase().trim();
+            currentSuggestions = [];
+            for (const s of SEARCH_FIELD_SUGGESTIONS) {
+                if (!cleanTerm || s.prefix.toLowerCase().includes(cleanTerm) || s.label.toLowerCase().includes(cleanTerm)) {
+                    currentSuggestions.push(s);
+                }
+            }
+
+            if (currentSuggestions.length === 0) {
+                hideSearchSuggestions();
+                return;
+            }
+
+            if (activeSuggestionIndex >= currentSuggestions.length) {
+                activeSuggestionIndex = 0;
+            }
+
+            let html = `<div class="search-suggestions-header">Бързи филтри (натисни Tab или Enter):</div>`;
+            for (let i = 0; i < currentSuggestions.length; i++) {
+                const s = currentSuggestions[i];
+                const activeCls = i === activeSuggestionIndex ? "active" : "";
+                html = `${html}
+                    <div class="search-suggestion-item ${activeCls}" data-index="${i}">
+                        <div class="suggestion-left">
+                            <span class="suggestion-icon">${s.icon}</span>
+                            <span class="suggestion-prefix">${triggerChar}${s.prefix}</span>
+                            <span class="suggestion-label">${s.label}</span>
+                        </div>
+                        <span class="suggestion-desc">${s.desc}</span>
+                    </div>
+                `;
+            }
+
+            searchSuggestions.innerHTML = html;
+            searchSuggestions.style.display = "flex";
+        }
+
+        function selectSuggestion(index, triggerChar) {
+            const item = currentSuggestions[index];
+            if (!item) {
+                return;
+            }
+            const prefix = `${triggerChar}${item.prefix} `;
+            searchInput.value = prefix;
+            hideSearchSuggestions();
+            searchInput.focus();
+            applyFilters();
+        }
+
+        function updateSuggestionHighlight() {
+            if (!searchSuggestions) {
+                return;
+            }
+            const items = searchSuggestions.querySelectorAll(".search-suggestion-item");
+            for (let i = 0; i < items.length; i++) {
+                items[i].classList.toggle("active", i === activeSuggestionIndex);
+            }
+        }
+        const genreBadgesBar = document.getElementById("genreBadgesBar");
+        const toggleGenresBtn = document.getElementById("toggleGenresBtn");
+        const genresCollapsible = document.getElementById("genresCollapsible");
+        const genreToggleBadge = document.getElementById("genreToggleBadge");
+        const genreToggleArrow = document.getElementById("genreToggleArrow");
+        const audioSubFilterSelect = document.getElementById("audioSubFilterSelect");
+        const episodesFilterSelect = document.getElementById("episodesFilterSelect");
+        const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+        const FILTERS_STORAGE_KEY = "pukanki_saved_filters_v1";
+        const yearFromSelect = document.getElementById("yearFromSelect");
+        const yearToSelect = document.getElementById("yearToSelect");
+        const durationSelect = document.getElementById("durationSelect");
+        const playerSelect = document.getElementById("playerSelect");
+        const sourceSelect = document.getElementById("sourceSelect");
+        const sortSelect = document.getElementById("sortSelect");
+        const moviesContainer = document.getElementById("moviesContainer");
+        const loadMoreWrap = document.getElementById("loadMoreWrap");
+        const loadMoreBtn = document.getElementById("loadMoreBtn");
+        const statsCounter = document.getElementById("statsCounter");
+        const movieModal = document.getElementById("movieModal");
+        const modalBody = document.getElementById("modalBody");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+
+        function loadWatchlistFromStorage() {
+            try {
+                const raw = localStorage.getItem(WATCHLIST_STORAGE_KEY);
+                if (!raw) {
+                    return;
+                }
+                const parsed = JSON.parse(raw);
+                if (!Array.isArray(parsed)) {
+                    return;
+                }
+                state.watchlist = new Set(parsed);
+            } catch (err) {
+                state.watchlist = new Set();
+            }
+        }
+
+        function saveWatchlistToStorage() {
+            try {
+                const arr = Array.from(state.watchlist);
+                localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(arr));
+            } catch (err) {
+                return;
+            }
+        }
+
+        function loadFiltersFromStorage() {
+            try {
+                const raw = localStorage.getItem(FILTERS_STORAGE_KEY);
+                if (!raw) {
+                    return;
+                }
+                const data = JSON.parse(raw);
+                if (!data || typeof data !== "object") {
+                    return;
+                }
+
+                if (data.typeFilter) {
+                    state.typeFilter = data.typeFilter;
+                    const allBtns = typeTabsBar ? typeTabsBar.querySelectorAll(".type-tab-btn") : [];
+                    for (const b of allBtns) {
+                        b.classList.toggle("active", b.dataset.typeFilter === data.typeFilter);
+                    }
+                    updateEpisodesFilterVisibility();
+                }
+
+                if (data.audioSubFilter !== undefined && audioSubFilterSelect) {
+                    state.audioSubFilter = data.audioSubFilter;
+                    audioSubFilterSelect.value = data.audioSubFilter;
+                    audioSubFilterSelect.classList.toggle("has-value", Boolean(data.audioSubFilter));
+                } else if (data.bgAudioOnly && audioSubFilterSelect) {
+                    state.audioSubFilter = "bg-audio";
+                    audioSubFilterSelect.value = "bg-audio";
+                    audioSubFilterSelect.classList.add("has-value");
+                }
+
+                if (data.episodesFilter && episodesFilterSelect) {
+                    state.episodesFilter = data.episodesFilter;
+                    episodesFilterSelect.value = data.episodesFilter;
+                    episodesFilterSelect.classList.toggle("has-value", Boolean(data.episodesFilter));
+                }
+
+                if (Array.isArray(data.selectedGenres)) {
+                    state.selectedGenres = new Set(data.selectedGenres);
+                }
+                if (Array.isArray(data.excludedGenres)) {
+                    state.excludedGenres = new Set(data.excludedGenres);
+                }
+
+                if (data.yearFrom && yearFromSelect) {
+                    yearFromSelect.value = data.yearFrom;
+                }
+                if (data.yearTo && yearToSelect) {
+                    yearToSelect.value = data.yearTo;
+                }
+                if (data.duration && durationSelect) {
+                    durationSelect.value = data.duration;
+                }
+                if (data.player && playerSelect) {
+                    playerSelect.value = data.player;
+                }
+                if (data.source && sourceSelect) {
+                    sourceSelect.value = data.source;
+                }
+                if (data.sort && sortSelect) {
+                    sortSelect.value = data.sort;
+                }
+                if (data.uniqueOnly && uniqueOnlyCheckbox) {
+                    state.uniqueOnly = true;
+                    uniqueOnlyCheckbox.checked = true;
+                }
+                if (data.uniqueSiteFilter) {
+                    state.uniqueSiteFilter = data.uniqueSiteFilter;
+                }
+                if (data.searchQuery && searchInput) {
+                    searchInput.value = data.searchQuery;
+                    state.searchQuery = data.searchQuery;
+                }
+            } catch (err) {
+                return;
+            }
+        }
+
+        function saveFiltersToStorage() {
+            try {
+                const isDefault = state.typeFilter === "all" &&
+                    !state.audioSubFilter &&
+                    !state.episodesFilter &&
+                    !state.uniqueOnly &&
+                    !state.uniqueSiteFilter &&
+                    state.selectedGenres.size === 0 &&
+                    state.excludedGenres.size === 0 &&
+                    !yearFromSelect.value &&
+                    !yearToSelect.value &&
+                    (!durationSelect || !durationSelect.value) &&
+                    !playerSelect.value &&
+                    !sourceSelect.value &&
+                    sortSelect.value === "default" &&
+                    !searchInput.value.trim();
+
+                if (resetFiltersBtn) {
+                    resetFiltersBtn.classList.toggle("active-filters", !isDefault);
+                }
+
+                if (isDefault) {
+                    localStorage.removeItem(FILTERS_STORAGE_KEY);
+                    return;
+                }
+
+                const payload = {
+                    typeFilter: state.typeFilter || "all",
+                    uniqueOnly: state.uniqueOnly || false,
+                    uniqueSiteFilter: state.uniqueSiteFilter || "",
+                    audioSubFilter: state.audioSubFilter || "",
+                    episodesFilter: state.episodesFilter || "",
+                    yearFrom: yearFromSelect ? yearFromSelect.value : "",
+                    yearTo: yearToSelect ? yearToSelect.value : "",
+                    duration: durationSelect ? durationSelect.value : "",
+                    player: playerSelect ? playerSelect.value : "",
+                    source: sourceSelect ? sourceSelect.value : "",
+                    sort: sortSelect ? sortSelect.value : "default",
+                    selectedGenres: Array.from(state.selectedGenres),
+                    excludedGenres: Array.from(state.excludedGenres),
+                    searchQuery: searchInput ? searchInput.value : ""
+                };
+                localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(payload));
+            } catch (err) {
+                return;
+            }
+        }
+
+        function resetAllFilters() {
+            const hasActiveFilters = state.typeFilter !== "all" ||
+                Boolean(state.audioSubFilter) ||
+                Boolean(state.episodesFilter) ||
+                Boolean(state.uniqueOnly) ||
+                Boolean(state.uniqueSiteFilter) ||
+                state.selectedGenres.size > 0 ||
+                state.excludedGenres.size > 0 ||
+                (yearFromSelect && Boolean(yearFromSelect.value)) ||
+                (yearToSelect && Boolean(yearToSelect.value)) ||
+                (durationSelect && Boolean(durationSelect.value)) ||
+                (playerSelect && Boolean(playerSelect.value)) ||
+                (sourceSelect && Boolean(sourceSelect.value)) ||
+                (sortSelect && sortSelect.value !== "default") ||
+                (searchInput && searchInput.value.trim().length > 0);
+
+            if (!hasActiveFilters) {
+                return;
+            }
+
+            const confirmed = window.confirm("Сигурен ли си, че искаш да нулираш всички избрани филтри?");
+            if (!confirmed) {
+                return;
+            }
+
+            state.typeFilter = "all";
+            state.uniqueSiteFilter = "";
+            state.uniqueOnly = false;
+            state.audioSubFilter = "";
+            state.episodesFilter = "";
+            state.selectedGenres.clear();
+            state.excludedGenres.clear();
+            state.searchQuery = "";
+
+            if (uniqueOnlyCheckbox) {
+                uniqueOnlyCheckbox.checked = false;
+            }
+
+            if (typeTabsBar) {
+                const allBtns = typeTabsBar.querySelectorAll(".type-tab-btn");
+                for (const b of allBtns) {
+                    b.classList.toggle("active", b.dataset.typeFilter === "all");
+                }
+            }
+            if (audioSubFilterSelect) {
+                audioSubFilterSelect.value = "";
+                audioSubFilterSelect.classList.remove("has-value");
+            }
+            if (episodesFilterSelect) {
+                episodesFilterSelect.value = "";
+                episodesFilterSelect.classList.remove("has-value");
+            }
+            if (searchInput) {
+                searchInput.value = "";
+            }
+            if (yearFromSelect) {
+                yearFromSelect.value = "";
+            }
+            if (yearToSelect) {
+                yearToSelect.value = "";
+            }
+            if (durationSelect) {
+                durationSelect.value = "";
+            }
+            if (playerSelect) {
+                playerSelect.value = "";
+            }
+            if (sourceSelect) {
+                sourceSelect.value = "";
+            }
+            if (sortSelect) {
+                sortSelect.value = "default";
+            }
+            if (resetFiltersBtn) {
+                resetFiltersBtn.classList.remove("active-filters");
+            }
+
+            updateDurationSelectOptions();
+            updateEpisodesFilterVisibility();
+
+            try {
+                localStorage.removeItem(FILTERS_STORAGE_KEY);
+            } catch (err) {
+                return;
+            }
+
+            applyFilters();
+        }
+
+        function getItemSeasonsCount(item) {
+            if (Array.isArray(item.seasons) && item.seasons.length > 0) {
+                return item.seasons.length;
+            }
+            if (item.season !== undefined && item.season !== null) {
+                const s = parseInt(item.season, 10);
+                if (!isNaN(s)) {
+                    return s;
+                }
+            }
+            return 1;
+        }
+
+        function getItemEpisodesCount(item) {
+            if (item.total_episodes) {
+                return Number(item.total_episodes);
+            }
+            if (Array.isArray(item.seasons) && item.seasons.length > 0) {
+                let count = 0;
+                for (const s of item.seasons) {
+                    if (Array.isArray(s.episodes)) {
+                        count += s.episodes.length;
+                    }
+                }
+                if (count > 0) {
+                    return count;
+                }
+            }
+            return null;
+        }
+
+        function matchesEpisodes(item, epFilter) {
+            if (!epFilter) {
+                return true;
+            }
+            if (item.type !== "tv") {
+                return false;
+            }
+            const count = Number(item.total_episodes ?? getItemEpisodesCount(item) ?? 0);
+            if (!count) {
+                return epFilter === "1-6" || epFilter === "1-8" || epFilter === "1-10";
+            }
+            if (epFilter === "1-6") {
+                return count <= 6;
+            }
+            if (epFilter === "1-8") {
+                return count <= 8;
+            }
+            if (epFilter === "1-10") {
+                return count <= 10;
+            }
+            if (epFilter === "11-20") {
+                return count >= 11 && count <= 20;
+            }
+            if (epFilter === "21+") {
+                return count >= 21;
+            }
+            return true;
+        }
+
+        function isMiniSeries(item) {
+            if (item.type !== "tv") {
+                return false;
+            }
+            const text = `${item.title ?? ""} ${item.overview ?? ""} ${(item.genres || []).join(" ")}`.toLowerCase();
+            if (text.includes("минисериал") || text.includes("мини-сериал") || text.includes("мини сериал") || text.includes("mini-series") || text.includes("miniseries") || text.includes("лимитиран")) {
+                return true;
+            }
+            const sCount = getItemSeasonsCount(item);
+            if (sCount > 1) {
+                return false;
+            }
+            const epCount = getItemEpisodesCount(item);
+            if (epCount !== null && epCount > 12) {
+                return false;
+            }
+            return true;
+        }
+
+        function updateDurationSelectOptions() {
+            if (!durationSelect) {
+                return;
+            }
+            const curVal = durationSelect.value;
+            if (state.typeFilter === "tv") {
+                durationSelect.innerHTML = `
+                    <option value="">⏱ Формат на сериала</option>
+                    <option value="tv-mini">⚡ Минисериали (1 сезон)</option>
+                    <option value="tv-short">🌿 Кратки (1 – 2 сезона)</option>
+                    <option value="tv-long">📚 Дълги саги (3+ сезона)</option>
+                `;
+            } else {
+                durationSelect.innerHTML = `
+                    <option value="">⏱ Времетраене</option>
+                    <option value="0-90">Кратки (&lt; 90 мин)</option>
+                    <option value="90-120">Стандартни (90 – 120 мин)</option>
+                    <option value="120-150">Дълги (120 – 150 мин)</option>
+                    <option value="150+">Епични (&gt; 150 мин)</option>
+                `;
+            }
+            if (curVal) {
+                durationSelect.value = curVal;
+            }
+        }
+
+        function getItemKey(item) {
+            const mediaType = item.type === "tv" ? "tv" : "movie";
+            return `${mediaType}:${item.slug ?? item.post_id ?? item.title}`;
+        }
+
+        function isInWatchlist(item) {
+            return state.watchlist.has(getItemKey(item));
+        }
+
+        function toggleWatchlistItem(item) {
+            const key = getItemKey(item);
+            if (state.watchlist.has(key)) {
+                state.watchlist.delete(key);
+                saveWatchlistToStorage();
+                updateTabCounts();
+                return false;
+            }
+            state.watchlist.add(key);
+            saveWatchlistToStorage();
+            updateTabCounts();
+            return true;
+        }
+
+        function escapeHtml(value) {
+            const raw = `${value ?? ""}`;
+            return raw
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function hasBgSource(item) {
+            if (item.is_bg_audio === true || item.has_filmi2k_bg === true) {
+                return true;
+            }
+            const genres = Array.isArray(item.genres) ? item.genres : [];
+            for (const genre of genres) {
+                if (`${genre}`.trim().toLowerCase() === "бг аудио") {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function hasSubtitles(item) {
+            if (item.is_subtitled === true) {
+                return true;
+            }
+            const genres = Array.isArray(item.genres) ? item.genres : [];
+            for (const g of genres) {
+                if (`${g}`.trim().toLowerCase() === "бг субтитри") {
+                    return true;
+                }
+            }
+            const playerSources = Array.isArray(item.player_sources) ? item.player_sources : [];
+            for (const p of playerSources) {
+                if (p.group === "sub" || `${p.name}`.includes("💬") || `${p.name}`.toLowerCase().includes("суб")) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function normalizeItemsPayload(payload, defaultType, defaultOrigin = "ZenoPlay") {
+            const rawList = Array.isArray(payload) ? payload : (payload && typeof payload === "object" ? [payload] : []);
+            const normalized = [];
+            for (const entry of rawList) {
+                if (!entry || typeof entry !== "object") {
+                    continue;
+                }
+                const resolvedType = entry.type ?? (Array.isArray(entry.seasons) ? "tv" : defaultType);
+                const origins = Array.isArray(entry.origins) ? [...entry.origins] : [defaultOrigin];
+                normalized.push({
+                    ...entry,
+                    type: resolvedType,
+                    origins: origins
+                });
+            }
+            return normalized;
+        }
+
+        function getItemPlayerNames(item) {
+            const names = [];
+            const seen = new Set();
+
+            if (item.type === "tv") {
+                if (item.tmdb_id) {
+                    for (const provider of TV_EMBED_TEMPLATES) {
+                        if (DISABLED_PLAYERS.has(provider.name)) {
+                            continue;
+                        }
+                        if (!seen.has(provider.name)) {
+                            seen.add(provider.name);
+                            names.push(provider.name);
+                        }
+                    }
+                }
+                if (hasBgSource(item)) {
+                    names.push("🇧🇬 ZenoPlay ↗");
+                }
+                const tvSources = Array.isArray(item.player_sources) ? item.player_sources : [];
+                for (const ts of tvSources) {
+                    if (!ts || !ts.name || DISABLED_PLAYERS.has(ts.name)) {
+                        continue;
+                    }
+                    if (!seen.has(ts.name)) {
+                        seen.add(ts.name);
+                        names.push(ts.name);
+                    }
+                }
+                return names;
+            }
+
+            const sources = Array.isArray(item.player_sources) ? item.player_sources : [];
+            for (const src of sources) {
+                if (!src || !src.name) {
+                    continue;
+                }
+                if (DISABLED_PLAYERS.has(src.name)) {
+                    continue;
+                }
+                let pName = src.name;
+                if (pName === "BG Player" || src.id === "custom-1") {
+                    if (!hasBgSource(item)) {
+                        continue;
+                    }
+                    pName = "🇧🇬 ZenoPlay ↗";
+                }
+                if (!seen.has(pName)) {
+                    seen.add(pName);
+                    names.push(pName);
+                }
+            }
+
+            if (item.tmdb_id) {
+                for (const provider of MOVIE_EMBED_TEMPLATES) {
+                    if (DISABLED_PLAYERS.has(provider.name)) {
+                        continue;
+                    }
+                    if (!seen.has(provider.name)) {
+                        seen.add(provider.name);
+                        names.push(provider.name);
+                    }
+                }
+            }
+            return names;
+        }
+
+        function updateTabCounts() {
+            let moviesCount = 0;
+            let tvCount = 0;
+            let subCount = 0;
+            let bgAudioCount = 0;
+            let filmi9Count = 0;
+            let uniqueCount = 0;
+            let watchlistCount = 0;
+            const uniqueBySite = new Map();
+
+            for (const item of state.items) {
+                if (item.type === "tv") {
+                    tvCount++;
+                }
+                if (item.type !== "tv") {
+                    moviesCount++;
+                }
+                if (item.is_subtitled === true || (Array.isArray(item.genres) && item.genres.includes("БГ Субтитри"))) {
+                    subCount++;
+                }
+                if (hasBgSource(item)) {
+                    bgAudioCount++;
+                }
+                const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
+                if (origins.includes("Filmi9")) {
+                    filmi9Count++;
+                }
+                if (origins.length === 1) {
+                    uniqueCount++;
+                    const s = origins[0];
+                    uniqueBySite.set(s, (uniqueBySite.get(s) || 0) + 1);
+                }
+                if (isInWatchlist(item)) {
+                    watchlistCount++;
+                }
+            }
+
+            countAll.textContent = `${state.items.length}`;
+            countMovies.textContent = `${moviesCount}`;
+            countTv.textContent = `${tvCount}`;
+            if (countSub) {
+                countSub.textContent = `${subCount}`;
+            }
+            if (countBgAudio) {
+                countBgAudio.textContent = `${bgAudioCount}`;
+            }
+            if (countFilmi9) {
+                countFilmi9.textContent = `${filmi9Count}`;
+            }
+            if (countUnique) {
+                countUnique.textContent = `${uniqueCount}`;
+            }
+            countWatchlist.textContent = `${watchlistCount}`;
+            renderUniqueSitesBar(uniqueBySite);
+        }
+
+        function renderUniqueSitesBar(uniqueBySite) {
+            if (!uniqueSitesBar) {
+                return;
+            }
+            const shouldShow = state.typeFilter === "unique" || state.uniqueOnly;
+            uniqueSitesBar.style.display = shouldShow ? "flex" : "none";
+            if (!shouldShow) {
+                return;
+            }
+
+            const siteList = ["all", "Filmi9", "ZenoPlay", "Filmifen", "Filmizip", "Filmi2k"];
+            let html = "";
+            let totalUnique = 0;
+            for (const count of uniqueBySite.values()) {
+                totalUnique += count;
+            }
+
+            for (const site of siteList) {
+                const label = site === "all" ? "Всички сайтове" : site;
+                const count = site === "all" ? totalUnique : (uniqueBySite.get(site) || 0);
+                const isCur = (!state.uniqueSiteFilter && site === "all") || (state.uniqueSiteFilter === site);
+                const activeCls = isCur ? "active" : "";
+                html = `${html}<button type="button" class="unique-site-btn ${activeCls}" data-site="${site}">${label} <span class="tab-count">${count}</span></button>`;
+            }
+            uniqueSitesBar.innerHTML = html;
+        }
+
+        function renderGenreBadges() {
+            const isAllNeutral = state.selectedGenres.size === 0 && state.excludedGenres.size === 0;
+            const allActiveClass = isAllNeutral ? "active" : "";
+            let badgesHtml = `<button type="button" class="genre-filter-badge ${allActiveClass}" data-genre="__ALL__">Всички</button>`;
+
+            let availableGenres = null;
+            if (!isAllNeutral) {
+                availableGenres = new Set();
+                for (const item of state.items) {
+                    if (!matchesTypeTab(item) || !matchesSelectedGenres(item)) {
+                        continue;
+                    }
+                    const itemGenres = Array.isArray(item.genres) ? item.genres : [];
+                    for (const g of itemGenres) {
+                        availableGenres.add(g);
+                    }
+                }
+            }
+
+            for (const genre of state.allGenres) {
+                const isSelected = state.selectedGenres.has(genre);
+                const isExcluded = state.excludedGenres.has(genre);
+                const safeGenre = escapeHtml(genre);
+
+                if (!isSelected && !isExcluded && availableGenres && !availableGenres.has(genre)) {
+                    continue;
+                }
+
+                if (isSelected) {
+                    badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge active" data-genre="${safeGenre}">+ ${safeGenre}</button>`;
+                    continue;
+                }
+
+                if (isExcluded) {
+                    badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge excluded" data-genre="${safeGenre}">✕ ${safeGenre}</button>`;
+                    continue;
+                }
+
+                badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge" data-genre="${safeGenre}">${safeGenre}</button>`;
+            }
+
+            genreBadgesBar.innerHTML = badgesHtml;
+
+            const totalActiveGenres = state.selectedGenres.size + state.excludedGenres.size;
+            if (genreToggleBadge && toggleGenresBtn) {
+                if (totalActiveGenres > 0) {
+                    genreToggleBadge.textContent = `${totalActiveGenres}`;
+                    genreToggleBadge.style.display = "inline-block";
+                    toggleGenresBtn.classList.add("has-active");
+                } else {
+                    genreToggleBadge.style.display = "none";
+                    toggleGenresBtn.classList.remove("has-active");
+                }
+            }
+        }
+
+        function populateFilterOptions(items) {
+            const genreSet = new Set();
+            const yearSet = new Set();
+            const playerCounts = new Map();
+            const sourceCounts = new Map();
+
+            for (const item of items) {
+                const genres = Array.isArray(item.genres) ? item.genres : [];
+                for (const genre of genres) {
+                    if (genre && `${genre}`.trim().toLowerCase() !== "бг аудио") {
+                        genreSet.add(genre);
+                    }
+                }
+                if (item.year) {
+                    yearSet.add(item.year);
+                }
+                const pNames = getItemPlayerNames(item);
+                for (const pName of pNames) {
+                    const prev = playerCounts.get(pName) ?? 0;
+                    playerCounts.set(pName, prev + 1);
+                }
+                const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
+                for (const orig of origins) {
+                    const prev = sourceCounts.get(orig) ?? 0;
+                    sourceCounts.set(orig, prev + 1);
+                }
+            }
+
+            state.allGenres = Array.from(genreSet).sort((a, b) => a.localeCompare(b, "bg"));
+            renderGenreBadges();
+
+            const curYearFrom = yearFromSelect.value;
+            const curYearTo = yearToSelect.value;
+            const curPlayer = playerSelect.value;
+            const curSource = sourceSelect.value;
+
+            const sortedYears = Array.from(yearSet).sort((a, b) => Number(b) - Number(a));
+            let yearFromHtml = `<option value="">От година</option>`;
+            let yearToHtml = `<option value="">До година</option>`;
+            for (const year of sortedYears) {
+                yearFromHtml = `${yearFromHtml}<option value="${year}">От ${year}</option>`;
+                yearToHtml = `${yearToHtml}<option value="${year}">До ${year}</option>`;
+            }
+            yearFromSelect.innerHTML = yearFromHtml;
+            yearToSelect.innerHTML = yearToHtml;
+            if (curYearFrom) {
+                yearFromSelect.value = curYearFrom;
+            }
+            if (curYearTo) {
+                yearToSelect.value = curYearTo;
+            }
+
+            const playerNames = Array.from(playerCounts.keys()).sort((a, b) => {
+                const aIsBg = a.startsWith("🇧🇬") || a === "BG Player";
+                const bIsBg = b.startsWith("🇧🇬") || b === "BG Player";
+                if (aIsBg && !bIsBg) {
+                    return -1;
+                }
+                if (!aIsBg && bIsBg) {
+                    return 1;
+                }
+                return (playerCounts.get(b) ?? 0) - (playerCounts.get(a) ?? 0);
+            });
+
+            let playerOptionsHtml = `<option value="">Всички плеъри</option>`;
+            for (const pName of playerNames) {
+                const count = playerCounts.get(pName) ?? 0;
+                const safeP = escapeHtml(pName);
+                const castMarker = isCastPlayer(pName) ? " 📺" : "";
+                playerOptionsHtml = `${playerOptionsHtml}<option value="${safeP}">${safeP}${castMarker} (${count})</option>`;
+            }
+            playerSelect.innerHTML = playerOptionsHtml;
+            if (curPlayer) {
+                playerSelect.value = curPlayer;
+            }
+
+            const sourceNames = ["Filmi9", "ZenoPlay", "Filmifen", "Filmizip", "Filmi2k"];
+            let sourceOptionsHtml = `<option value="">Всички източници</option>`;
+            for (const sName of sourceNames) {
+                const count = sourceCounts.get(sName) ?? 0;
+                sourceOptionsHtml = `${sourceOptionsHtml}<option value="${sName}">${sName} (${count})</option>`;
+            }
+            sourceSelect.innerHTML = sourceOptionsHtml;
+            if (curSource) {
+                sourceSelect.value = curSource;
+            }
+        }
+
+        function itemHasCastPlayer(item) {
+            const pNames = getItemPlayerNames(item);
+            for (const p of pNames) {
+                if (isCastPlayer(p)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function matchesSelectedSource(item, selectedSource, uniqueOnly) {
+            const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
+            if (uniqueOnly || state.uniqueOnly) {
+                if (origins.length !== 1) {
+                    return false;
+                }
+                if (selectedSource && origins[0] !== selectedSource) {
+                    return false;
+                }
+                return true;
+            }
+            if (!selectedSource) {
+                return true;
+            }
+            return origins.includes(selectedSource);
+        }
+
+        function matchesMovieQuery(item, query) {
+            if (!query) {
+                return true;
+            }
+
+            const raw = query.trim();
+            if (!raw || raw === "#" || raw === "@" || ((raw.startsWith("#") || raw.startsWith("@")) && !raw.includes(" ") && !raw.includes(":"))) {
+                return true;
+            }
+
+            const plotMatch = raw.match(/^[#@](?:сюжет|overview|plot)[:\s]+(.*)$/i);
+            if (plotMatch) {
+                const targetText = plotMatch[1].trim().toLowerCase();
+                if (!targetText) {
+                    return true;
+                }
+                const overviewText = `${item.overview ?? ""}`.toLowerCase();
+                return overviewText.includes(targetText);
+            }
+
+            const actorMatch = raw.match(/^[#@](?:актьор|актьори|actor|actors)[:\s]+(.*)$/i);
+            if (actorMatch) {
+                const targetText = actorMatch[1].trim().toLowerCase();
+                if (!targetText) {
+                    return true;
+                }
+                const actors = Array.isArray(item.actors) ? item.actors : [];
+                for (const actor of actors) {
+                    if (`${actor}`.toLowerCase().includes(targetText)) {
+                        return true;
+                    }
+                }
+                const tags = Array.isArray(item.tags) ? item.tags : [];
+                for (const tag of tags) {
+                    if (`${tag}`.toLowerCase().includes(targetText)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            const directorMatch = raw.match(/^[#@](?:режисьор|режисьори|director|directors)[:\s]+(.*)$/i);
+            if (directorMatch) {
+                const targetText = directorMatch[1].trim().toLowerCase();
+                if (!targetText) {
+                    return true;
+                }
+                const directors = Array.isArray(item.directors) ? item.directors : [];
+                for (const director of directors) {
+                    if (`${director}`.toLowerCase().includes(targetText)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            const countryMatch = raw.match(/^[#@](?:държава|country)[:\s]+(.*)$/i);
+            if (countryMatch) {
+                const targetText = countryMatch[1].trim().toLowerCase();
+                if (!targetText) {
+                    return true;
+                }
+                const countries = Array.isArray(item.countries) ? item.countries : [];
+                for (const country of countries) {
+                    if (`${country}`.toLowerCase().includes(targetText)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            const idMatch = raw.match(/^[#@](?:id|tmdb)[:\s]+(.*)$/i);
+            if (idMatch) {
+                const targetText = idMatch[1].trim().toLowerCase();
+                if (!targetText) {
+                    return true;
+                }
+                return `${item.tmdb_id ?? ""}`.toLowerCase().includes(targetText);
+            }
+
+            const durMatch = raw.match(/^[#@](?:времетраене|време|duration|runtime)[:\s]+(.*)$/i);
+            if (durMatch) {
+                const targetText = durMatch[1].trim();
+                if (!targetText) {
+                    return true;
+                }
+                const dur = Number(item.duration_minutes ?? 0);
+                if (!dur) {
+                    return false;
+                }
+                if (targetText.startsWith(">")) {
+                    return dur > Number(targetText.slice(1).trim());
+                }
+                if (targetText.startsWith("<")) {
+                    return dur < Number(targetText.slice(1).trim());
+                }
+                const num = Number(targetText);
+                if (num) {
+                    return Math.abs(dur - num) <= 15;
+                }
+                return true;
+            }
+
+            const cleanQuery = raw.toLowerCase();
+            const titleText = `${item.title ?? ""}`.toLowerCase();
+            if (titleText.includes(cleanQuery)) {
+                return true;
+            }
+
+            const origTitleText = `${item.original_title ?? ""}`.toLowerCase();
+            if (origTitleText.includes(cleanQuery)) {
+                return true;
+            }
+
+            const slugText = `${item.slug ?? ""}`.toLowerCase();
+            if (slugText.includes(cleanQuery)) {
+                return true;
+            }
+
+            if (Array.isArray(item.actors)) {
+                for (const actor of item.actors) {
+                    if (`${actor}`.toLowerCase().includes(cleanQuery)) {
+                        return true;
+                    }
+                }
+            }
+
+            if (Array.isArray(item.directors)) {
+                for (const director of item.directors) {
+                    if (`${director}`.toLowerCase().includes(cleanQuery)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        function sortMoviesList(list, sortMode) {
+            const sorted = [...list];
+            if (sortMode === "rating_desc") {
+                return sorted.sort((a, b) => Number(b.rating ?? 0) - Number(a.rating ?? 0));
+            }
+            if (sortMode === "year_desc") {
+                return sorted.sort((a, b) => Number(b.year ?? 0) - Number(a.year ?? 0));
+            }
+            if (sortMode === "year_asc") {
+                return sorted.sort((a, b) => Number(a.year ?? 0) - Number(b.year ?? 0));
+            }
+            if (sortMode === "duration_desc") {
+                return sorted.sort((a, b) => Number(b.duration_minutes ?? b.seasons_count ?? 0) - Number(a.duration_minutes ?? a.seasons_count ?? 0));
+            }
+            if (sortMode === "title_asc") {
+                return sorted.sort((a, b) => `${a.title ?? ""}`.localeCompare(`${b.title ?? ""}`, "bg"));
+            }
+            return sorted;
+        }
+
+        function matchesSelectedGenres(item) {
+            const itemGenres = Array.isArray(item.genres) ? item.genres : [];
+
+            for (const excluded of state.excludedGenres) {
+                if (itemGenres.includes(excluded)) {
+                    return false;
+                }
+            }
+
+            for (const selected of state.selectedGenres) {
+                if (!itemGenres.includes(selected)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function matchesTypeTab(item) {
+            if (state.typeFilter === "movie") {
+                return item.type !== "tv";
+            }
+            if (state.typeFilter === "tv") {
+                return item.type === "tv";
+            }
+            if (state.typeFilter === "filmi9") {
+                return Array.isArray(item.origins) && item.origins.includes("Filmi9");
+            }
+            if (state.typeFilter === "unique") {
+                const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
+                if (origins.length !== 1) {
+                    return false;
+                }
+                if (state.uniqueSiteFilter && origins[0] !== state.uniqueSiteFilter) {
+                    return false;
+                }
+                return true;
+            }
+            if (state.typeFilter === "watchlist") {
+                return isInWatchlist(item);
+            }
+            return true;
+        }
+
+        function matchesYearPeriod(item, fromVal, toVal) {
+            if (!fromVal && !toVal) {
+                return true;
+            }
+            const itemYear = Number(item.year ?? 0);
+            if (!itemYear) {
+                return false;
+            }
+            const yFrom = fromVal ? Number(fromVal) : 0;
+            const yTo = toVal ? Number(toVal) : 0;
+            if (yFrom && yTo) {
+                const minYear = Math.min(yFrom, yTo);
+                const maxYear = Math.max(yFrom, yTo);
+                return itemYear >= minYear && itemYear <= maxYear;
+            }
+            if (yFrom) {
+                return itemYear >= yFrom;
+            }
+            return itemYear <= yTo;
+        }
+
+        function matchesDuration(item, durationVal) {
+            if (!durationVal) {
+                return true;
+            }
+            if (durationVal === "tv-mini") {
+                return isMiniSeries(item);
+            }
+            if (durationVal === "tv-short") {
+                return item.type === "tv" && getItemSeasonsCount(item) <= 2;
+            }
+            if (durationVal === "tv-long") {
+                return item.type === "tv" && getItemSeasonsCount(item) >= 3;
+            }
+
+            const dur = Number(item.duration_minutes ?? 0);
+            if (!dur) {
+                return false;
+            }
+            if (durationVal === "0-90") {
+                return dur < 90;
+            }
+            if (durationVal === "90-120") {
+                return dur >= 90 && dur <= 120;
+            }
+            if (durationVal === "120-150") {
+                return dur > 120 && dur <= 150;
+            }
+            if (durationVal === "150+") {
+                return dur > 150;
+            }
+            return true;
+        }
+
+        function matchesSelectedPlayer(item, selectedPlayer) {
+            if (!selectedPlayer) {
+                return true;
+            }
+            const names = getItemPlayerNames(item);
+            return names.includes(selectedPlayer);
+        }
+
+        function matchesGenresWithOverride(item, ignoredGenre, ignoreAllGenres) {
+            if (ignoreAllGenres) {
+                return true;
+            }
+            const itemGenres = Array.isArray(item.genres) ? item.genres : [];
+
+            for (const excluded of state.excludedGenres) {
+                if (excluded === ignoredGenre) {
+                    continue;
+                }
+                if (itemGenres.includes(excluded)) {
+                    return false;
+                }
+            }
+
+            for (const selected of state.selectedGenres) {
+                if (selected === ignoredGenre) {
+                    continue;
+                }
+                if (!itemGenres.includes(selected)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, overrides) {
+            const effQuery = overrides.ignoreQuery ? "" : query;
+            const effYearFrom = overrides.ignoreYearFrom ? "" : yearFrom;
+            const effYearTo = overrides.ignoreYearTo ? "" : yearTo;
+            const effDuration = overrides.ignoreDuration ? "" : selectedDuration;
+            const effPlayer = overrides.ignorePlayer ? "" : selectedPlayer;
+            const effSource = overrides.ignoreSource ? "" : selectedSource;
+
+            for (const item of state.items) {
+                if (!overrides.ignoreType && !matchesTypeTab(item)) {
+                    continue;
+                }
+                if (!overrides.ignoreAudioSub) {
+                    if (state.audioSubFilter === "bg-audio" && !hasBgSource(item)) {
+                        continue;
+                    }
+                    if (state.audioSubFilter === "sub" && !hasSubtitles(item)) {
+                        continue;
+                    }
+                }
+                if (!matchesMovieQuery(item, effQuery)) {
+                    continue;
+                }
+                if (!matchesGenresWithOverride(item, overrides.ignoreGenre, overrides.ignoreAllGenres)) {
+                    continue;
+                }
+                if (!matchesYearPeriod(item, effYearFrom, effYearTo)) {
+                    continue;
+                }
+                if (!matchesDuration(item, effDuration)) {
+                    continue;
+                }
+                if (!matchesSelectedPlayer(item, effPlayer)) {
+                    continue;
+                }
+                if (!matchesSelectedSource(item, effSource)) {
+                    continue;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        function clearFilterCulprits() {
+            const currentCulprits = document.querySelectorAll(".filter-culprit");
+            for (const el of currentCulprits) {
+                el.classList.remove("filter-culprit");
+            }
+            state.culpritReasons = [];
+        }
+
+        function updateZeroResultFilterDiagnostics(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource) {
+            clearFilterCulprits();
+            if (state.filtered.length > 0 || state.items.length === 0) {
+                return;
+            }
+
+            const reasons = [];
+
+            if (query && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreQuery: true })) {
+                searchInput.classList.add("filter-culprit");
+                reasons.push(`Търсене („${searchInput.value.trim()}“)`);
+            }
+
+            let yearCulpritFound = false;
+            if (yearFrom && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreYearFrom: true })) {
+                yearFromSelect.classList.add("filter-culprit");
+                reasons.push(`От година (${yearFrom})`);
+                yearCulpritFound = true;
+            }
+            if (yearTo && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreYearTo: true })) {
+                yearToSelect.classList.add("filter-culprit");
+                reasons.push(`До година (${yearTo})`);
+                yearCulpritFound = true;
+            }
+            if (!yearCulpritFound && (yearFrom || yearTo) && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreYearFrom: true, ignoreYearTo: true })) {
+                if (yearFrom) {
+                    yearFromSelect.classList.add("filter-culprit");
+                }
+                if (yearTo) {
+                    yearToSelect.classList.add("filter-culprit");
+                }
+                reasons.push("Избран период от години");
+            }
+
+            if (selectedDuration && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreDuration: true })) {
+                if (durationSelect) {
+                    durationSelect.classList.add("filter-culprit");
+                }
+                const durText = durationSelect?.options[durationSelect.selectedIndex]?.text ?? selectedDuration;
+                reasons.push(`Времетраене (${durText})`);
+            }
+
+            if (selectedPlayer && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignorePlayer: true })) {
+                playerSelect.classList.add("filter-culprit");
+                reasons.push(`Плеър (${selectedPlayer})`);
+            }
+
+            if (selectedSource && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreSource: true })) {
+                sourceSelect.classList.add("filter-culprit");
+                reasons.push(`Източник (${selectedSource})`);
+            }
+
+            let genreCulpritFound = false;
+            const allBadgeEls = genreBadgesBar.querySelectorAll(".genre-filter-badge");
+            for (const genre of state.selectedGenres) {
+                if (hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreGenre: genre })) {
+                    for (const b of allBadgeEls) {
+                        if (b.dataset.genre === genre) {
+                            b.classList.add("filter-culprit");
+                        }
+                    }
+                    reasons.push(`Жанр (+ ${genre})`);
+                    genreCulpritFound = true;
+                }
+            }
+            for (const genre of state.excludedGenres) {
+                if (hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreGenre: genre })) {
+                    for (const b of allBadgeEls) {
+                        if (b.dataset.genre === genre) {
+                            b.classList.add("filter-culprit");
+                        }
+                    }
+                    reasons.push(`Изключен жанр (✕ ${genre})`);
+                    genreCulpritFound = true;
+                }
+            }
+            const hasActiveGenres = state.selectedGenres.size > 0 || state.excludedGenres.size > 0;
+            if (!genreCulpritFound && hasActiveGenres && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreAllGenres: true })) {
+                for (const b of allBadgeEls) {
+                    if (state.selectedGenres.has(b.dataset.genre) || state.excludedGenres.has(b.dataset.genre)) {
+                        b.classList.add("filter-culprit");
+                    }
+                }
+                reasons.push("Комбинация от жанрове");
+            }
+
+            if (state.typeFilter !== "all" && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreType: true })) {
+                const activeTabBtn = typeTabsBar.querySelector(".type-tab-btn.active");
+                if (activeTabBtn) {
+                    activeTabBtn.classList.add("filter-culprit");
+                }
+                reasons.push("Избран таб");
+            }
+
+            if (state.audioSubFilter && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreAudioSub: true })) {
+                if (audioSubFilterSelect) {
+                    audioSubFilterSelect.classList.add("filter-culprit");
+                }
+                const label = state.audioSubFilter === "bg-audio" ? "БГ Аудио" : "БГ Субс";
+                reasons.push(label);
+            }
+
+            if (reasons.length === 0) {
+                if (query) {
+                    searchInput.classList.add("filter-culprit");
+                    reasons.push(`Търсене („${searchInput.value.trim()}“)`);
+                }
+                if (yearFrom) {
+                    yearFromSelect.classList.add("filter-culprit");
+                    reasons.push(`От година (${yearFrom})`);
+                }
+                if (yearTo) {
+                    yearToSelect.classList.add("filter-culprit");
+                    reasons.push(`До година (${yearTo})`);
+                }
+                if (selectedDuration) {
+                    durationSelect.classList.add("filter-culprit");
+                    const durText = durationSelect?.options[durationSelect.selectedIndex]?.text ?? selectedDuration;
+                    reasons.push(`Времетраене (${durText})`);
+                }
+                if (selectedPlayer) {
+                    playerSelect.classList.add("filter-culprit");
+                    reasons.push(`Плеър (${selectedPlayer})`);
+                }
+                if (selectedSource) {
+                    sourceSelect.classList.add("filter-culprit");
+                    reasons.push(`Източник (${selectedSource})`);
+                }
+                for (const b of allBadgeEls) {
+                    if (state.selectedGenres.has(b.dataset.genre) || state.excludedGenres.has(b.dataset.genre)) {
+                        b.classList.add("filter-culprit");
+                    }
+                }
+                if (hasActiveGenres) {
+                    reasons.push("Избрани жанрове");
+                }
+                if (state.typeFilter !== "all") {
+                    const activeTabBtn = typeTabsBar.querySelector(".type-tab-btn.active");
+                    if (activeTabBtn) {
+                        activeTabBtn.classList.add("filter-culprit");
+                    }
+                    reasons.push("Избран таб");
+                }
+            }
+
+            state.culpritReasons = reasons;
+        }
+
+        function applyFilters() {
+            renderGenreBadges();
+            const query = searchInput.value.trim().toLowerCase();
+            const yearFrom = yearFromSelect.value;
+            const yearTo = yearToSelect.value;
+            const selectedDuration = durationSelect ? durationSelect.value : "";
+            const selectedPlayer = playerSelect.value;
+            const selectedSource = sourceSelect.value;
+            const sortMode = sortSelect.value;
+
+            const result = [];
+
+            for (const item of state.items) {
+                if (!matchesTypeTab(item)) {
+                    continue;
+                }
+
+                if (state.audioSubFilter === "bg-audio" && !hasBgSource(item)) {
+                    continue;
+                }
+                if (state.audioSubFilter === "sub" && !hasSubtitles(item)) {
+                    continue;
+                }
+
+                if (!matchesEpisodes(item, state.episodesFilter)) {
+                    continue;
+                }
+
+                if (!matchesMovieQuery(item, query)) {
+                    continue;
+                }
+
+                if (!matchesSelectedGenres(item)) {
+                    continue;
+                }
+
+                if (!matchesYearPeriod(item, yearFrom, yearTo)) {
+                    continue;
+                }
+
+                if (!matchesDuration(item, selectedDuration)) {
+                    continue;
+                }
+
+                if (!matchesSelectedPlayer(item, selectedPlayer)) {
+                    continue;
+                }
+
+                if (!matchesSelectedSource(item, selectedSource)) {
+                    continue;
+                }
+
+                result.push(item);
+            }
+
+            state.filtered = sortMoviesList(result, sortMode);
+            state.visibleCount = PAGE_BATCH_SIZE;
+            updateZeroResultFilterDiagnostics(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource);
+            renderMoviesGrid();
+            saveFiltersToStorage();
+        }
+
+        function renderMoviesGrid() {
+            statsCounter.innerHTML = `Намерени: <strong>${state.filtered.length}</strong> от <strong>${state.items.length}</strong>`;
+
+            if (state.filtered.length === 0) {
+                loadMoreWrap.style.display = "none";
+                const emptyText = state.typeFilter === "watchlist" && state.watchlist.size === 0
+                    ? "Все още нямаш маркирани заглавия за гледане по-късно (натисни 🔖 върху постер)."
+                    : "Промени очертаните в червено филтри, за да се покажат резултати.";
+                const reasonsList = Array.isArray(state.culpritReasons) && state.culpritReasons.length > 0
+                    ? `<div class="culprit-reasons-box">⚠️ Филтри без съвпадение: ${escapeHtml(state.culpritReasons.join(" • "))}</div>`
+                    : "";
+                moviesContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <h3>Няма намерени заглавия</h3>
+                        <p>${emptyText}</p>
+                        ${reasonsList}
+                    </div>
+                `;
+                return;
+            }
+
+            const renderLimit = Math.min(state.filtered.length, state.visibleCount);
+            let cardsHtml = "";
+            for (let i = 0; i < renderLimit; i++) {
+                const item = state.filtered[i];
+                const title = escapeHtml(item.title ?? "Без заглавие");
+                const poster = escapeHtml(item.poster_url ?? "");
+                const year = item.year ? `${item.year}` : "—";
+                const isTv = item.type === "tv";
+                let durationOrSeasons = "";
+                if (isTv) {
+                    const sNum = item.seasons_count || getItemSeasonsCount(item) || 1;
+                    const sText = sNum === 1 ? "1 сезон" : `${sNum} сезона`;
+                    const epNum = item.total_episodes || getItemEpisodesCount(item);
+                    const epText = epNum ? `${epNum} еп.` : "";
+                    durationOrSeasons = epText ? `${sText} • ${epText}` : sText;
+                } else if (item.duration_minutes) {
+                    durationOrSeasons = `${item.duration_minutes} мин`;
+                }
+
+                const bgBadge = hasBgSource(item) ? `<span class="badge-bg-audio">BG</span>` : (hasSubtitles(item) ? `<span class="badge-sub">SUB</span>` : "");
+                const castBadge = itemHasCastPlayer(item) ? `<span class="badge-cast" title="Поддържа Cast към ТВ">📺 Cast</span>` : "";
+                const typeBadge = isTv
+                    ? `<span class="badge-media-type badge-type-tv">📺 СЕРИАЛ</span>`
+                    : `<span class="badge-media-type badge-type-movie">🎬 ФИЛМ</span>`;
+                const ageBadge = item.age_rating ? `<span class="badge-age">${escapeHtml(item.age_rating)}</span>` : "";
+
+                const saved = isInWatchlist(item);
+                const savedClass = saved ? "saved" : "";
+                const watchTitle = saved ? "Премахни от За по-късно" : "Запази за гледане по-късно";
+
+                let genresHtml = "";
+                const rawGenres = Array.isArray(item.genres) ? item.genres : [];
+                const displayGenres = [];
+                for (const genre of rawGenres) {
+                    if (`${genre}`.trim().toLowerCase() === "бг аудио") {
+                        continue;
+                    }
+                    displayGenres.push(genre);
+                    if (displayGenres.length >= 3) {
+                        break;
+                    }
+                }
+                for (const genre of displayGenres) {
+                    genresHtml = `${genresHtml}<span class="genre-pill">${escapeHtml(genre)}</span>`;
+                }
+
+                let sourceBadgesHtml = "";
+                const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
+                for (const orig of origins) {
+                    const origClass = orig.toLowerCase().replace(/[^a-z0-9]/g, "");
+                    sourceBadgesHtml = `${sourceBadgesHtml}<span class="src-pill src-${origClass}">${orig}</span>`;
+                }
+
+                cardsHtml = `${cardsHtml}
+                    <article class="movie-card" tabindex="0" data-movie-index="${i}">
+                        <div class="poster-wrap">
+                            <img src="${poster}" alt="${title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.classList.add('img-fallback')">
+                            <div class="poster-badges-top-right">
+                                ${bgBadge}
+                                ${castBadge}
+                            </div>
+                            ${typeBadge}
+                            ${ageBadge}
+                            <button type="button" class="card-watchlist-btn ${savedClass}" data-watchlist-index="${i}" title="${watchTitle}">🔖</button>
+                            <button type="button" class="card-play-fullscreen-btn" data-movie-index="${i}" aria-label="Пусни на голям екран" title="Пусни на голям екран">▶</button>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title" title="${title}">${title}</h3>
+                            <div class="card-meta">
+                                <span>${year}</span>
+                                ${item.rating ? `<span class="card-meta-rating">★ ${item.rating}</span>` : ""}
+                                ${durationOrSeasons ? `<span>• ${durationOrSeasons}</span>` : ""}
+                            </div>
+                            <div class="card-sources">${sourceBadgesHtml}</div>
+                            <div class="card-genres">${genresHtml}</div>
+                        </div>
+                    </article>
+                `;
+            }
+
+            moviesContainer.innerHTML = cardsHtml;
+            const remaining = state.filtered.length - renderLimit;
+            if (remaining > 0) {
+                loadMoreWrap.style.display = "block";
+                loadMoreBtn.textContent = `Покажи още (${remaining} оставащи)`;
+                return;
+            }
+            loadMoreWrap.style.display = "none";
+        }
+
+        function buildTvEpisodeSources(tmdbId, seasonNum, episodeNum, episodeUrl) {
+            const sources = [];
+            if (tmdbId) {
+                for (const provider of TV_EMBED_TEMPLATES) {
+                    const url = provider.tpl
+                        .replaceAll("{tmdb}", `${tmdbId}`)
+                        .replaceAll("{s}", `${seasonNum}`)
+                        .replaceAll("{e}", `${episodeNum}`);
+                    sources.push({
+                        id: provider.id,
+                        name: provider.name,
+                        group: "en",
+                        embed_url: url
+                    });
+                }
+            }
+            if (episodeUrl) {
+                sources.push({
+                    id: "custom-1",
+                    name: "🇧🇬 ZenoPlay",
+                    group: "bg",
+                    embed_url: `${episodeUrl}#player`,
+                    direct_embed: false
+                });
+            }
+            return sources;
+        }
+
+        function getActivePlayerSources(item) {
+            const rawSources = Array.isArray(item.player_sources) ? item.player_sources : [];
+            const active = [];
+            const seenIds = new Set();
+            for (const s of rawSources) {
+                if (!s || !s.name || DISABLED_PLAYERS.has(s.name)) {
+                    continue;
+                }
+                seenIds.add(s.id);
+                if (s.name === "BG Player" || s.id === "custom-1") {
+                    const zenoUrl = item.url ? `${item.url}#player` : s.embed_url;
+                    active.push({
+                        ...s,
+                        name: "🇧🇬 ZenoPlay",
+                        embed_url: zenoUrl,
+                        direct_embed: false
+                    });
+                    continue;
+                }
+                active.push(s);
+            }
+
+            if (item.tmdb_id) {
+                for (const tpl of MOVIE_EMBED_TEMPLATES) {
+                    if (seenIds.has(tpl.id) || DISABLED_PLAYERS.has(tpl.name)) {
+                        continue;
+                    }
+                    seenIds.add(tpl.id);
+                    active.push({
+                        id: tpl.id,
+                        name: tpl.name,
+                        group: "en",
+                        embed_url: tpl.tpl.replace("{tmdb}", `${item.tmdb_id}`)
+                    });
+                }
+            }
+
+            if (active.length > 0) {
+                return active;
+            }
+            return rawSources;
+        }
+
+        function buildPlayerSectionMarkup(item) {
+            const isTv = item.type === "tv";
+            let sources = isTv ? [] : getActivePlayerSources(item);
+            let relationUrl = item.url ? `${escapeHtml(item.url)}#player` : "";
+            let tvControlsHtml = "";
+
+            if (isTv) {
+                const seasons = Array.isArray(item.seasons) ? item.seasons : [];
+                const activeSeason = seasons[state.activeSeasonIndex] ?? seasons[0];
+                const episodes = activeSeason && Array.isArray(activeSeason.episodes) ? activeSeason.episodes : [];
+                const activeEpisode = episodes[state.activeEpisodeIndex] ?? episodes[0];
+
+                let seasonsBtns = "";
+                for (let sIdx = 0; sIdx < seasons.length; sIdx++) {
+                    const sObj = seasons[sIdx];
+                    const activeCls = sIdx === state.activeSeasonIndex ? "active" : "";
+                    seasonsBtns = `${seasonsBtns}<button type="button" class="season-btn ${activeCls}" data-season-idx="${sIdx}">Сезон ${sObj.season}</button>`;
+                }
+
+                const sNum = activeSeason ? (activeSeason.season ?? activeSeason.season_number ?? 1) : 1;
+                const eNum = activeEpisode ? (activeEpisode.episode ?? activeEpisode.episode_number ?? 1) : 1;
+
+                let episodesBtns = "";
+                for (let eIdx = 0; eIdx < episodes.length; eIdx++) {
+                    const eObj = episodes[eIdx];
+                    const activeCls = eIdx === state.activeEpisodeIndex ? "active" : "";
+                    const epNumber = eObj.episode ?? eObj.episode_number ?? (eIdx + 1);
+                    const hasBg = Boolean(eObj.has_bg) ||
+                        (Array.isArray(eObj.player_sources) && eObj.player_sources.length > 0) ||
+                        (Array.isArray(item.player_sources) && item.player_sources.some(p => p.season === sNum && p.episode === epNumber));
+                    const bgMarker = hasBg ? " 🇧🇬" : "";
+                    episodesBtns = `${episodesBtns}<button type="button" class="episode-btn ${activeCls}" data-episode-idx="${eIdx}">Еп. ${epNumber}${bgMarker}</button>`;
+                }
+
+                if (seasonsBtns || episodesBtns) {
+                    tvControlsHtml = `
+                        <div class="tv-seasons-bar">${seasonsBtns}</div>
+                        <div class="tv-episodes-bar">${episodesBtns}</div>
+                    `;
+                }
+
+                const epUrl = activeEpisode && activeEpisode.url ? activeEpisode.url : item.url;
+                relationUrl = epUrl ? `${escapeHtml(epUrl)}#player` : relationUrl;
+
+                const bgEpisodeSources = [];
+                if (activeEpisode && Array.isArray(activeEpisode.player_sources)) {
+                    for (const ps of activeEpisode.player_sources) {
+                        if (ps && ps.embed_url && !bgEpisodeSources.some(s => s.embed_url === ps.embed_url)) {
+                            bgEpisodeSources.push({
+                                ...ps,
+                                direct_embed: ps.direct_embed !== undefined ? ps.direct_embed : true,
+                                group: "bg"
+                            });
+                        }
+                    }
+                }
+
+                const tvSources = Array.isArray(item.player_sources) ? item.player_sources : [];
+                for (const ts of tvSources) {
+                    if (!ts || !ts.embed_url) {
+                        continue;
+                    }
+                    const matchS = ts.season === undefined || ts.season === null || ts.season === sNum;
+                    const matchE = ts.episode === undefined || ts.episode === null || ts.episode === eNum;
+                    if (matchS && matchE) {
+                        if (!bgEpisodeSources.some(s => s.embed_url === ts.embed_url)) {
+                            bgEpisodeSources.push({
+                                ...ts,
+                                direct_embed: ts.direct_embed !== undefined ? ts.direct_embed : (ts.group === "bg" ? true : false),
+                                group: ts.group || "bg"
+                            });
+                        }
+                    }
+                }
+
+                const multiSources = buildTvEpisodeSources(item.tmdb_id, sNum, eNum, epUrl);
+                sources = [...bgEpisodeSources, ...multiSources];
+            }
+
+            let embeddedTabsHtml = "";
+            let externalTabsHtml = "";
+            let firstEmbedUrl = "";
+
+            for (let i = 0; i < sources.length; i++) {
+                const source = sources[i];
+                const groupLabel = source.group ? ` (${source.group.toUpperCase()})` : "";
+                const castMarker = isCastPlayer(source.name) ? " 📺" : "";
+
+                if (source.direct_embed === false) {
+                    const targetUrl = source.embed_url || relationUrl;
+                    if (targetUrl) {
+                        externalTabsHtml = `${externalTabsHtml}
+                            <a class="player-tab player-tab-relation" href="${escapeHtml(targetUrl)}" target="_blank" rel="noopener noreferrer">
+                                ${escapeHtml(source.name)}${castMarker}${escapeHtml(groupLabel)} ↗
+                            </a>
+                        `;
+                        continue;
+                    }
+                }
+
+                const isFirstEmbed = firstEmbedUrl === "";
+                if (isFirstEmbed) {
+                    firstEmbedUrl = escapeHtml(source.embed_url);
+                }
+                const activeClass = isFirstEmbed ? "active" : "";
+                const isBgEmbed = source.direct_embed && (source.group === "bg" || `${source.name}`.includes("🇧🇬"));
+                const isSubEmbed = source.direct_embed && (source.group === "sub" || `${source.name}`.includes("💬"));
+                const bgEmbedClass = isBgEmbed ? "player-tab-bg-embed" : (isSubEmbed ? "player-tab-sub-embed" : "");
+                embeddedTabsHtml = `${embeddedTabsHtml}
+                    <button type="button" class="player-tab ${bgEmbedClass} ${activeClass}" data-embed-url="${escapeHtml(source.embed_url)}">
+                        ${escapeHtml(source.name)}${castMarker}${escapeHtml(groupLabel)}
+                    </button>
+                `;
+            }
+
+            const f2kUrl = item.filmi2k_url || (item.url && item.url.includes("filmi2k.com") ? item.url : "");
+            if (f2kUrl && !externalTabsHtml.includes("filmi2k.com")) {
+                externalTabsHtml = `${externalTabsHtml}
+                    <a class="player-tab player-tab-relation" href="${escapeHtml(f2kUrl)}" target="_blank" rel="noopener noreferrer">
+                        🇧🇬 Filmi2k ↗
+                    </a>
+                `;
+            }
+
+            const fzUrl = item.filmizip_url || (item.url && item.url.includes("filmizip.com") ? item.url : "");
+            if (fzUrl && !externalTabsHtml.includes("filmizip.com")) {
+                externalTabsHtml = `${externalTabsHtml}
+                    <a class="player-tab player-tab-relation" href="${escapeHtml(fzUrl)}" target="_blank" rel="noopener noreferrer">
+                        🇧🇬 FilmiZip ↗
+                    </a>
+                `;
+            }
+
+            const f9Url = item.filmi9_url || (item.url && item.url.includes("filmi9.com") ? item.url : "");
+            if (f9Url && !externalTabsHtml.includes("filmi9.com")) {
+                externalTabsHtml = `${externalTabsHtml}
+                    <a class="player-tab player-tab-relation" href="${escapeHtml(f9Url)}" target="_blank" rel="noopener noreferrer">
+                        💬 Filmi9 ↗
+                    </a>
+                `;
+            }
+
+            if (!firstEmbedUrl && !tvControlsHtml && !embeddedTabsHtml && !externalTabsHtml) {
+                return "";
+            }
+
+            const openAttr = "";
+            let activePlayerName = "";
+            for (let i = 0; i < sources.length; i++) {
+                const s = sources[i];
+                if (s.direct_embed !== false && s.embed_url) {
+                    activePlayerName = s.name || "Плеър";
+                    break;
+                }
+            }
+            const activePlayerBadge = activePlayerName ? `<b class="active-player-name" id="activePlayerSummaryBadge">${escapeHtml(activePlayerName)}</b>` : "";
+
+            return `
+                <div class="modal-player-section" id="modalPlayerSection">
+                    ${tvControlsHtml}
+                    ${embeddedTabsHtml ? `
+                        <details class="player-accordion" id="directPlayersDetails" ${openAttr}>
+                            <summary class="player-accordion-summary">
+                                <span class="player-accordion-title">
+                                    ▶ Директни плеъри (вградени)${activePlayerBadge ? `: ${activePlayerBadge}` : ""}
+                                </span>
+                                <span class="accordion-chevron">▾</span>
+                            </summary>
+                            <div class="player-tabs" id="modalPlayerTabs">${embeddedTabsHtml}</div>
+                        </details>
+                    ` : ""}
+                    ${externalTabsHtml ? `
+                        <details class="player-accordion player-accordion-external" id="externalPlayersDetails" ${embeddedTabsHtml ? openAttr : "open"}>
+                            <summary class="player-accordion-summary">
+                                <span class="player-accordion-title">
+                                    ↗ Външни източници (отвори в нов таб)
+                                </span>
+                                <span class="accordion-chevron">▾</span>
+                            </summary>
+                            <div class="player-tabs player-tabs-external">${externalTabsHtml}</div>
+                        </details>
+                    ` : ""}
+                    ${firstEmbedUrl ? `
+                        <div class="player-toolbar-row">
+                            <span class="player-current-label">▶ Видео плеър:</span>
+                            <button type="button" class="theater-fullscreen-btn" id="theaterFullscreenBtn" title="Цял екран на плеъра">⛶ Цял екран</button>
+                        </div>
+                        <div class="player-frame-box" id="mainPlayerFrameBox">
+                            <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Изход от цял екран">✕ Затвори цял екран</button>
+                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; accelerometer; gyroscope" allowfullscreen playsinline="true" webkit-playsinline="true"></iframe>
+                        </div>
+                    ` : ""}
+                </div>
+            `;
+        }
+
+        function openMovieModal(item) {
+            state.activeModalItem = item;
+            state.activeSeasonIndex = 0;
+            state.activeEpisodeIndex = 0;
+
+            const title = escapeHtml(item.title ?? "");
+            const poster = escapeHtml(item.poster_url ?? "");
+            const backdropStyle = item.backdrop_url
+                ? `style="background-image: url('${escapeHtml(item.backdrop_url)}')"`
+                : "";
+
+            let genresHtml = "";
+            const genres = Array.isArray(item.genres) ? item.genres : [];
+            for (const genre of genres) {
+                if (`${genre}`.trim().toLowerCase() === "бг аудио") {
+                    continue;
+                }
+                genresHtml = `${genresHtml}<span class="chip">${escapeHtml(genre)}</span>`;
+            }
+
+            let tagsHtml = "";
+            const tags = Array.isArray(item.tags) ? item.tags : [];
+            for (const tag of tags) {
+                tagsHtml = `${tagsHtml}<span class="chip chip-tag">#${escapeHtml(tag)}</span>`;
+            }
+
+            const countries = Array.isArray(item.countries) ? item.countries.join(", ") : "";
+
+            const saved = isInWatchlist(item);
+            const savedClass = saved ? "saved" : "";
+            const savedLabel = saved ? "🔖 В списъка „За по-късно“" : "🔖 Добави в „За по-късно“";
+
+            let modalSourcesHtml = "";
+            const origins = Array.isArray(item.origins) && item.origins.length > 0 ? item.origins : ["ZenoPlay"];
+            for (const orig of origins) {
+                const origClass = orig.toLowerCase().replace(/[^a-z0-9]/g, "");
+                modalSourcesHtml = `${modalSourcesHtml}<span class="src-pill src-${origClass}">${orig}</span>`;
+            }
+
+            const isTv = item.type === "tv";
+            const typePill = isTv
+                ? `<span class="modal-type-pill modal-type-tv">📺 Сериал</span>`
+                : `<span class="modal-type-pill modal-type-movie">🎬 Филм</span>`;
+
+            modalBody.innerHTML = `
+                <div class="modal-hero" ${backdropStyle}>
+                    <div class="modal-layout">
+                        <img class="modal-poster" src="${poster}" alt="${title}" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+                        <div class="modal-info">
+                            <h2>${title}</h2>
+                            <div class="modal-submeta">
+                                ${typePill}
+                                ${hasBgSource(item) ? '<span class="modal-bg-pill">БГ Аудио</span>' : ""}
+                                ${itemHasCastPlayer(item) ? '<span class="modal-cast-pill">📺 Cast към TV</span>' : ""}
+                                ${item.year ? `<span>📅 ${item.year}</span>` : ""}
+                                ${!isTv && item.duration_minutes ? `<span>⏱ ${item.duration_minutes} мин</span>` : ""}
+                                ${isTv ? `<span>📺 ${(item.seasons_count || getItemSeasonsCount(item) || 1) === 1 ? "1 сезон" : `${item.seasons_count || getItemSeasonsCount(item) || 1} сезона`}</span>` : ""}
+                                ${isTv && (item.total_episodes || getItemEpisodesCount(item)) ? `<span>🎬 ${item.total_episodes || getItemEpisodesCount(item)} епизода</span>` : ""}
+                                ${item.rating ? `<span class="modal-rating-pill">★ ${item.rating}</span>` : ""}
+                                ${countries ? `<span>🌍 ${escapeHtml(countries)}</span>` : ""}
+                                ${item.tmdb_id ? `<span>TMDB: #${item.tmdb_id}</span>` : ""}
+                            </div>
+                            <div class="modal-sources-row">
+                                <span class="modal-sources-label">Източници:</span>
+                                ${modalSourcesHtml}
+                            </div>
+                            <div class="modal-overview-wrap">
+                                <p class="modal-overview" id="modalOverviewText">${escapeHtml(item.overview ?? "Няма налично описание.")}</p>
+                                <button type="button" class="modal-expand-btn" id="modalOverviewToggle" style="display: none;">Виж още ▾</button>
+                            </div>
+                            ${Array.isArray(item.directors) && item.directors.length > 0 ? `
+                                <div class="modal-crew-row modal-collapsible-crew">
+                                    <strong class="modal-crew-label">🎬 Режисьор:</strong>
+                                    <div class="modal-crew-chips">
+                                        ${item.directors.map(d => `<button type="button" class="crew-search-btn" data-search-query="@режисьор: ${escapeHtml(d)}" title="Търси филми от ${escapeHtml(d)}">${escapeHtml(d)}</button>`).join("")}
+                                    </div>
+                                    <button type="button" class="modal-expand-btn crew-expand-btn" style="display: none;">още ▾</button>
+                                </div>
+                            ` : ""}
+                            ${Array.isArray(item.actors) && item.actors.length > 0 ? `
+                                <div class="modal-crew-row modal-collapsible-crew">
+                                    <strong class="modal-crew-label">👥 В ролите:</strong>
+                                    <div class="modal-crew-chips">
+                                        ${item.actors.slice(0, 15).map(a => `<button type="button" class="crew-search-btn" data-search-query="@актьор: ${escapeHtml(a)}" title="Търси филми с ${escapeHtml(a)}">${escapeHtml(a)}</button>`).join("")}
+                                    </div>
+                                    <button type="button" class="modal-expand-btn crew-expand-btn" style="display: none;">още ▾</button>
+                                </div>
+                            ` : ""}
+                            ${genresHtml ? `
+                                <div class="modal-chips-row">
+                                    <div class="chip-list modal-collapsible-chips">
+                                        ${genresHtml}
+                                    </div>
+                                    <button type="button" class="modal-expand-btn chip-expand-btn" style="display: none;">още жанрове ▾</button>
+                                </div>
+                            ` : ""}
+                            ${tagsHtml ? `
+                                <div class="modal-chips-row">
+                                    <div class="chip-list chip-list-tags modal-collapsible-chips">
+                                        ${tagsHtml}
+                                    </div>
+                                    <button type="button" class="modal-expand-btn chip-expand-btn" style="display: none;">още тагове ▾</button>
+                                </div>
+                            ` : ""}
+                            <div class="modal-actions-row">
+                                <button type="button" id="modalWatchlistBtn" class="watchlist-modal-btn ${savedClass}">${savedLabel}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="modalPlayerMount">${buildPlayerSectionMarkup(item)}</div>
+            `;
+
+            movieModal.classList.add("open");
+            checkAndClampModalContent();
+            const modalContent = movieModal.querySelector(".modal-content");
+            if (modalContent) {
+                modalContent.scrollTop = 0;
+            }
+        }
+
+        function closeMovieModal() {
+            if (document.fullscreenElement) {
+                try {
+                    document.exitFullscreen().catch(() => {});
+                } catch (e) {}
+            }
+            const box = document.getElementById("mainPlayerFrameBox");
+            if (box) {
+                box.classList.remove("theater-mode");
+            }
+            movieModal.classList.remove("open");
+            modalBody.innerHTML = "";
+            state.activeModalItem = null;
+            if (state.lastFocusedCardIndex !== null) {
+                const prevCard = moviesContainer.querySelector(`.movie-card[data-movie-index="${state.lastFocusedCardIndex}"]`);
+                if (prevCard) {
+                    prevCard.focus();
+                }
+            }
+        }
+
+        function setCatalogItems(itemsList) {
+            state.items = itemsList;
+            updateTabCounts();
+            populateFilterOptions(state.items);
+            applyFilters();
+        }
+
+        function normalizeTitleKey(rawTitle) {
+            return `${rawTitle ?? ""}`
+                .toLowerCase()
+                .replace(/[^\p{L}\p{N}]+/gu, " ")
+                .trim();
+        }
+
+        function extractEpisodeInfo(title, origTitle) {
+            const patterns = [
+                /^(.*?)\s*[-–—:]*\s*S(\d+)\s*E(\d+)\b/i,
+                /^(.*?)\s*[-–—:]*\s*Сезон\s*(\d+)\s*[-–—:,]*\s*Епизод\s*(\d+)\b/i,
+                /^(.*?)\s*[-–—:]*\s*Season\s*(\d+)\s*[-–—:,]*\s*Episode\s*(\d+)\b/i
+            ];
+            const candidates = [title || "", origTitle || ""];
+            for (const cand of candidates) {
+                if (!cand) {
+                    continue;
+                }
+                for (const pat of patterns) {
+                    const m = cand.trim().match(pat);
+                    if (m) {
+                        const baseTitle = m[1].replace(/[-–—:]+$/g, "").trim();
+                        const sNum = parseInt(m[2], 10);
+                        const eNum = parseInt(m[3], 10);
+                        if (baseTitle && !isNaN(sNum) && !isNaN(eNum)) {
+                            return { baseTitle, season: sNum, episode: eNum };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        function detectItemType(item) {
+            if (item.type === "tv") {
+                return "tv";
+            }
+            if (Array.isArray(item.seasons) && item.seasons.length > 0) {
+                return "tv";
+            }
+            const title = item.title || "";
+            if (/(?:S\d+E\d+|сезон\s*\d+|епизод\s*\d+|season\s*\d+|ep\.\s*\d+)/i.test(title)) {
+                return "tv";
+            }
+            return "movie";
+        }
+
+        function mergeFilmi2kCatalog(combined, filmi2kRaw, sourceName = "Filmi2k") {
+            if (!Array.isArray(filmi2kRaw) || filmi2kRaw.length === 0) {
+                return;
+            }
+
+            const byTitleYear = new Map();
+            const byTitleOnly = new Map();
+            const byOrigYear = new Map();
+            const byOrigOnly = new Map();
+
+            for (const item of combined) {
+                const tKey = normalizeTitleKey(item.title);
+                if (tKey) {
+                    if (item.year) {
+                        byTitleYear.set(`${tKey}|${item.year}`, item);
+                    }
+                    if (!byTitleOnly.has(tKey)) {
+                        byTitleOnly.set(tKey, item);
+                    }
+                }
+                const oKey = normalizeTitleKey(item.original_title);
+                if (oKey) {
+                    if (item.year) {
+                        byOrigYear.set(`${oKey}|${item.year}`, item);
+                    }
+                    if (!byOrigOnly.has(oKey)) {
+                        byOrigOnly.set(oKey, item);
+                    }
+                }
+            }
+
+            for (const fItem of filmi2kRaw) {
+                if (!fItem || typeof fItem !== "object") {
+                    continue;
+                }
+                const fSources = Array.isArray(fItem.player_sources) ? fItem.player_sources : [];
+                if (fSources.length === 0) {
+                    continue;
+                }
+
+                const tKey = normalizeTitleKey(fItem.title);
+                const oKey = normalizeTitleKey(fItem.original_title);
+                let matched = null;
+                if (tKey && fItem.year) {
+                    matched = byTitleYear.get(`${tKey}|${fItem.year}`) ?? null;
+                }
+                if (!matched && oKey && fItem.year) {
+                    matched = byOrigYear.get(`${oKey}|${fItem.year}`) ?? null;
+                }
+                if (!matched && tKey) {
+                    matched = byTitleOnly.get(tKey) ?? null;
+                }
+                if (!matched && oKey) {
+                    matched = byOrigOnly.get(oKey) ?? null;
+                }
+                if (matched && fItem.year && matched.year && Math.abs(Number(matched.year) - Number(fItem.year)) > 1) {
+                    matched = null;
+                }
+
+                if (matched) {
+                    const existingSources = Array.isArray(matched.player_sources) ? matched.player_sources : [];
+                    const existingUrls = new Set();
+                    for (const es of existingSources) {
+                        if (es.embed_url) {
+                            existingUrls.add(es.embed_url);
+                        }
+                    }
+                    const toPrepend = [];
+                    for (const fs of fSources) {
+                        if (fs.embed_url && !existingUrls.has(fs.embed_url)) {
+                            toPrepend.push({
+                                ...fs,
+                                direct_embed: fs.direct_embed !== undefined ? fs.direct_embed : (sourceName === "Filmizip" ? false : true)
+                            });
+                        }
+                    }
+                    matched.player_sources = [...toPrepend, ...existingSources];
+                    if (fItem.is_subtitled) {
+                        matched.is_subtitled = true;
+                    }
+                    if (fItem.is_bg_audio !== false && !fItem.is_subtitled) {
+                        matched.is_bg_audio = true;
+                    }
+                    if (sourceName === "Filmi2k" && !fItem.is_subtitled) {
+                        matched.has_filmi2k_bg = true;
+                    }
+                    if (!Array.isArray(matched.origins)) {
+                        matched.origins = ["ZenoPlay"];
+                    }
+                    if (!matched.origins.includes(sourceName)) {
+                        matched.origins.push(sourceName);
+                    }
+                    if (sourceName === "Filmi2k" && fItem.url) {
+                        matched.filmi2k_url = fItem.url;
+                    }
+                    if (sourceName === "Filmizip" && fItem.url) {
+                        matched.filmizip_url = fItem.url;
+                    }
+                    if (sourceName === "Filmifen" && fItem.url) {
+                        matched.filmifen_url = fItem.url;
+                    }
+                    if (sourceName === "Filmi9" && fItem.url) {
+                        matched.filmi9_url = fItem.url;
+                    }
+                    if (fItem.original_title && !matched.original_title) {
+                        matched.original_title = fItem.original_title;
+                    }
+                    if (Array.isArray(fItem.actors) && fItem.actors.length > 0) {
+                        const hasCyrF = fItem.actors.some(a => /[\u0400-\u04FF]/.test(a));
+                        const hasCyrM = Array.isArray(matched.actors) && matched.actors.some(a => /[\u0400-\u04FF]/.test(a));
+                        if (!Array.isArray(matched.actors) || matched.actors.length === 0 || (hasCyrF && !hasCyrM) || (hasCyrF && fItem.actors.length >= matched.actors.length)) {
+                            matched.actors = fItem.actors;
+                        }
+                    }
+                    if (Array.isArray(fItem.directors) && fItem.directors.length > 0) {
+                        const hasCyrF = fItem.directors.some(d => /[\u0400-\u04FF]/.test(d));
+                        const hasCyrM = Array.isArray(matched.directors) && matched.directors.some(d => /[\u0400-\u04FF]/.test(d));
+                        if (!Array.isArray(matched.directors) || matched.directors.length === 0 || (hasCyrF && !hasCyrM) || (hasCyrF && fItem.directors.length >= matched.directors.length)) {
+                            matched.directors = fItem.directors;
+                        }
+                    }
+                    if (fItem.overview && !matched.overview) {
+                        matched.overview = fItem.overview;
+                    }
+                    const mGenres = Array.isArray(matched.genres) ? matched.genres : [];
+                    const langGenre = fItem.is_subtitled ? "БГ Субтитри" : "БГ Аудио";
+                    if (!mGenres.includes(langGenre)) {
+                        mGenres.push(langGenre);
+                        matched.genres = mGenres;
+                    }
+                    continue;
+                }
+
+                const epInfo = extractEpisodeInfo(fItem.title, fItem.original_title);
+                if (epInfo) {
+                    const bTKey = normalizeTitleKey(epInfo.baseTitle);
+                    let seriesMatched = byTitleOnly.get(bTKey) ?? null;
+                    const epOrigInfo = extractEpisodeInfo(fItem.original_title, "");
+                    const origBase = epOrigInfo ? epOrigInfo.baseTitle : (fItem.original_title || "");
+                    const bOKey = origBase ? normalizeTitleKey(origBase) : null;
+                    if (!seriesMatched && bOKey) {
+                        seriesMatched = byOrigOnly.get(bOKey) ?? byTitleOnly.get(bOKey) ?? null;
+                    }
+
+                    if (!seriesMatched) {
+                        seriesMatched = {
+                            type: "tv",
+                            title: epInfo.baseTitle,
+                            original_title: origBase,
+                            year: fItem.year,
+                            poster_url: fItem.poster_url,
+                            backdrop_url: fItem.backdrop_url,
+                            overview: fItem.overview,
+                            genres: Array.isArray(fItem.genres) && fItem.genres.length > 0 ? [...fItem.genres] : ["Сериал"],
+                            origins: [sourceName],
+                            is_bg_audio: true,
+                            has_filmi2k_bg: sourceName === "Filmi2k",
+                            seasons: [],
+                            player_sources: []
+                        };
+                        if (!seriesMatched.genres.includes("Сериал")) {
+                            seriesMatched.genres.push("Сериал");
+                        }
+                        if (!seriesMatched.genres.includes("БГ Аудио")) {
+                            seriesMatched.genres.push("БГ Аудио");
+                        }
+                        combined.push(seriesMatched);
+                        byTitleOnly.set(bTKey, seriesMatched);
+                        if (bOKey) {
+                            byOrigOnly.set(bOKey, seriesMatched);
+                        }
+                    }
+
+                    seriesMatched.type = "tv";
+                    seriesMatched.is_bg_audio = true;
+                    if (!Array.isArray(seriesMatched.origins)) {
+                        seriesMatched.origins = ["ZenoPlay"];
+                    }
+                    if (!seriesMatched.origins.includes(sourceName)) {
+                        seriesMatched.origins.push(sourceName);
+                    }
+                    if (sourceName === "Filmi2k") {
+                        seriesMatched.has_filmi2k_bg = true;
+                    }
+                    const mGenres = Array.isArray(seriesMatched.genres) ? seriesMatched.genres : [];
+                    if (!mGenres.includes("БГ Аудио")) {
+                        mGenres.push("БГ Аудио");
+                        seriesMatched.genres = mGenres;
+                    }
+
+                    if (!Array.isArray(seriesMatched.seasons)) {
+                        seriesMatched.seasons = [];
+                    }
+                    let sObj = seriesMatched.seasons.find(s => (s.season_number ?? s.season) === epInfo.season);
+                    if (!sObj) {
+                        sObj = { season: epInfo.season, season_number: epInfo.season, episodes: [] };
+                        seriesMatched.seasons.push(sObj);
+                        seriesMatched.seasons.sort((a, b) => (a.season_number ?? a.season) - (b.season_number ?? b.season));
+                    }
+                    if (!Array.isArray(sObj.episodes)) {
+                        sObj.episodes = [];
+                    }
+                    let eObj = sObj.episodes.find(e => (e.episode_number ?? e.episode) === epInfo.episode);
+                    if (!eObj) {
+                        eObj = { episode: epInfo.episode, episode_number: epInfo.episode, title: fItem.title, player_sources: [] };
+                        sObj.episodes.push(eObj);
+                        sObj.episodes.sort((a, b) => (a.episode_number ?? a.episode) - (b.episode_number ?? b.episode));
+                    }
+                    if (!Array.isArray(eObj.player_sources)) {
+                        eObj.player_sources = [];
+                    }
+                    for (const fs of fSources) {
+                        if (fs.embed_url && !eObj.player_sources.some(p => p.embed_url === fs.embed_url)) {
+                            eObj.player_sources.push({
+                                ...fs,
+                                direct_embed: fs.direct_embed !== undefined ? fs.direct_embed : true,
+                                group: "bg"
+                            });
+                        }
+                    }
+                    eObj.has_bg = true;
+
+                    if (!Array.isArray(seriesMatched.player_sources)) {
+                        seriesMatched.player_sources = [];
+                    }
+                    for (const fs of fSources) {
+                        if (fs.embed_url && !seriesMatched.player_sources.some(p => p.embed_url === fs.embed_url)) {
+                            seriesMatched.player_sources.push({
+                                ...fs,
+                                season: epInfo.season,
+                                episode: epInfo.episode,
+                                direct_embed: fs.direct_embed !== undefined ? fs.direct_embed : true,
+                                group: "bg"
+                            });
+                        }
+                    }
+
+                    seriesMatched.seasons_count = seriesMatched.seasons.length;
+                    let epCount = 0;
+                    for (const s of seriesMatched.seasons) {
+                        if (Array.isArray(s.episodes)) {
+                            epCount += s.episodes.length;
+                        }
+                    }
+                    seriesMatched.total_episodes = Math.max(seriesMatched.total_episodes || 0, epCount);
+                    continue;
+                }
+
+                const resolvedType = fItem.type ?? detectItemType(fItem);
+                const isSub = Boolean(fItem.is_subtitled) || (Array.isArray(fItem.genres) && fItem.genres.includes("БГ Субтитри"));
+                const isBg = fItem.is_bg_audio !== undefined ? Boolean(fItem.is_bg_audio) : !isSub;
+                combined.push({
+                    ...fItem,
+                    type: resolvedType,
+                    is_bg_audio: isBg,
+                    is_subtitled: isSub,
+                    has_filmi2k_bg: sourceName === "Filmi2k" && isBg,
+                    origins: [sourceName]
+                });
+            }
+        }
+
+        function loadScriptAsync(src) {
+            return new Promise((resolve) => {
+                const script = document.createElement("script");
+                script.src = src;
+                script.async = true;
+                script.onload = () => resolve(true);
+                script.onerror = () => resolve(false);
+                document.body.appendChild(script);
+            });
+        }
+
+        async function loadRemainingCatalogsProgressive(combined) {
+            const v = "20261113_v4";
+
+            // 1. Load TV Shows
+            await loadScriptAsync(`data/tv_shows_data.js?v=${v}`);
+            if (Array.isArray(window.TV_SHOWS_DATA) && window.TV_SHOWS_DATA.length > 0) {
+                const tvShows = normalizeItemsPayload(window.TV_SHOWS_DATA, "tv", "ZenoPlay");
+                for (const tv of tvShows) {
+                    combined.push(tv);
+                }
+                updateTabCounts();
+            }
+
+            // 2. Load Filmizip
+            await loadScriptAsync(`data/filmizip_bg_data.js?v=${v}`);
+            if (Array.isArray(window.FILMIZIP_BG_DATA) && window.FILMIZIP_BG_DATA.length > 0) {
+                mergeFilmi2kCatalog(combined, window.FILMIZIP_BG_DATA, "Filmizip");
+                updateTabCounts();
+            }
+
+            // 3. Load Filmi2k
+            await loadScriptAsync(`data/filmi2k_bg_data.js?v=${v}`);
+            if (Array.isArray(window.FILMI2K_BG_DATA) && window.FILMI2K_BG_DATA.length > 0) {
+                mergeFilmi2kCatalog(combined, window.FILMI2K_BG_DATA, "Filmi2k");
+                updateTabCounts();
+            }
+
+            // 4. Load Filmifen
+            await loadScriptAsync(`data/filmifen_bg_data.js?v=${v}`);
+            if (Array.isArray(window.FILMIFEN_BG_DATA) && window.FILMIFEN_BG_DATA.length > 0) {
+                mergeFilmi2kCatalog(combined, window.FILMIFEN_BG_DATA, "Filmifen");
+                updateTabCounts();
+            }
+
+            // 5. Load BG Serials
+            await loadScriptAsync(`data/bg_serials_data.js?v=${v}`);
+            if (Array.isArray(window.BG_SERIALS_DATA) && window.BG_SERIALS_DATA.length > 0) {
+                mergeFilmi2kCatalog(combined, window.BG_SERIALS_DATA, "Filmizip");
+                updateTabCounts();
+            }
+
+            // 6. Load Subtitled Movies
+            await loadScriptAsync(`data/subtitled_movies_data.js?v=${v}`);
+            if (Array.isArray(window.SUBTITLED_MOVIES_DATA) && window.SUBTITLED_MOVIES_DATA.length > 0) {
+                mergeFilmi2kCatalog(combined, window.SUBTITLED_MOVIES_DATA, "Filmizip");
+                updateTabCounts();
+            }
+
+            await loadScriptAsync(`data/filmi2k_sub_data.js?v=${v}`);
+            if (Array.isArray(window.FILMI2K_SUB_DATA) && window.FILMI2K_SUB_DATA.length > 0) {
+                mergeFilmi2kCatalog(combined, window.FILMI2K_SUB_DATA, "Filmi2k");
+                updateTabCounts();
+            }
+
+            // 7. Load Filmi9 Movies
+            await loadScriptAsync(`data/filmi9_data.js?v=${v}`);
+            if (Array.isArray(window.FILMI9_DATA) && window.FILMI9_DATA.length > 0) {
+                mergeFilmi2kCatalog(combined, window.FILMI9_DATA, "Filmi9");
+                updateTabCounts();
+            }
+
+            // Final refresh: update filter dropdowns and re-apply filters so the full catalog is visible
+            updateTabCounts();
+            populateFilterOptions(state.items);
+            applyFilters();
+        }
+
+        async function loadInitialData() {
+            loadWatchlistFromStorage();
+            loadFiltersFromStorage();
+            updateDurationSelectOptions();
+            updateEpisodesFilterVisibility();
+            const combined = [];
+
+            // Fast Initial Render: load movies from movies_data.js (<1s)
+            if (Array.isArray(window.MOVIES_DATA) && window.MOVIES_DATA.length > 0) {
+                const movies = normalizeItemsPayload(window.MOVIES_DATA, "movie", "ZenoPlay");
+                for (const m of movies) {
+                    combined.push(m);
+                }
+            }
+
+            // Display initial grid immediately
+            setCatalogItems(combined);
+
+            // Progressively load remaining secondary catalogs without freezing UI
+            setTimeout(() => {
+                loadRemainingCatalogsProgressive(combined);
+            }, 60);
+        }
+
+        typeTabsBar.addEventListener("click", (event) => {
+            const btn = event.target.closest(".type-tab-btn");
+            if (!btn) {
+                return;
+            }
+            const allBtns = typeTabsBar.querySelectorAll(".type-tab-btn");
+            for (const b of allBtns) {
+                b.classList.remove("active");
+            }
+            btn.classList.add("active");
+            state.typeFilter = btn.dataset.typeFilter;
+            updateDurationSelectOptions();
+            updateEpisodesFilterVisibility();
+            updateTabCounts();
+            applyFilters();
+        });
+
+        searchInput.addEventListener("input", () => {
+            const val = searchInput.value;
+            if (val.startsWith("#") || val.startsWith("@")) {
+                const trigger = val[0];
+                const after = val.slice(1);
+                if (!after.includes(" ")) {
+                    const filterTerm = after.replace(":", "").trim();
+                    if (activeSuggestionIndex < 0) {
+                        activeSuggestionIndex = 0;
+                    }
+                    renderSearchSuggestions(trigger, filterTerm);
+                } else {
+                    hideSearchSuggestions();
+                }
+            } else {
+                hideSearchSuggestions();
+            }
+            applyFilters();
+        });
+
+        searchInput.addEventListener("keydown", (event) => {
+            if (searchSuggestions.style.display === "none" || currentSuggestions.length === 0) {
+                return;
+            }
+
+            const trigger = searchInput.value.startsWith("@") ? "@" : "#";
+
+            if (event.key === "ArrowDown") {
+                event.preventDefault();
+                activeSuggestionIndex = (activeSuggestionIndex + 1) % currentSuggestions.length;
+                updateSuggestionHighlight();
+                return;
+            }
+
+            if (event.key === "ArrowUp") {
+                event.preventDefault();
+                activeSuggestionIndex = (activeSuggestionIndex - 1 + currentSuggestions.length) % currentSuggestions.length;
+                updateSuggestionHighlight();
+                return;
+            }
+
+            if (event.key === "Enter" || event.key === "Tab") {
+                if (activeSuggestionIndex >= 0 && activeSuggestionIndex < currentSuggestions.length) {
+                    event.preventDefault();
+                    selectSuggestion(activeSuggestionIndex, trigger);
+                }
+                return;
+            }
+
+            if (event.key === "Escape") {
+                event.preventDefault();
+                hideSearchSuggestions();
+                return;
+            }
+        });
+
+        searchSuggestions.addEventListener("click", (event) => {
+            const itemEl = event.target.closest(".search-suggestion-item");
+            if (!itemEl) {
+                return;
+            }
+            const idx = parseInt(itemEl.dataset.index, 10);
+            const trigger = searchInput.value.startsWith("@") ? "@" : "#";
+            selectSuggestion(idx, trigger);
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!searchInput.contains(event.target) && !searchSuggestions.contains(event.target)) {
+                hideSearchSuggestions();
+            }
+        });
+        yearFromSelect.addEventListener("change", applyFilters);
+        yearToSelect.addEventListener("change", applyFilters);
+        if (durationSelect) {
+            durationSelect.addEventListener("change", applyFilters);
+        }
+        playerSelect.addEventListener("change", applyFilters);
+        sourceSelect.addEventListener("change", () => {
+            if (sourceSelect.value && state.typeFilter === "unique") {
+                state.uniqueSiteFilter = sourceSelect.value;
+                updateTabCounts();
+            }
+            applyFilters();
+        });
+        sortSelect.addEventListener("change", applyFilters);
+
+        if (uniqueOnlyCheckbox) {
+            uniqueOnlyCheckbox.addEventListener("change", () => {
+                state.uniqueOnly = Boolean(uniqueOnlyCheckbox.checked);
+                updateTabCounts();
+                applyFilters();
+            });
+        }
+
+        if (uniqueSitesBar) {
+            uniqueSitesBar.addEventListener("click", (event) => {
+                const btn = event.target.closest(".unique-site-btn");
+                if (!btn) {
+                    return;
+                }
+                const site = btn.dataset.site;
+                state.uniqueSiteFilter = site === "all" ? "" : site;
+                if (sourceSelect && site !== "all") {
+                    sourceSelect.value = site;
+                }
+                updateTabCounts();
+                applyFilters();
+            });
+        }
+
+        if (audioSubFilterSelect) {
+            audioSubFilterSelect.addEventListener("change", () => {
+                state.audioSubFilter = audioSubFilterSelect.value;
+                audioSubFilterSelect.classList.toggle("has-value", Boolean(state.audioSubFilter));
+                applyFilters();
+            });
+        }
+
+        function updateEpisodesFilterVisibility() {
+            if (!episodesFilterSelect) {
+                return;
+            }
+            if (state.typeFilter === "movie") {
+                episodesFilterSelect.style.display = "none";
+            } else {
+                episodesFilterSelect.style.display = "";
+            }
+        }
+
+        if (episodesFilterSelect) {
+            episodesFilterSelect.addEventListener("change", () => {
+                state.episodesFilter = episodesFilterSelect.value;
+                episodesFilterSelect.classList.toggle("has-value", Boolean(state.episodesFilter));
+                applyFilters();
+            });
+        }
+
+        if (resetFiltersBtn) {
+            resetFiltersBtn.addEventListener("click", resetAllFilters);
+        }
+
+        if (toggleGenresBtn && genresCollapsible) {
+            const GENRES_COLLAPSED_KEY = "local_media_genres_collapsed_v1";
+            const isInitialCollapsed = localStorage.getItem(GENRES_COLLAPSED_KEY) === "true";
+            if (isInitialCollapsed) {
+                genresCollapsible.classList.add("collapsed");
+                if (genreToggleArrow) {
+                    genreToggleArrow.textContent = "▸";
+                }
+            }
+
+            toggleGenresBtn.addEventListener("click", () => {
+                const nowCollapsed = genresCollapsible.classList.toggle("collapsed");
+                if (genreToggleArrow) {
+                    genreToggleArrow.textContent = nowCollapsed ? "▸" : "▾";
+                }
+                localStorage.setItem(GENRES_COLLAPSED_KEY, `${nowCollapsed}`);
+            });
+        }
+
+        loadMoreBtn.addEventListener("click", () => {
+            state.visibleCount += PAGE_BATCH_SIZE;
+            renderMoviesGrid();
+        });
+
+        genreBadgesBar.addEventListener("click", (event) => {
+            const badge = event.target.closest(".genre-filter-badge");
+            if (!badge) {
+                return;
+            }
+
+            const genre = badge.dataset.genre;
+            if (genre === "__ALL__") {
+                state.selectedGenres.clear();
+                state.excludedGenres.clear();
+                applyFilters();
+                return;
+            }
+
+            if (state.selectedGenres.has(genre)) {
+                state.selectedGenres.delete(genre);
+                state.excludedGenres.add(genre);
+                applyFilters();
+                return;
+            }
+
+            if (state.excludedGenres.has(genre)) {
+                state.excludedGenres.delete(genre);
+                applyFilters();
+                return;
+            }
+
+            state.selectedGenres.add(genre);
+            applyFilters();
+        });
+
+        genreBadgesBar.addEventListener("contextmenu", (event) => {
+            const badge = event.target.closest(".genre-filter-badge");
+            if (!badge) {
+                return;
+            }
+
+            const genre = badge.dataset.genre;
+            if (genre === "__ALL__") {
+                return;
+            }
+
+            event.preventDefault();
+            state.selectedGenres.delete(genre);
+
+            if (state.excludedGenres.has(genre)) {
+                state.excludedGenres.delete(genre);
+                applyFilters();
+                return;
+            }
+
+            state.excludedGenres.add(genre);
+            applyFilters();
+        });
+
+        moviesContainer.addEventListener("click", (event) => {
+            const watchBtn = event.target.closest(".card-watchlist-btn");
+            if (watchBtn) {
+                event.stopPropagation();
+                const idx = Number(watchBtn.dataset.watchlistIndex);
+                const item = state.filtered[idx];
+                if (!item) {
+                    return;
+                }
+                const nowSaved = toggleWatchlistItem(item);
+                watchBtn.classList.toggle("saved", nowSaved);
+                if (state.typeFilter === "watchlist") {
+                    applyFilters();
+                }
+                return;
+            }
+
+            const posterArea = event.target.closest(".poster-wrap");
+            const posterCard = posterArea ? posterArea.closest(".movie-card") : null;
+            if (posterArea && posterCard) {
+                event.stopPropagation();
+                const idx = Number(posterCard.dataset.movieIndex);
+                const selectedItem = state.filtered[idx];
+                if (!selectedItem) {
+                    return;
+                }
+                state.lastFocusedCardIndex = idx;
+                openMovieModal(selectedItem);
+                const box = document.getElementById("mainPlayerFrameBox");
+                enterPlayerFullscreen(box, false);
+                return;
+            }
+
+            const card = event.target.closest(".movie-card");
+            if (!card) {
+                return;
+            }
+            const index = Number(card.dataset.movieIndex);
+            const selectedItem = state.filtered[index];
+            if (!selectedItem) {
+                return;
+            }
+            state.lastFocusedCardIndex = index;
+            openMovieModal(selectedItem);
+        });
+
+        function enterPlayerFullscreen(box, allowToggle) {
+            if (!box) {
+                return;
+            }
+            const applyFallback = () => {
+                if (allowToggle) {
+                    box.classList.toggle("theater-mode");
+                    return;
+                }
+                box.classList.add("theater-mode");
+            };
+            const req = box.requestFullscreen || box.webkitRequestFullscreen || box.mozRequestFullScreen || box.msRequestFullscreen;
+            if (!req) {
+                applyFallback();
+                return;
+            }
+            try {
+                const promise = req.call(box);
+                if (promise && typeof promise.catch === "function") {
+                    promise.catch(applyFallback);
+                }
+            } catch (err) {
+                applyFallback();
+            }
+        }
+
+        document.addEventListener("fullscreenchange", () => {
+            if (document.fullscreenElement) {
+                return;
+            }
+            const box = document.getElementById("mainPlayerFrameBox");
+            if (box) {
+                box.classList.remove("theater-mode");
+            }
+        });
+
+        modalBody.addEventListener("click", (event) => {
+            const theaterBtn = event.target.closest("#theaterFullscreenBtn");
+            if (theaterBtn) {
+                const box = document.getElementById("mainPlayerFrameBox");
+                enterPlayerFullscreen(box, true);
+                return;
+            }
+
+            const exitTheaterBtn = event.target.closest("#exitTheaterBtn");
+            if (exitTheaterBtn) {
+                if (document.fullscreenElement) {
+                    try {
+                        document.exitFullscreen().catch(() => {});
+                    } catch (e) {}
+                }
+                const box = document.getElementById("mainPlayerFrameBox");
+                if (box) {
+                    box.classList.remove("theater-mode");
+                }
+                return;
+            }
+
+            const expandBtn = event.target.closest(".modal-expand-btn");
+            if (expandBtn) {
+                if (expandBtn.id === "modalOverviewToggle") {
+                    const textEl = modalBody.querySelector("#modalOverviewText");
+                    if (textEl) {
+                        const isClamped = textEl.classList.toggle("is-clamped");
+                        expandBtn.textContent = isClamped ? "Виж още ▾" : "Свий ▴";
+                    }
+                    return;
+                }
+                const crewRow = expandBtn.closest(".modal-collapsible-crew");
+                if (crewRow) {
+                    const chipsEl = crewRow.querySelector(".modal-crew-chips");
+                    if (chipsEl) {
+                        const isClamped = chipsEl.classList.toggle("is-clamped");
+                        expandBtn.textContent = isClamped ? "още ▾" : "свий ▴";
+                    }
+                    return;
+                }
+                const chipRow = expandBtn.closest(".modal-chips-row");
+                if (chipRow) {
+                    const listEl = chipRow.querySelector(".modal-collapsible-chips");
+                    if (listEl) {
+                        const isClamped = listEl.classList.toggle("is-clamped");
+                        expandBtn.textContent = isClamped ? "още ▾" : "свий ▴";
+                    }
+                    return;
+                }
+            }
+
+            const modalWatchBtn = event.target.closest("#modalWatchlistBtn");
+            if (modalWatchBtn && state.activeModalItem) {
+                const nowSaved = toggleWatchlistItem(state.activeModalItem);
+                modalWatchBtn.classList.toggle("saved", nowSaved);
+                modalWatchBtn.textContent = nowSaved ? "🔖 В списъка „За по-късно“" : "🔖 Добави в „За по-късно“";
+                renderMoviesGrid();
+                return;
+            }
+
+            const seasonBtn = event.target.closest(".season-btn");
+            if (seasonBtn && state.activeModalItem) {
+                state.activeSeasonIndex = Number(seasonBtn.dataset.seasonIdx);
+                state.activeEpisodeIndex = 0;
+                const mount = document.getElementById("modalPlayerMount");
+                if (mount) {
+                    mount.innerHTML = buildPlayerSectionMarkup(state.activeModalItem);
+                }
+                return;
+            }
+
+            const epBtn = event.target.closest(".episode-btn");
+            if (epBtn && state.activeModalItem) {
+                state.activeEpisodeIndex = Number(epBtn.dataset.episodeIdx);
+                const mount = document.getElementById("modalPlayerMount");
+                if (mount) {
+                    mount.innerHTML = buildPlayerSectionMarkup(state.activeModalItem);
+                }
+                return;
+            }
+
+            const tabBtn = event.target.closest(".player-tab");
+            if (!tabBtn || !tabBtn.dataset.embedUrl) {
+                return;
+            }
+            const allTabs = modalBody.querySelectorAll(".player-tab");
+            for (const tab of allTabs) {
+                tab.classList.remove("active");
+            }
+            tabBtn.classList.add("active");
+            const iframe = document.getElementById("modalPlayerIframe");
+            if (iframe) {
+                iframe.src = tabBtn.dataset.embedUrl;
+            }
+            const activeBadge = document.getElementById("activePlayerSummaryBadge");
+            if (activeBadge) {
+                activeBadge.textContent = tabBtn.textContent.trim();
+            }
+        });
+
+        function checkAndClampModalContent() {
+            const overviewText = modalBody.querySelector("#modalOverviewText");
+            const overviewToggle = modalBody.querySelector("#modalOverviewToggle");
+            if (overviewText && overviewToggle) {
+                if (overviewText.scrollHeight > 30) {
+                    overviewText.classList.add("is-clamped");
+                    overviewToggle.style.display = "inline-flex";
+                    overviewToggle.textContent = "Виж още ▾";
+                }
+            }
+
+            const crewRows = modalBody.querySelectorAll(".modal-collapsible-crew");
+            for (const row of crewRows) {
+                const chipsEl = row.querySelector(".modal-crew-chips");
+                const toggleBtn = row.querySelector(".crew-expand-btn");
+                if (chipsEl && toggleBtn) {
+                    if (chipsEl.scrollHeight > 34) {
+                        chipsEl.classList.add("is-clamped");
+                        toggleBtn.style.display = "inline-flex";
+                        toggleBtn.textContent = "още ▾";
+                    }
+                }
+            }
+
+            const chipRows = modalBody.querySelectorAll(".modal-chips-row");
+            for (const row of chipRows) {
+                const listEl = row.querySelector(".modal-collapsible-chips");
+                const toggleBtn = row.querySelector(".chip-expand-btn");
+                if (listEl && toggleBtn) {
+                    if (listEl.scrollHeight > 36) {
+                        listEl.classList.add("is-clamped");
+                        toggleBtn.style.display = "inline-flex";
+                        toggleBtn.textContent = "още ▾";
+                    }
+                }
+            }
+        }
+
+        window.addEventListener("resize", () => {
+            if (movieModal.classList.contains("open")) {
+                checkAndClampModalContent();
+            }
+        });
+
+        closeModalBtn.addEventListener("click", closeMovieModal);
+        movieModal.addEventListener("click", (event) => {
+            if (event.target === movieModal) {
+                closeMovieModal();
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && movieModal.classList.contains("open")) {
+                event.preventDefault();
+                closeMovieModal();
+            }
+        });
+
+        modalBody.addEventListener("click", (event) => {
+            const crewBtn = event.target.closest(".crew-search-btn");
+            if (crewBtn) {
+                const query = crewBtn.getAttribute("data-search-query");
+                if (query) {
+                    closeMovieModal();
+                    searchInput.value = query;
+                    state.searchQuery = query;
+                    applyFilters();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+            }
+        });
+
+        const scrollTopBtn = document.getElementById("scrollTopBtn");
+        if (scrollTopBtn) {
+            window.addEventListener("scroll", () => {
+                scrollTopBtn.classList.toggle("visible", window.scrollY > 350);
+            }, { passive: true });
+            scrollTopBtn.addEventListener("click", () => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+        }
+
+        loadInitialData();
+    </script>
+</body>
+</html>

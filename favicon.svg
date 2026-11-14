@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="popcorn-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fffbeb"/>
+      <stop offset="50%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="popcorn-warm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+    <linearGradient id="box-red" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#991b1b"/>
+      <stop offset="15%" stop-color="#dc2626"/>
+      <stop offset="85%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Golden Popcorn Back Layer -->
+  <circle cx="21" cy="20" r="8" fill="url(#popcorn-grad)"/>
+  <circle cx="32" cy="13" r="9.5" fill="url(#popcorn-grad)"/>
+  <circle cx="43" cy="20" r="8" fill="url(#popcorn-grad)"/>
+  <circle cx="14" cy="24" r="6.5" fill="url(#popcorn-grad)"/>
+  <circle cx="50" cy="24" r="6.5" fill="url(#popcorn-grad)"/>
+
+  <!-- Fluffy Popcorn Front Layer -->
+  <circle cx="24" cy="24" r="7.5" fill="url(#popcorn-warm)"/>
+  <circle cx="40" cy="24" r="7.5" fill="url(#popcorn-warm)"/>
+  <circle cx="32" cy="21" r="8.5" fill="#fffbeb"/>
+  <circle cx="32" cy="26" r="6" fill="#fef08a"/>
+
+  <!-- Cinema Box Body -->
+  <path d="M15 27 L20 60 L44 60 L49 27 Z" fill="url(#box-red)"/>
+
+  <!-- White Vertical Stripes -->
+  <path d="M22 27 L25.5 60 L30 60 L28 27 Z" fill="#ffffff"/>
+  <path d="M36 27 L34 60 L38.5 60 L42 27 Z" fill="#ffffff"/>
+
+  <!-- Rim Top -->
+  <path d="M13 26 C13 24.5 15 24 17 24 L47 24 C49 24 51 24.5 51 26 L50 28 C50 28.5 49 29 47 29 L17 29 C15 29 14 28.5 14 28 Z" fill="#b91c1c"/>
+</svg>
+

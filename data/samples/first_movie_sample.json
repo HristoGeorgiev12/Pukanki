@@ -1,0 +1,117 @@
+{
+  "post_id": 42807,
+  "tmdb_id": 350060,
+  "slug": "kamenno-sarce-2016",
+  "url": "https://zenoplay.to/movie/kamenno-sarce-2016/",
+  "title": "Каменно сърце",
+  "year": 2016,
+  "age_rating": null,
+  "duration_minutes": 123,
+  "rating": 7.1,
+  "countries": [
+    "Denmark",
+    "Iceland"
+  ],
+  "genres": [
+    "Драма",
+    "Европейски",
+    "Романс",
+    "Скандинавски",
+    "Тийн"
+  ],
+  "tags": [
+    "coming of age",
+    "friendship",
+    "iceland",
+    "nordic"
+  ],
+  "overview": "На фона на суровата и променящата се със сезоните исландска природа се развива емоционалната история на Тор и Кристиян. Двамата тийнейджъри живеят в малко рибарско селце, а лятото им е наситено с преживявания. Единият се опитва да спечели сърцето на едно момиче, а другият открива неподозираните си чувства към най-добрия си приятел. Когато лятото е към края си, а с него и хубавото време, двете момчета трябва да приемат порастването си.",
+  "poster_url": "https://zenoplay.to/wp-content/uploads/2026/11/sqhmdarahmili9eyilzi5kkgfmr.jpg",
+  "backdrop_url": "https://image.tmdb.org/t/p/w1280/wUKuMkXEeIWb4nvGPgL4hXYvxMj.jpg",
+  "player_sources": [
+    {
+      "id": "vidsrc",
+      "name": "VidSrc",
+      "group": "en",
+      "embed_url": "https://vidsrc.sh/embed/movie/350060?autoplay=true"
+    },
+    {
+      "id": "1src",
+      "name": "1Src",
+      "group": "en",
+      "embed_url": "https://www.1src.org/embed/movie/350060"
+    },
+    {
+      "id": "yapgrid",
+      "name": "YapGrid",
+      "group": "en",
+      "embed_url": "https://yapgrid.com/embed/movie/350060"
+    },
+    {
+      "id": "embedmaster",
+      "name": "EmbedMaster",
+      "group": "en",
+      "embed_url": "https://embedmaster.link/movie/350060?autoplay=true"
+    },
+    {
+      "id": "vidsrc2",
+      "name": "VidSrc2",
+      "group": "en",
+      "embed_url": "https://vidsrc.ru/movie/350060?autoplay=true"
+    },
+    {
+      "id": "vidapi",
+      "name": "VidAPI",
+      "group": "en",
+      "embed_url": "https://vaplayer.ru/embed/movie/350060"
+    },
+    {
+      "id": "2embed",
+      "name": "2Embed",
+      "group": "en",
+      "embed_url": "https://www.2embed.cc/embed/350060"
+    },
+    {
+      "id": "vidlink",
+      "name": "VidLink",
+      "group": "en",
+      "embed_url": "https://vidlink.pro/movie/350060"
+    },
+    {
+      "id": "videasy",
+      "name": "Videasy",
+      "group": "en",
+      "embed_url": "https://videasy.xyz/embed/movie/350060"
+    },
+    {
+      "id": "vidy",
+      "name": "Vidy",
+      "group": "en",
+      "embed_url": "https://www.vidy.st/movie/350060"
+    },
+    {
+      "id": "vidzee",
+      "name": "Vidzee",
+      "group": "en",
+      "embed_url": "https://player.vidzee.wtf/embed/movie/350060"
+    },
+    {
+      "id": "cinesrc",
+      "name": "CineSRC",
+      "group": "en",
+      "embed_url": "https://cinesrc.st/embed/movie/350060"
+    },
+    {
+      "id": "vidcore",
+      "name": "VidCore",
+      "group": "en",
+      "embed_url": "https://vidcore.org/embed/movie/350060"
+    },
+    {
+      "id": "custom-1",
+      "name": "BG Player",
+      "group": "bg",
+      "embed_url": "https://rollo.uno/video/a64273fcc1892bad75fb48cc8834f2b1"
+    }
+  ]
+}
