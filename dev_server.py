@@ -15,6 +15,26 @@ from concurrent.futures import ThreadPoolExecutor
 PORT = 8080
 
 
+DEAD_PATTERNS = [
+    "404 not found",
+    "404 - не е намерен",
+    "не е намерен",
+    "file was deleted",
+    "file has been removed",
+    "video has been removed",
+    "video not found",
+    "file not found",
+    "deleted due to copyright",
+    "not found or deleted",
+    "file no longer exists",
+    "the video was deleted",
+    "file is no longer available",
+    "expired or has been deleted",
+    "the file expired",
+    "video record missing",
+]
+
+
 def check_single_player_url(url: str, timeout_sec: float = 2.5) -> dict:
     if not url or not url.startswith("http"):
         return {"url": url, "alive": False, "status": 0}
@@ -23,10 +43,52 @@ def check_single_player_url(url: str, timeout_sec: float = 2.5) -> dict:
     if "youtube.com" in url or "youtu.be" in url:
         return {"url": url, "alive": True, "status": 200}
 
+    import re
+    import urllib.parse
+
+    # 1. Byse / Filemoon: check the actual video record API
+    fmo_match = re.search(r'(?:filemoon\.(?:sx|to|in|me|net)|bysesukior\.com)/e/([a-zA-Z0-9_-]+)', url, re.I)
+    if fmo_match:
+        vid_id = fmo_match.group(1)
+        api_url = f"https://bysesukior.com/api/videos/{vid_id}/"
+        try:
+            req = urllib.request.Request(api_url, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
+            with urllib.request.urlopen(req, timeout=timeout_sec) as r:
+                if r.status == 200:
+                    return {"url": url, "alive": True, "status": 200}
+                return {"url": url, "alive": False, "status": r.status}
+        except urllib.error.HTTPError as e:
+            return {"url": url, "alive": False, "status": e.code, "reason": "filemoon video missing"}
+        except Exception:
+            pass
+
+    # 2. Vidon: check POST /dl with file_code
+    vidon_match = re.search(r'vidon\.(?:to|me|cc)/e/([a-zA-Z0-9_-]+)', url, re.I)
+    if vidon_match:
+        file_code = vidon_match.group(1)
+        try:
+            data = urllib.parse.urlencode({"op": "embed", "file_code": file_code, "auto": "1"}).encode()
+            req = urllib.request.Request(
+                "https://vidon.to/dl",
+                data=data,
+                headers={"User-Agent": "Mozilla/5.0", "Referer": f"https://vidon.to/e/{file_code}"}
+            )
+            with urllib.request.urlopen(req, timeout=timeout_sec) as r:
+                body = r.read().decode("utf-8", errors="ignore")
+                if "jwplayer" in body or "sources" in body or ".m3u8" in body:
+                    return {"url": url, "alive": True, "status": 200}
+                if any(p in body.lower() for p in DEAD_PATTERNS):
+                    return {"url": url, "alive": False, "status": 404, "reason": "vidon deleted"}
+        except urllib.error.HTTPError as e:
+            return {"url": url, "alive": False, "status": e.code}
+        except Exception:
+            pass
+
+    # 3. Standard GET check for all other providers
     req = urllib.request.Request(
         url,
         headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         }
     )
@@ -34,15 +96,15 @@ def check_single_player_url(url: str, timeout_sec: float = 2.5) -> dict:
     try:
         with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
             code = resp.status
-            raw = resp.read(2048).decode("utf-8", errors="ignore").lower()
-            if any(k in raw for k in ["404 - не е намерен", "file not found", "video not found", "файлът не е намерен"]):
-                return {"url": url, "alive": False, "status": 404}
+            raw = resp.read(4096).decode("utf-8", errors="ignore").lower()
+            for pat in DEAD_PATTERNS:
+                if pat in raw:
+                    return {"url": url, "alive": False, "status": 404, "reason": pat}
             return {"url": url, "alive": (200 <= code < 400), "status": code}
     except urllib.error.HTTPError as e:
         return {"url": url, "alive": False, "status": e.code}
     except Exception:
-        # If timeout or blocked, keep neutral/true
-        return {"url": url, "alive": True, "status": 0}
+        return {"url": url, "alive": False, "status": 0}
 
 
 class LocalDevHandler(http.server.SimpleHTTPRequestHandler):
