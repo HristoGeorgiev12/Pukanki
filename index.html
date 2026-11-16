@@ -3953,7 +3953,41 @@
                 .replaceAll("'", "&#039;");
         }
 
+        function isAudioOrSubtitleLabel(val) {
+            const s = `${val ?? ""}`.trim().toLowerCase();
+            return s === "бг аудио" || s === "бг субтитри" || s === "bg audio" || s === "bg sub" || s === "субтитри";
+        }
+
+        function isYouTubeUrl(url) {
+            const u = `${url ?? ""}`.toLowerCase();
+            return u.includes("youtube.com") || u.includes("youtu.be");
+        }
+
+        function configurePlayerIframe(iframe, url) {
+            if (!iframe) {
+                return;
+            }
+            if (isYouTubeUrl(url)) {
+                iframe.removeAttribute("sandbox");
+                iframe.referrerPolicy = "strict-origin-when-cross-origin";
+                return;
+            }
+            iframe.referrerPolicy = "no-referrer";
+            const shieldBtn = document.getElementById("playerAdShieldBtn");
+            const isShieldActive = !shieldBtn || !shieldBtn.classList.contains("is-disabled");
+            if (isShieldActive) {
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
+                return;
+            }
+            iframe.removeAttribute("sandbox");
+        }
+
         function hasBgSource(item) {
+            const sources = Array.isArray(item.player_sources) ? item.player_sources : [];
+            const hasBgPlayer = sources.some(s => s.group === "bg" || (s.name && !s.name.includes("💬") && !s.name.toLowerCase().includes("суб")));
+            if (hasBgPlayer) {
+                return true;
+            }
             if (item.is_bg_audio === true || item.has_filmi2k_bg === true) {
                 return true;
             }
@@ -4175,7 +4209,7 @@
             for (const item of items) {
                 const genres = Array.isArray(item.genres) ? item.genres : [];
                 for (const genre of genres) {
-                    if (genre && `${genre}`.trim().toLowerCase() !== "бг аудио") {
+                    if (genre && !isAudioOrSubtitleLabel(genre)) {
                         genreSet.add(genre);
                     }
                 }
@@ -5146,7 +5180,7 @@
                 const rawGenres = Array.isArray(item.genres) ? item.genres : [];
                 const displayGenres = [];
                 for (const genre of rawGenres) {
-                    if (`${genre}`.trim().toLowerCase() === "бг аудио") {
+                    if (isAudioOrSubtitleLabel(genre)) {
                         continue;
                     }
                     displayGenres.push(genre);
@@ -5552,7 +5586,7 @@
                         <div class="player-frame-box" id="mainPlayerFrameBox">
                             <div class="theater-exit-hotspot" id="theaterExitHotspot" title="Покажи бутона за свиване"></div>
                             <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра (Изход от цял екран)">↙ Свий плеъра</button>
-                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media" referrerpolicy="no-referrer" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
+                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" ${isYouTubeUrl(firstEmbedUrl) ? 'referrerpolicy="strict-origin-when-cross-origin"' : 'sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media" referrerpolicy="no-referrer"'} allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
                         </div>
                     ` : ""}
                 </div>
@@ -5749,7 +5783,7 @@
             let genresHtml = "";
             const genres = Array.isArray(item.genres) ? item.genres : [];
             for (const genre of genres) {
-                if (`${genre}`.trim().toLowerCase() === "бг аудио") {
+                if (isAudioOrSubtitleLabel(genre)) {
                     continue;
                 }
                 genresHtml = `${genresHtml}<span class="chip">${escapeHtml(genre)}</span>`;
@@ -6483,11 +6517,17 @@
                     if (fItem.overview && !matched.overview) {
                         matched.overview = fItem.overview;
                     }
-                    const mGenres = Array.isArray(matched.genres) ? matched.genres : [];
-                    const langGenre = fItem.is_subtitled ? "БГ Субтитри" : "БГ Аудио";
-                    if (!mGenres.includes(langGenre)) {
-                        mGenres.push(langGenre);
+                    if (Array.isArray(fItem.genres)) {
+                        const mGenres = Array.isArray(matched.genres) ? matched.genres : [];
+                        for (const fg of fItem.genres) {
+                            if (!isAudioOrSubtitleLabel(fg) && !mGenres.includes(fg)) {
+                                mGenres.push(fg);
+                            }
+                        }
                         matched.genres = mGenres;
+                    }
+                    if (fItem.is_subtitled) {
+                        matched.is_subtitled = true;
                     }
                     continue;
                 }
@@ -7183,7 +7223,12 @@
             } catch (e) {}
 
             const rawSrc = iframe.getAttribute("src") || iframe.src || "";
-            if (rawSrc && !rawSrc.includes("autoplay=1") && !rawSrc.includes("autoplay=true")) {
+            if (isYouTubeUrl(rawSrc)) {
+                if (!rawSrc.includes("autoplay=1")) {
+                    const joinChar = rawSrc.includes("?") ? "&" : "?";
+                    iframe.src = `${rawSrc}${joinChar}autoplay=1`;
+                }
+            } else if (!rawSrc.includes("autoplay=1") && !rawSrc.includes("autoplay=true")) {
                 const joinChar = rawSrc.includes("?") ? "&" : "?";
                 iframe.src = `${rawSrc}${joinChar}autoplay=1&autoPlay=true`;
             }
@@ -7205,6 +7250,15 @@
             const iframe = document.getElementById("modalPlayerIframe");
             const shieldBtn = document.getElementById("playerAdShieldBtn");
             if (!iframe || !shieldBtn) {
+                return;
+            }
+            const rawSrc = iframe.getAttribute("src") || iframe.src || "";
+            if (isYouTubeUrl(rawSrc)) {
+                iframe.removeAttribute("sandbox");
+                iframe.referrerPolicy = "strict-origin-when-cross-origin";
+                shieldBtn.classList.remove("is-disabled");
+                shieldBtn.innerHTML = "🛡️ YouTube (Чист)";
+                shieldBtn.title = "YouTube плеърът не изисква анти-реклама.";
                 return;
             }
             const hasSandbox = iframe.hasAttribute("sandbox");
@@ -7432,12 +7486,9 @@
             tabBtn.classList.add("active");
             const iframe = document.getElementById("modalPlayerIframe");
             if (iframe) {
-                const shieldBtn = document.getElementById("playerAdShieldBtn");
-                const isShieldActive = !shieldBtn || !shieldBtn.classList.contains("is-disabled");
-                if (isShieldActive) {
-                    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
-                }
-                iframe.src = tabBtn.dataset.embedUrl;
+                const targetUrl = tabBtn.dataset.embedUrl || "";
+                configurePlayerIframe(iframe, targetUrl);
+                iframe.src = targetUrl;
             }
             const activeBadge = document.getElementById("activePlayerSummaryBadge");
             if (activeBadge) {
