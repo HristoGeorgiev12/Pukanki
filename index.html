@@ -5301,20 +5301,23 @@
                 const url = `${s.embed_url ?? ""}`.toLowerCase();
 
                 if (isDirect && isBg) {
-                    if (name.includes("ok.ru") || url.includes("ok.ru")) {
+                    if (name.includes("filemoon") || url.includes("filemoon") || url.includes("bysesukior")) {
                         return 0;
                     }
-                    if (name.includes("voe") || url.includes("voe.sx")) {
+                    if (name.includes("vidon") || url.includes("vidon.to")) {
                         return 1;
                     }
-                    if (name.includes("filemoon") || url.includes("filemoon")) {
+                    if (name.includes("streamtape") || url.includes("streamtape")) {
                         return 2;
                     }
-                    if (name.includes("vidon") || url.includes("vidon.to")) {
+                    if (name.includes("ok.ru") || url.includes("ok.ru")) {
                         return 3;
                     }
-                    if (name.includes("streamtape") || url.includes("streamtape")) {
+                    if (name.includes("youtube") || url.includes("youtube.com") || url.includes("youtu.be")) {
                         return 4;
+                    }
+                    if (name.includes("voe") || url.includes("voe.sx")) {
+                        return 7;
                     }
                     return 5;
                 }
@@ -5576,9 +5579,9 @@
                                 <span class="player-check-status" id="playerCheckStatus" style="display: none;"></span>
                             </span>
                             <div class="player-toolbar-actions">
-                                <button type="button" class="player-play-btn" id="playerPlayBtn" title="Пусни видеото без изскачащи реклами">▶ Пусни плеъра</button>
                                 <button type="button" class="player-next-btn" id="playerNextBtn" title="Превключи към следващия наличен плеър">⏭️ Следващ плеър</button>
                                 <button type="button" class="player-adshield-btn" id="playerAdShieldBtn" title="Блокира изскачащите реклами при клик">🛡️ Анти-реклама</button>
+                                <button type="button" class="player-play-btn" id="playerPlayBtn" title="Пусни видеото директно без изскачащи реклами">▶ Пусни плеъра</button>
                                 <button type="button" class="theater-fullscreen-btn" id="theaterFullscreenBtn" title="Цял екран на плеъра">⛶ Цял екран</button>
                             </div>
                         </div>
@@ -7358,14 +7361,15 @@
                 }
 
                 const firstAlive = typeof data.activeIndex === "number" ? data.activeIndex : -1;
-                if (firstAlive > 0 && data.results[0] && !data.results[0].alive) {
-                    const targetTab = tabs[firstAlive];
-                    if (targetTab && !targetTab.classList.contains("active")) {
-                        targetTab.click();
+                if (firstAlive >= 0 && tabs[firstAlive]) {
+                    const currentActiveTab = tabs.find(t => t.classList.contains("active")) || tabs[0];
+                    const currentIdx = tabs.indexOf(currentActiveTab);
+                    if (currentIdx !== -1 && data.results[currentIdx] && !data.results[currentIdx].alive) {
+                        tabs[firstAlive].click();
                         const statusEl = document.getElementById("playerCheckStatus");
                         if (statusEl) {
                             statusEl.style.display = "inline-flex";
-                            statusEl.innerHTML = `✓ Избран работещ: ${targetTab.textContent.trim()}`;
+                            statusEl.innerHTML = `✓ Избран работещ: ${tabs[firstAlive].textContent.trim().split(" ")[0]}`;
                             setTimeout(() => {
                                 if (statusEl) {
                                     statusEl.style.display = "none";
