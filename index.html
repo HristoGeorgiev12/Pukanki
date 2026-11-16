@@ -39,9 +39,9 @@
         }
 
         .container {
-            max-width: 1360px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 24px 20px 60px;
+            padding: 16px 20px 50px;
         }
 
         header {
@@ -49,9 +49,9 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-            padding-bottom: 18px;
+            gap: 14px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
             border-bottom: 1px solid var(--border);
         }
 
@@ -160,13 +160,13 @@
 
         .filters-panel {
             background: var(--bg-panel);
-            padding: 16px;
-            border-radius: 16px;
+            padding: 12px 14px;
+            border-radius: 14px;
             border: 1px solid var(--border);
-            margin-bottom: 28px;
+            margin-bottom: 18px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 10px;
         }
 
         .filters-row {
@@ -826,15 +826,15 @@
 
         .movies-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+            gap: 12px;
         }
 
         .movie-card {
             position: relative;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 14px;
+            border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
             display: flex;
@@ -845,11 +845,11 @@
         .movie-card:hover,
         .movie-card:focus,
         .movie-card:focus-visible {
-            transform: translateY(-6px) scale(1.02);
+            transform: translateY(-4px) scale(1.02);
             border-color: #8b5cf6;
-            outline: 3px solid #a78bfa;
+            outline: 2px solid #a78bfa;
             outline-offset: 2px;
-            box-shadow: 0 16px 36px rgba(124, 58, 237, 0.45), 0 0 20px rgba(139, 92, 246, 0.5);
+            box-shadow: 0 12px 28px rgba(124, 58, 237, 0.4), 0 0 16px rgba(139, 92, 246, 0.4);
             z-index: 5;
         }
 
@@ -893,16 +893,16 @@
 
         .badge-rating {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 7px;
+            left: 7px;
             z-index: 3;
             background: rgba(9, 10, 16, 0.88);
             backdrop-filter: blur(6px);
             color: var(--gold);
             font-weight: 700;
-            font-size: 0.82rem;
-            padding: 4px 9px;
-            border-radius: 8px;
+            font-size: 0.76rem;
+            padding: 3px 7px;
+            border-radius: 6px;
             border: 1px solid rgba(251, 191, 36, 0.4);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
             display: inline-flex;
@@ -912,12 +912,12 @@
 
         .poster-badges-top-right {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 7px;
+            right: 7px;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 5px;
+            gap: 4px;
             z-index: 2;
         }
 
@@ -1132,16 +1132,17 @@
 
 
         .card-body {
-            padding: 14px;
+            padding: 8px 10px 10px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             flex: 1;
         }
 
         .card-title {
-            font-size: 1rem;
+            font-size: 0.88rem;
             font-weight: 700;
+            line-height: 1.25;
             color: var(--text-main);
             display: -webkit-box;
             -webkit-line-clamp: 1;
@@ -1152,8 +1153,8 @@
         .card-meta {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.82rem;
+            gap: 6px;
+            font-size: 0.76rem;
             color: var(--text-muted);
         }
 
@@ -1168,17 +1169,17 @@
         .card-genres {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
+            gap: 3px;
             margin-top: auto;
-            padding-top: 8px;
+            padding-top: 4px;
         }
 
         .genre-pill {
             background: rgba(255, 255, 255, 0.06);
             color: #d1d5db;
-            font-size: 0.72rem;
-            padding: 2px 8px;
-            border-radius: 6px;
+            font-size: 0.68rem;
+            padding: 2px 6px;
+            border-radius: 5px;
         }
 
         .card-sources {
