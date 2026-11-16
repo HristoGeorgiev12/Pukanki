@@ -7226,7 +7226,7 @@
         }
 
         function switchToNextPlayer() {
-            const tabs = Array.from(modalBody.querySelectorAll(".player-tabs-direct .player-tab"));
+            const tabs = Array.from(modalBody.querySelectorAll("#modalPlayerTabs .player-tab"));
             if (tabs.length <= 1) {
                 return;
             }
@@ -7246,10 +7246,21 @@
                 }
             }
             tabs[nextIdx].click();
+            const nextBtn = document.getElementById("playerNextBtn");
+            if (nextBtn) {
+                const prevHtml = nextBtn.innerHTML;
+                const nextLabel = tabs[nextIdx].textContent.trim().split(" ")[0] || "Следващ";
+                nextBtn.innerHTML = `✓ ${nextLabel}`;
+                setTimeout(() => {
+                    if (nextBtn) {
+                        nextBtn.innerHTML = prevHtml;
+                    }
+                }, 1600);
+            }
         }
 
         async function runQuickPlayerHealthCheck() {
-            const tabs = Array.from(modalBody.querySelectorAll(".player-tabs-direct .player-tab"));
+            const tabs = Array.from(modalBody.querySelectorAll("#modalPlayerTabs .player-tab"));
             if (tabs.length <= 1) {
                 return;
             }
