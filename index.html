@@ -2235,7 +2235,9 @@
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(139, 92, 246, 0.6);
-            transition: all 0.2s ease;
+            transition: opacity 0.35s ease, transform 0.35s ease, background 0.2s ease, border-color 0.2s ease;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .exit-theater-btn:hover,
@@ -2246,20 +2248,46 @@
             border-color: #c4b5fd;
             outline: 2px solid #a78bfa;
             transform: scale(1.05);
+            opacity: 1 !important;
+            pointer-events: auto !important;
         }
 
         .player-frame-box.theater-mode .exit-theater-btn,
         .player-frame-box.is-fullscreen .exit-theater-btn,
-        .player-frame-box:fullscreen .exit-theater-btn {
+        .player-frame-box:fullscreen .exit-theater-btn,
+        .player-frame-box:-webkit-full-screen .exit-theater-btn {
             display: inline-flex !important;
             align-items: center;
             gap: 8px;
         }
 
-        .player-frame-box:-webkit-full-screen .exit-theater-btn {
-            display: inline-flex !important;
-            align-items: center;
-            gap: 8px;
+        .player-frame-box.theater-mode.controls-hidden .exit-theater-btn,
+        .player-frame-box.is-fullscreen.controls-hidden .exit-theater-btn,
+        .player-frame-box:fullscreen.controls-hidden .exit-theater-btn,
+        .player-frame-box:-webkit-full-screen.controls-hidden .exit-theater-btn {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transform: translateY(-10px);
+        }
+
+        .theater-exit-hotspot {
+            display: none;
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            width: 280px !important;
+            height: 90px !important;
+            z-index: 2147483646 !important;
+            background: transparent !important;
+            pointer-events: none;
+        }
+
+        .player-frame-box.theater-mode .theater-exit-hotspot,
+        .player-frame-box.is-fullscreen .theater-exit-hotspot,
+        .player-frame-box:fullscreen .theater-exit-hotspot,
+        .player-frame-box:-webkit-full-screen .theater-exit-hotspot {
+            display: block !important;
+            pointer-events: auto !important;
         }
 
         /* Suppress Netlify injected badge and feedback overlays */
@@ -5406,6 +5434,7 @@
                         </div>
                         ${detectCamQuality(item) ? `<div class="cam-warning-banner">⚠️ Внимание: Запис от киносалон (CAM/TS). Картината може да е с по-ниско качество.</div>` : ""}
                         <div class="player-frame-box" id="mainPlayerFrameBox">
+                            <div class="theater-exit-hotspot" id="theaterExitHotspot" title="Покажи бутона за свиване"></div>
                             <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра (Изход от цял екран)">↙ Свий плеъра</button>
                             <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" referrerpolicy="no-referrer" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
                         </div>
@@ -6850,6 +6879,53 @@
             }
         });
 
+        let playerControlsHideTimer = null;
+
+        function isPlayerInTheaterOrFullscreen(box) {
+            const target = box || document.getElementById("mainPlayerFrameBox");
+            if (!target) {
+                return false;
+            }
+            if (target.classList.contains("theater-mode") || target.classList.contains("is-fullscreen")) {
+                return true;
+            }
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                return true;
+            }
+            return false;
+        }
+
+        function wakePlayerControls(box) {
+            const target = box || document.getElementById("mainPlayerFrameBox");
+            if (!target) {
+                return;
+            }
+            if (!isPlayerInTheaterOrFullscreen(target)) {
+                target.classList.remove("controls-hidden");
+                if (playerControlsHideTimer) {
+                    clearTimeout(playerControlsHideTimer);
+                    playerControlsHideTimer = null;
+                }
+                return;
+            }
+
+            target.classList.remove("controls-hidden");
+            if (playerControlsHideTimer) {
+                clearTimeout(playerControlsHideTimer);
+            }
+
+            playerControlsHideTimer = setTimeout(() => {
+                const exitBtn = document.getElementById("exitTheaterBtn");
+                if (exitBtn && exitBtn.matches(":hover")) {
+                    wakePlayerControls(target);
+                    return;
+                }
+                if (isPlayerInTheaterOrFullscreen(target)) {
+                    target.classList.add("controls-hidden");
+                }
+            }, 2500);
+        }
+
         function updateTheaterButtonsState(isTheater) {
             const theaterBtn = document.getElementById("theaterFullscreenBtn");
             if (theaterBtn) {
@@ -6860,9 +6936,14 @@
 
         function exitPlayerFullscreen(box) {
             const targetBox = box || document.getElementById("mainPlayerFrameBox");
+            if (playerControlsHideTimer) {
+                clearTimeout(playerControlsHideTimer);
+                playerControlsHideTimer = null;
+            }
             if (targetBox) {
                 targetBox.classList.remove("theater-mode");
                 targetBox.classList.remove("is-fullscreen");
+                targetBox.classList.remove("controls-hidden");
             }
             if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
                 try {
@@ -6891,22 +6972,27 @@
                         promise.then(() => {
                             box.classList.add("is-fullscreen");
                             updateTheaterButtonsState(true);
+                            wakePlayerControls(box);
                         }).catch(() => {
                             box.classList.add("theater-mode");
                             updateTheaterButtonsState(true);
+                            wakePlayerControls(box);
                         });
                     } else {
                         box.classList.add("is-fullscreen");
                         updateTheaterButtonsState(true);
+                        wakePlayerControls(box);
                     }
                 } catch (err) {
                     box.classList.add("theater-mode");
                     updateTheaterButtonsState(true);
+                    wakePlayerControls(box);
                 }
                 return;
             }
             box.classList.add("theater-mode");
             updateTheaterButtonsState(true);
+            wakePlayerControls(box);
         }
 
         const fullscreenEvents = ["fullscreenchange", "webkitfullscreenchange", "mozfullscreenchange", "MSFullscreenChange"];
@@ -6918,10 +7004,23 @@
                     box.classList.toggle("is-fullscreen", isFs);
                     if (!isFs) {
                         box.classList.remove("theater-mode");
+                        box.classList.remove("controls-hidden");
+                    } else {
+                        wakePlayerControls(box);
                     }
                 }
                 updateTheaterButtonsState(isFs || (box && box.classList.contains("theater-mode")));
             });
+        }
+
+        const userActivityEvents = ["mousemove", "pointermove", "touchstart", "keydown"];
+        for (const evt of userActivityEvents) {
+            window.addEventListener(evt, () => {
+                const box = document.getElementById("mainPlayerFrameBox");
+                if (box && isPlayerInTheaterOrFullscreen(box)) {
+                    wakePlayerControls(box);
+                }
+            }, { passive: true });
         }
 
         window.addEventListener("message", (event) => {
@@ -6934,6 +7033,16 @@
                     exitPlayerFullscreen();
                 }
             } catch (e) {}
+        });
+
+        modalBody.addEventListener("mouseover", (event) => {
+            const isHoverTarget = event.target.closest("#exitTheaterBtn") || event.target.closest("#theaterExitHotspot");
+            if (isHoverTarget) {
+                const box = document.getElementById("mainPlayerFrameBox");
+                if (box && isPlayerInTheaterOrFullscreen(box)) {
+                    wakePlayerControls(box);
+                }
+            }
         });
 
         modalBody.addEventListener("click", (event) => {
