@@ -2187,6 +2187,67 @@
             letter-spacing: 0.05em;
         }
 
+        .player-toolbar-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-play-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: 1px solid #34d399;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .player-play-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            border-color: #6ee7b7;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
+        }
+
+        .player-play-btn.is-active {
+            background: linear-gradient(135deg, #059669, #065f46);
+            border-color: #10b981;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+        }
+
+        .player-adshield-btn {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(52, 211, 153, 0.45);
+            color: #34d399;
+            font-size: 0.76rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .player-adshield-btn:hover {
+            border-color: #34d399;
+            color: #ffffff;
+        }
+
+        .player-adshield-btn.is-disabled {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.45);
+            color: #fca5a5;
+        }
+
         .theater-fullscreen-btn {
             background: rgba(124, 58, 237, 0.18);
             border: 1px solid rgba(124, 58, 237, 0.45);
@@ -5431,13 +5492,17 @@
                     ${firstEmbedUrl ? `
                         <div class="player-toolbar-row">
                             <span class="player-current-label">▶ Видео плеър:</span>
-                            <button type="button" class="theater-fullscreen-btn" id="theaterFullscreenBtn" title="Цял екран на плеъра">⛶ Цял екран</button>
+                            <div class="player-toolbar-actions">
+                                <button type="button" class="player-play-btn" id="playerPlayBtn" title="Пусни видеото без изскачащи реклами">▶ Пусни плеъра</button>
+                                <button type="button" class="player-adshield-btn" id="playerAdShieldBtn" title="Блокира изскачащите реклами при клик">🛡️ Анти-реклама</button>
+                                <button type="button" class="theater-fullscreen-btn" id="theaterFullscreenBtn" title="Цял екран на плеъра">⛶ Цял екран</button>
+                            </div>
                         </div>
                         ${detectCamQuality(item) ? `<div class="cam-warning-banner">⚠️ Внимание: Запис от киносалон (CAM/TS). Картината може да е с по-ниско качество.</div>` : ""}
                         <div class="player-frame-box" id="mainPlayerFrameBox">
                             <div class="theater-exit-hotspot" id="theaterExitHotspot" title="Покажи бутона за свиване"></div>
                             <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра (Изход от цял екран)">↙ Свий плеъра</button>
-                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" referrerpolicy="no-referrer" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
+                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media" referrerpolicy="no-referrer" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
                         </div>
                     ` : ""}
                 </div>
@@ -7046,7 +7111,82 @@
             }
         });
 
+        function handlePlayerPlay() {
+            const iframe = document.getElementById("modalPlayerIframe");
+            if (!iframe) {
+                return;
+            }
+            const playBtn = document.getElementById("playerPlayBtn");
+            if (playBtn) {
+                playBtn.innerHTML = "▶ Пускане...";
+                playBtn.classList.add("is-active");
+            }
+
+            try {
+                if (iframe.contentWindow) {
+                    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                    iframe.contentWindow.postMessage({ method: "play" }, "*");
+                    iframe.contentWindow.postMessage({ action: "play" }, "*");
+                    iframe.contentWindow.postMessage("play", "*");
+                }
+            } catch (e) {}
+
+            const rawSrc = iframe.getAttribute("src") || iframe.src || "";
+            if (rawSrc && !rawSrc.includes("autoplay=1") && !rawSrc.includes("autoplay=true")) {
+                const joinChar = rawSrc.includes("?") ? "&" : "?";
+                iframe.src = `${rawSrc}${joinChar}autoplay=1&autoPlay=true`;
+            }
+
+            setTimeout(() => {
+                if (playBtn) {
+                    playBtn.innerHTML = "✓ Пуснато";
+                    setTimeout(() => {
+                        if (playBtn) {
+                            playBtn.innerHTML = "▶ Пусни плеъра";
+                            playBtn.classList.remove("is-active");
+                        }
+                    }, 2000);
+                }
+            }, 600);
+        }
+
+        function handleToggleAdShield() {
+            const iframe = document.getElementById("modalPlayerIframe");
+            const shieldBtn = document.getElementById("playerAdShieldBtn");
+            if (!iframe || !shieldBtn) {
+                return;
+            }
+            const hasSandbox = iframe.hasAttribute("sandbox");
+            if (hasSandbox) {
+                iframe.removeAttribute("sandbox");
+                shieldBtn.classList.add("is-disabled");
+                shieldBtn.innerHTML = "⚠️ Анти-реклама: Изкл";
+                shieldBtn.title = "Анти-рекламата е изключена. Кликни за включване на защитата.";
+                const s = iframe.src;
+                iframe.src = s;
+                return;
+            }
+            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
+            shieldBtn.classList.remove("is-disabled");
+            shieldBtn.innerHTML = "🛡️ Анти-реклама";
+            shieldBtn.title = "Блокира изскачащите реклами при клик. Кликни тук, ако някое видео не зарежда.";
+            const s = iframe.src;
+            iframe.src = s;
+        }
+
         modalBody.addEventListener("click", (event) => {
+            const playBtn = event.target.closest("#playerPlayBtn");
+            if (playBtn) {
+                handlePlayerPlay();
+                return;
+            }
+
+            const shieldBtn = event.target.closest("#playerAdShieldBtn");
+            if (shieldBtn) {
+                handleToggleAdShield();
+                return;
+            }
+
             const theaterBtn = event.target.closest("#theaterFullscreenBtn");
             if (theaterBtn) {
                 const box = document.getElementById("mainPlayerFrameBox");
@@ -7135,6 +7275,11 @@
             tabBtn.classList.add("active");
             const iframe = document.getElementById("modalPlayerIframe");
             if (iframe) {
+                const shieldBtn = document.getElementById("playerAdShieldBtn");
+                const isShieldActive = !shieldBtn || !shieldBtn.classList.contains("is-disabled");
+                if (isShieldActive) {
+                    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
+                }
                 iframe.src = tabBtn.dataset.embedUrl;
             }
             const activeBadge = document.getElementById("activePlayerSummaryBadge");
