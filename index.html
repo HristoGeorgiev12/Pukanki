@@ -2273,6 +2273,31 @@
             pointer-events: none !important;
             z-index: -9999 !important;
         }
+
+        .version-switch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(236, 72, 153, 0.25));
+            border: 1px solid rgba(236, 72, 153, 0.5);
+            color: #fdf2f8;
+            padding: 9px 16px;
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(236, 72, 153, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .version-switch-btn:hover {
+            background: linear-gradient(135deg, #7c3aed, #ec4899);
+            border-color: #ec4899;
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(236, 72, 153, 0.45);
+        }
     </style>
 </head>
 <body>
@@ -2286,6 +2311,7 @@
                 <p>Филми, сериали и списък за гледане по-късно</p>
             </div>
             <div class="header-actions">
+                <a href="https://pukanki-git-pukankinew-only-me-27f1.vercel.app" class="version-switch-btn" title="Отвори новата тестова версия с TMDB API, трейлъри и актьори">✨ Пуканки NEW (TMDB) ↗</a>
                 <select id="sortSelect" class="select-control" aria-label="Сортиране">
                     <option value="default">По ред на добавяне</option>
                     <option value="rating_desc">Рейтинг (най-висок)</option>
