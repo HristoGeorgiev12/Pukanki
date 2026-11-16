@@ -2273,6 +2273,313 @@
             pointer-events: none !important;
             z-index: -9999 !important;
         }
+
+        .tmdb-suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+            user-select: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tmdb-suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .tmdb-suggestion-item:hover,
+        .tmdb-suggestion-item.active {
+            background: rgba(124, 58, 237, 0.3);
+        }
+
+        .tmdb-thumb {
+            width: 38px;
+            height: 56px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #1e2235;
+            flex-shrink: 0;
+        }
+
+        .tmdb-thumb-placeholder {
+            width: 38px;
+            height: 56px;
+            border-radius: 6px;
+            background: #1e2235;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .tmdb-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .tmdb-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tmdb-title {
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tmdb-orig-title {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .tmdb-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .tmdb-badge-local {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            padding: 1px 7px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .tmdb-badge-live {
+            background: rgba(124, 58, 237, 0.2);
+            color: #c4b5fd;
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            padding: 1px 7px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .modal-tagline {
+            font-size: 0.98rem;
+            font-style: italic;
+            color: #c4b5fd;
+            margin: -4px 0 10px;
+            line-height: 1.4;
+            opacity: 0.95;
+        }
+
+        .modal-trailer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .modal-trailer-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(220, 38, 38, 0.5);
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .intermediate-trailer-btn {
+            background: rgba(220, 38, 38, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            color: #fca5a5;
+        }
+
+        .intermediate-trailer-btn:hover {
+            background: rgba(220, 38, 38, 0.4);
+            border-color: rgba(239, 68, 68, 0.7);
+            color: #fff;
+        }
+
+        .modal-cast-section {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .modal-section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-cast-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(124, 58, 237, 0.6) rgba(15, 18, 32, 0.85);
+        }
+
+        .modal-cast-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .modal-cast-scroll::-webkit-scrollbar-thumb {
+            background: rgba(124, 58, 237, 0.6);
+            border-radius: 6px;
+        }
+
+        .cast-card {
+            flex: 0 0 100px;
+            width: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cast-card:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: rgba(124, 58, 237, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .cast-photo {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 6px;
+            background: #1e2235;
+            border: 2px solid rgba(124, 58, 237, 0.4);
+        }
+
+        .cast-photo-fallback {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #1e2235;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+        }
+
+        .cast-name {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .cast-character {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-style: italic;
+            line-height: 1.2;
+            margin-top: 2px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .modal-recommendations-section {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .modal-recommendations-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(124, 58, 237, 0.6) rgba(15, 18, 32, 0.85);
+        }
+
+        .rec-card {
+            flex: 0 0 110px;
+            width: 110px;
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .rec-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(124, 58, 237, 0.6);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .rec-poster {
+            width: 100%;
+            height: 155px;
+            object-fit: cover;
+            background: #1e2235;
+            display: block;
+        }
+
+        .rec-info {
+            padding: 6px;
+        }
+
+        .rec-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .rec-meta {
+            font-size: 0.68rem;
+            color: var(--gold);
+            margin-top: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
@@ -2405,6 +2712,10 @@
                         <button type="button" id="intermediatePlayBtn" class="intermediate-btn intermediate-play-btn" title="Пусни филма на цял екран">
                             <span class="btn-icon">▶</span>
                             <span>Гледай</span>
+                        </button>
+                        <button type="button" id="intermediateTrailerBtn" class="intermediate-btn intermediate-trailer-btn" title="Гледай официален трейлър" style="display: none;">
+                            <span class="btn-icon">🎬</span>
+                            <span>Трейлър</span>
                         </button>
                         <button type="button" id="intermediateInfoBtn" class="intermediate-btn intermediate-info-btn" title="Виж подробна информация за филма">
                             <span class="btn-icon">ℹ</span>
@@ -2565,6 +2876,15 @@
         const countWatchlist = document.getElementById("countWatchlist");
         const searchInput = document.getElementById("searchInput");
         const searchSuggestions = document.getElementById("searchSuggestions");
+
+        const TMDB_API_KEY = "4e44d9029b1270a757cddc766a1bcb63";
+        const tmdbCache = {
+            details: {},
+            credits: {},
+            videos: {},
+            search: {}
+        };
+        let tmdbSearchDebounce = null;
 
         const SEARCH_FIELD_SUGGESTIONS = [
             {
@@ -2743,6 +3063,16 @@
             if (!item) {
                 return;
             }
+            if (item.isTmdb) {
+                hideSearchSuggestions();
+                if (item.localMatch) {
+                    openIntermediateScreen(item.localMatch);
+                    return;
+                }
+                const liveItem = createTmdbItemObject(item.rawTmdb);
+                openIntermediateScreen(liveItem);
+                return;
+            }
             if (item.isStudio) {
                 searchInput.value = `${triggerChar}студио: ${item.name}`;
                 hideSearchSuggestions();
@@ -2763,6 +3093,183 @@
             hideSearchSuggestions();
             searchInput.focus();
             applyFilters();
+        }
+
+        function createTmdbItemObject(raw) {
+            const isTv = raw.media_type === "tv";
+            const title = raw.title || raw.name || "Без заглавие";
+            const originalTitle = raw.original_title || raw.original_name || title;
+            const yearStr = (raw.release_date || raw.first_air_date || "").slice(0, 4);
+            const year = yearStr ? parseInt(yearStr, 10) : null;
+            const poster = raw.poster_path ? `https://image.tmdb.org/t/p/w500${raw.poster_path}` : "";
+            const backdrop = raw.backdrop_path ? `https://image.tmdb.org/t/p/w1280${raw.backdrop_path}` : poster;
+            const rating = raw.vote_average ? Math.round(raw.vote_average * 10) / 10 : null;
+            const id = raw.id;
+
+            return {
+                id: `tmdb_${id}`,
+                tmdb_id: id,
+                title: title,
+                original_title: originalTitle,
+                type: isTv ? "tv" : "movie",
+                year: year,
+                rating: rating,
+                poster_url: poster,
+                backdrop_url: backdrop,
+                overview: raw.overview || "Няма налично описание на български.",
+                genres: [],
+                actors: [],
+                directors: [],
+                origins: ["TMDB Live"],
+                sources: [
+                    {
+                        name: "VidLink (HD)",
+                        embed_url: isTv ? `https://vidlink.pro/tv/${id}/1/1` : `https://vidlink.pro/movie/${id}`,
+                        direct_embed: true
+                    },
+                    {
+                        name: "Vidsrc (Multi)",
+                        embed_url: isTv ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=1&episode=1` : `https://vidsrc.me/embed/movie?tmdb=${id}`,
+                        direct_embed: true
+                    },
+                    {
+                        name: "Embed.su",
+                        embed_url: isTv ? `https://embed.su/embed/tv/${id}/1/1` : `https://embed.su/embed/movie/${id}`,
+                        direct_embed: true
+                    },
+                    {
+                        name: "SuperEmbed",
+                        embed_url: isTv ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=1&e=1` : `https://multiembed.mov/?video_id=${id}&tmdb=1`,
+                        direct_embed: true
+                    }
+                ]
+            };
+        }
+
+        async function searchTmdbLive(query) {
+            const cleanQuery = query.trim();
+            if (cleanQuery.length < 2) {
+                return;
+            }
+
+            let results = [];
+            if (tmdbCache.search[cleanQuery]) {
+                results = tmdbCache.search[cleanQuery];
+            } else {
+                try {
+                    const url = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&language=bg-BG&query=${encodeURIComponent(cleanQuery)}&include_adult=false`;
+                    const res = await fetch(url);
+                    if (res.ok) {
+                        const data = await res.json();
+                        results = Array.isArray(data.results) ? data.results : [];
+                        tmdbCache.search[cleanQuery] = results;
+                    }
+                } catch (e) {
+                    return;
+                }
+            }
+
+            const currentVal = searchInput ? searchInput.value.trim() : "";
+            if (currentVal !== cleanQuery) {
+                return;
+            }
+
+            const validItems = [];
+            for (const r of results) {
+                if (r.media_type === "movie" || r.media_type === "tv") {
+                    validItems.push(r);
+                }
+                if (validItems.length >= 7) {
+                    break;
+                }
+            }
+
+            if (validItems.length === 0) {
+                return;
+            }
+
+            currentSuggestions = [];
+            for (let i = 0; i < validItems.length; i++) {
+                const r = validItems[i];
+                const rId = r.id;
+                const rTitle = (r.title || r.name || "").toLowerCase();
+                const rOrigTitle = (r.original_title || r.original_name || "").toLowerCase();
+
+                let localMatch = null;
+                for (const item of state.items) {
+                    if (item.tmdb_id && Number(item.tmdb_id) === Number(rId)) {
+                        localMatch = item;
+                        break;
+                    }
+                    const itemTitle = (item.title || "").toLowerCase();
+                    if (itemTitle === rTitle) {
+                        localMatch = item;
+                        break;
+                    }
+                    if (item.original_title && item.original_title.toLowerCase() === rOrigTitle && rOrigTitle) {
+                        localMatch = item;
+                        break;
+                    }
+                }
+
+                currentSuggestions.push({
+                    isTmdb: true,
+                    rawTmdb: r,
+                    localMatch: localMatch
+                });
+            }
+
+            activeSuggestionIndex = 0;
+            renderTmdbSuggestionsHtml();
+        }
+
+        function renderTmdbSuggestionsHtml() {
+            if (!searchSuggestions || currentSuggestions.length === 0) {
+                return;
+            }
+
+            let html = `<div class="search-suggestions-header">🍿 Резултати от TMDB & Каталога:</div>`;
+            for (let i = 0; i < currentSuggestions.length; i++) {
+                const s = currentSuggestions[i];
+                const r = s.rawTmdb;
+                const activeCls = i === activeSuggestionIndex ? "active" : "";
+                const title = escapeHtml(r.title || r.name || "Без заглавие");
+                const orig = r.original_title || r.original_name || "";
+                const showOrig = orig && orig.toLowerCase() !== (r.title || r.name || "").toLowerCase();
+                const year = (r.release_date || r.first_air_date || "").slice(0, 4);
+                const isTv = r.media_type === "tv";
+                const rating = r.vote_average ? (Math.round(r.vote_average * 10) / 10).toFixed(1) : "";
+                const thumb = r.poster_path ? `https://image.tmdb.org/t/p/w92${r.poster_path}` : "";
+
+                let badgeHtml = "";
+                if (s.localMatch) {
+                    const hasBg = hasBgSource(s.localMatch);
+                    badgeHtml = `<span class="tmdb-badge-local">${hasBg ? "🟢 БГ Аудио" : "🟢 В каталога"}</span>`;
+                } else {
+                    badgeHtml = `<span class="tmdb-badge-live">✨ TMDB Стрийминг</span>`;
+                }
+
+                html = `${html}
+                    <div class="search-suggestion-item tmdb-suggestion-item ${activeCls}" data-index="${i}">
+                        ${thumb ? `<img class="tmdb-thumb" src="${thumb}" alt="${title}" loading="lazy">` : `<div class="tmdb-thumb-placeholder">${isTv ? "📺" : "🎬"}</div>`}
+                        <div class="tmdb-info-col">
+                            <div class="tmdb-title-row">
+                                <span class="tmdb-title">${title}</span>
+                                ${showOrig ? `<span class="tmdb-orig-title">(${escapeHtml(orig)})</span>` : ""}
+                            </div>
+                            <div class="tmdb-meta-row">
+                                <span>${isTv ? "📺 Сериал" : "🎬 Филм"}</span>
+                                ${year ? `<span>📅 ${year}</span>` : ""}
+                                ${rating ? `<span>★ ${rating}</span>` : ""}
+                                ${badgeHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            searchSuggestions.innerHTML = html;
+            searchSuggestions.style.display = "flex";
         }
 
         function updateSuggestionHighlight() {
@@ -2806,6 +3313,7 @@
         const intermediateMetaRow = document.getElementById("intermediateMetaRow");
         const intermediateOverview = document.getElementById("intermediateOverview");
         const intermediatePlayBtn = document.getElementById("intermediatePlayBtn");
+        const intermediateTrailerBtn = document.getElementById("intermediateTrailerBtn");
         const intermediateInfoBtn = document.getElementById("intermediateInfoBtn");
         const intermediateBackBtn = document.getElementById("intermediateBackBtn");
 
@@ -4851,6 +5359,23 @@
                 intermediateOverview.textContent = item.overview || "Няма налично описание.";
             }
 
+            if (intermediateTrailerBtn) {
+                intermediateTrailerBtn.style.display = "inline-flex";
+                intermediateTrailerBtn.onclick = () => {
+                    if (intermediateScreen) {
+                        intermediateScreen.classList.remove("open");
+                        intermediateScreen.style.display = "none";
+                    }
+                    openMovieModal(item);
+                    setTimeout(() => {
+                        const trailerBtn = document.getElementById("modalTrailerBtn");
+                        if (trailerBtn) {
+                            trailerBtn.click();
+                        }
+                    }, 350);
+                };
+            }
+
             if (intermediateScreen) {
                 intermediateScreen.style.display = "flex";
                 intermediateScreen.classList.add("open");
@@ -4973,6 +5498,7 @@
                         <img class="modal-poster" src="${poster}" alt="${title}" referrerpolicy="no-referrer" onerror="this.style.display='none'">
                         <div class="modal-info">
                             <h2>${title}</h2>
+                            <div class="modal-tagline" id="modalTagline" style="display: none;"></div>
                             <div class="modal-submeta">
                                 ${typePill}
                                 ${hasBgSource(item) ? '<span class="modal-bg-pill">БГ Аудио</span>' : ""}
@@ -5037,6 +5563,15 @@
                             ` : ""}
                             <div class="modal-actions-row">
                                 <button type="button" id="modalWatchlistBtn" class="watchlist-modal-btn ${savedClass}">${savedLabel}</button>
+                                <button type="button" id="modalTrailerBtn" class="modal-trailer-btn" style="display: none;">🎬 Гледай Трейлър</button>
+                            </div>
+                            <div class="modal-cast-section" id="modalCastSection" style="display: none;">
+                                <div class="modal-section-title">👥 Актьорски състав (TMDB):</div>
+                                <div class="modal-cast-scroll" id="modalCastScroll"></div>
+                            </div>
+                            <div class="modal-recommendations-section" id="modalRecSection" style="display: none;">
+                                <div class="modal-section-title">✨ Препоръчани подобни заглавия:</div>
+                                <div class="modal-recommendations-scroll" id="modalRecScroll"></div>
                             </div>
                         </div>
                     </div>
@@ -5051,6 +5586,7 @@
                 topbarTitle.textContent = item.title ? `${item.title}${item.year ? ` (${item.year})` : ""}` : "";
             }
             checkAndClampModalContent();
+            enrichModalWithTmdbData(item);
             movieModal.scrollTop = 0;
             const modalContent = movieModal.querySelector(".modal-content");
             if (modalContent) {
@@ -5062,6 +5598,250 @@
                     backBtn.focus();
                 }, 60);
             }
+        }
+
+        async function enrichModalWithTmdbData(item) {
+            let tmdbId = item.tmdb_id ? Number(item.tmdb_id) : null;
+            const isTv = item.type === "tv";
+            const mediaType = isTv ? "tv" : "movie";
+
+            if (!tmdbId) {
+                const searchKey = `${item.title}_${item.year || ""}_${mediaType}`;
+                if (tmdbCache.search[searchKey]) {
+                    tmdbId = tmdbCache.search[searchKey];
+                } else {
+                    try {
+                        const searchUrl = `https://api.themoviedb.org/3/search/${mediaType}?api_key=${TMDB_API_KEY}&language=bg-BG&query=${encodeURIComponent(item.title)}&include_adult=false`;
+                        const sRes = await fetch(searchUrl);
+                        if (sRes.ok) {
+                            const sData = await sRes.json();
+                            if (Array.isArray(sData.results) && sData.results.length > 0) {
+                                tmdbId = sData.results[0].id;
+                                tmdbCache.search[searchKey] = tmdbId;
+                            }
+                        }
+                    } catch (e) {
+                        return;
+                    }
+                }
+            }
+
+            if (!tmdbId) {
+                return;
+            }
+
+            if (!state.activeModalItem || (state.activeModalItem !== item && state.activeModalItem.id !== item.id)) {
+                return;
+            }
+
+            let details = null;
+            let credits = null;
+            let videos = null;
+
+            const cacheKey = `${mediaType}_${tmdbId}`;
+            if (tmdbCache.details[cacheKey]) {
+                details = tmdbCache.details[cacheKey];
+                credits = tmdbCache.credits[cacheKey];
+                videos = tmdbCache.videos[cacheKey];
+            } else {
+                try {
+                    const dUrl = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${TMDB_API_KEY}&language=bg-BG&append_to_response=credits,videos,recommendations`;
+                    const dRes = await fetch(dUrl);
+                    if (dRes.ok) {
+                        details = await dRes.json();
+                        credits = details.credits || null;
+                        videos = details.videos ? details.videos.results : [];
+
+                        if (!videos || videos.length === 0) {
+                            const vUrl = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}/videos?api_key=${TMDB_API_KEY}&language=en-US`;
+                            const vRes = await fetch(vUrl);
+                            if (vRes.ok) {
+                                const vData = await vRes.json();
+                                videos = vData.results || [];
+                            }
+                        }
+
+                        tmdbCache.details[cacheKey] = details;
+                        tmdbCache.credits[cacheKey] = credits;
+                        tmdbCache.videos[cacheKey] = videos;
+                    }
+                } catch (e) {
+                    return;
+                }
+            }
+
+            if (!state.activeModalItem || (state.activeModalItem !== item && state.activeModalItem.id !== item.id)) {
+                return;
+            }
+
+            const taglineEl = document.getElementById("modalTagline");
+            if (taglineEl && details && details.tagline) {
+                taglineEl.textContent = `„${details.tagline}“`;
+                taglineEl.style.display = "block";
+            }
+
+            let trailerKey = "";
+            if (Array.isArray(videos)) {
+                for (const v of videos) {
+                    if (v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser") && v.key) {
+                        trailerKey = v.key;
+                        break;
+                    }
+                }
+                if (!trailerKey) {
+                    for (const v of videos) {
+                        if (v.site === "YouTube" && v.key) {
+                            trailerKey = v.key;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            const trailerBtn = document.getElementById("modalTrailerBtn");
+            if (trailerBtn && trailerKey) {
+                trailerBtn.style.display = "inline-flex";
+                trailerBtn.onclick = () => {
+                    playTrailerInModal(trailerKey, details ? details.title || details.name : item.title);
+                };
+            }
+
+            const castList = credits && Array.isArray(credits.cast) ? credits.cast.slice(0, 20) : [];
+            const castSection = document.getElementById("modalCastSection");
+            const castScroll = document.getElementById("modalCastScroll");
+            if (castSection && castScroll && castList.length > 0) {
+                let castHtml = "";
+                for (const actor of castList) {
+                    const aName = escapeHtml(actor.name || "");
+                    const aChar = escapeHtml(actor.character || "");
+                    const aPhoto = actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : "";
+                    castHtml = `${castHtml}
+                        <div class="cast-card" data-actor-query="${aName}" title="Търси филми с ${aName}">
+                            ${aPhoto ? `<img class="cast-photo" src="${aPhoto}" alt="${aName}" loading="lazy">` : `<div class="cast-photo-fallback">👤</div>`}
+                            <div class="cast-name">${aName}</div>
+                            ${aChar ? `<div class="cast-character">${aChar}</div>` : ""}
+                        </div>
+                    `;
+                }
+                castScroll.innerHTML = castHtml;
+                castSection.style.display = "block";
+
+                const allCards = castScroll.querySelectorAll(".cast-card");
+                for (const card of allCards) {
+                    card.addEventListener("click", () => {
+                        const q = card.dataset.actorQuery;
+                        if (!q) {
+                            return;
+                        }
+                        closeMovieModal();
+                        searchInput.value = `@актьор: ${q}`;
+                        searchInput.focus();
+                        applyFilters();
+                    });
+                }
+            }
+
+            const recs = details && details.recommendations && Array.isArray(details.recommendations.results) ? details.recommendations.results.slice(0, 12) : [];
+            const recSection = document.getElementById("modalRecSection");
+            const recScroll = document.getElementById("modalRecScroll");
+            if (recSection && recScroll && recs.length > 0) {
+                let recHtml = "";
+                for (const rec of recs) {
+                    const rTitle = escapeHtml(rec.title || rec.name || "");
+                    const rPoster = rec.poster_path ? `https://image.tmdb.org/t/p/w342${rec.poster_path}` : "";
+                    if (!rPoster) {
+                        continue;
+                    }
+                    const rYear = (rec.release_date || rec.first_air_date || "").slice(0, 4);
+                    const rRating = rec.vote_average ? (Math.round(rec.vote_average * 10) / 10).toFixed(1) : "";
+                    recHtml = `${recHtml}
+                        <div class="rec-card" data-rec-id="${rec.id}" data-rec-type="${rec.media_type || mediaType}">
+                            <img class="rec-poster" src="${rPoster}" alt="${rTitle}" loading="lazy">
+                            <div class="rec-info">
+                                <div class="rec-title">${rTitle}</div>
+                                <div class="rec-meta">
+                                    <span>${rYear}</span>
+                                    ${rRating ? `<span>★ ${rRating}</span>` : ""}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                if (recHtml) {
+                    recScroll.innerHTML = recHtml;
+                    recSection.style.display = "block";
+
+                    const allRecCards = recScroll.querySelectorAll(".rec-card");
+                    for (const card of allRecCards) {
+                        card.addEventListener("click", () => {
+                            const recId = Number(card.dataset.recId);
+                            const recType = card.dataset.recType;
+                            openTmdbItemById(recId, recType);
+                        });
+                    }
+                }
+            }
+        }
+
+        function playTrailerInModal(trailerKey, title) {
+            const iframe = document.getElementById("modalPlayerIframe");
+            const trailerUrl = `https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`;
+
+            if (iframe) {
+                iframe.src = trailerUrl;
+                const box = document.getElementById("mainPlayerFrameBox");
+                if (box) {
+                    box.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+                const label = document.getElementById("activePlayerSummaryBadge");
+                if (label) {
+                    label.textContent = "🎬 YouTube Трейлър";
+                }
+                return;
+            }
+
+            const mount = document.getElementById("modalPlayerMount");
+            if (!mount) {
+                return;
+            }
+
+            mount.innerHTML = `
+                <div class="modal-player-section" id="modalPlayerSection">
+                    <div class="player-toolbar-row">
+                        <span class="player-current-label">🎬 YouTube Официален Трейлър:</span>
+                        <button type="button" class="theater-fullscreen-btn" id="theaterFullscreenBtn" title="Цял екран на плеъра">⛶ Цял екран</button>
+                    </div>
+                    <div class="player-frame-box" id="mainPlayerFrameBox">
+                        <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра">↙ Свий плеъра</button>
+                        <iframe id="modalPlayerIframe" src="${trailerUrl}" allow="autoplay *; fullscreen *; encrypted-media *" allowfullscreen="true"></iframe>
+                    </div>
+                </div>
+            `;
+            const box = document.getElementById("mainPlayerFrameBox");
+            if (box) {
+                box.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }
+
+        async function openTmdbItemById(id, mediaType) {
+            for (const item of state.items) {
+                if (item.tmdb_id && Number(item.tmdb_id) === Number(id)) {
+                    openMovieModal(item);
+                    return;
+                }
+            }
+
+            const mType = mediaType === "tv" ? "tv" : "movie";
+            try {
+                const url = `https://api.themoviedb.org/3/${mType}/${id}?api_key=${TMDB_API_KEY}&language=bg-BG`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const data = await res.json();
+                    data.media_type = mType;
+                    const newItem = createTmdbItemObject(data);
+                    openMovieModal(newItem);
+                }
+            } catch (e) {}
         }
 
         function handleMovieBack() {
@@ -5661,10 +6441,20 @@
         searchInput.addEventListener("input", () => {
             const val = searchInput.value;
             if (!val.startsWith("#") && !val.startsWith("@")) {
-                hideSearchSuggestions();
                 applyFilters();
+                const cleanQuery = val.trim();
+                if (cleanQuery.length < 2) {
+                    hideSearchSuggestions();
+                    return;
+                }
+                clearTimeout(tmdbSearchDebounce);
+                tmdbSearchDebounce = setTimeout(() => {
+                    searchTmdbLive(cleanQuery);
+                }, 280);
                 return;
             }
+
+            clearTimeout(tmdbSearchDebounce);
 
             const trigger = val[0];
             const after = val.slice(1);
