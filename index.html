@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <title>Пуканки</title>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Пуканки NEW — TMDB & Стрийминг</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="alternate icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍿</text></svg>">
     <style>
@@ -647,7 +647,7 @@
             border-radius: 11px;
             box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75), 0 0 16px rgba(124, 58, 237, 0.2);
             z-index: 250;
-            max-height: min(390px, 60vh);
+            max-height: min(460px, 68vh);
             overflow-y: auto;
             overflow-x: hidden;
             display: flex;
@@ -1669,6 +1669,7 @@
             background-size: cover;
             background-position: center;
             border-bottom: 1px solid var(--border);
+            overflow: hidden;
         }
 
         .modal-hero::before {
@@ -1697,6 +1698,11 @@
             border-radius: 12px;
             border: 1px solid var(--border);
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-info {
+            min-width: 0;
+            max-width: 100%;
         }
 
         .modal-info h2 {
@@ -2274,6 +2280,19 @@
             z-index: -9999 !important;
         }
 
+        .brand-new-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #7c3aed, #ec4899);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
+            vertical-align: middle;
+        }
+
         .tmdb-suggestion-item {
             display: flex;
             align-items: center;
@@ -2284,6 +2303,7 @@
             transition: background 0.15s;
             user-select: none;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
         }
 
         .tmdb-suggestion-item:last-child {
@@ -2296,8 +2316,8 @@
         }
 
         .tmdb-thumb {
-            width: 38px;
-            height: 56px;
+            width: 40px;
+            height: 58px;
             border-radius: 6px;
             object-fit: cover;
             background: #1e2235;
@@ -2305,8 +2325,8 @@
         }
 
         .tmdb-thumb-placeholder {
-            width: 38px;
-            height: 56px;
+            width: 40px;
+            height: 58px;
             border-radius: 6px;
             background: #1e2235;
             display: flex;
@@ -2378,7 +2398,7 @@
             font-size: 0.98rem;
             font-style: italic;
             color: #c4b5fd;
-            margin: -4px 0 10px;
+            margin: -2px 0 12px;
             line-height: 1.4;
             opacity: 0.95;
         }
@@ -2386,12 +2406,12 @@
         .modal-trailer-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: linear-gradient(135deg, #dc2626, #b91c1c);
             color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
+            border: 1px solid rgba(248, 113, 113, 0.35);
+            padding: 9px 18px;
+            border-radius: 10px;
             font-size: 0.88rem;
             font-weight: 700;
             cursor: pointer;
@@ -2417,17 +2437,109 @@
             color: #fff;
         }
 
+        .modal-tmdb-sections {
+            padding: 0 32px;
+            background: rgba(13, 15, 24, 0.65);
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .modal-trailer-stage {
+            margin: 20px 0 6px;
+            background: #0b0d16;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+        }
+
+        .modal-trailer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 16px;
+            background: rgba(220, 38, 38, 0.14);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .modal-trailer-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #fca5a5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-trailer-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-trailer-ext-link {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #e5e7eb;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+
+        .modal-trailer-ext-link:hover {
+            background: rgba(255, 255, 255, 0.16);
+            color: #fff;
+        }
+
+        .modal-trailer-close-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .modal-trailer-close-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: #fff;
+        }
+
+        .modal-trailer-frame-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            max-height: 520px;
+            background: #000;
+        }
+
+        .modal-trailer-frame-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
+
         .modal-cast-section {
-            margin-top: 18px;
-            padding-top: 14px;
-            border-top: 1px solid var(--border);
+            padding: 20px 0 12px;
+            border-bottom: 1px solid var(--border);
         }
 
         .modal-section-title {
-            font-size: 0.95rem;
+            font-size: 0.98rem;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -2452,16 +2564,16 @@
         }
 
         .cast-card {
-            flex: 0 0 100px;
-            width: 100px;
+            flex: 0 0 106px;
+            width: 106px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 8px 6px;
+            border-radius: 12px;
+            padding: 10px 6px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -2473,18 +2585,18 @@
         }
 
         .cast-photo {
-            width: 64px;
-            height: 64px;
+            width: 66px;
+            height: 66px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             background: #1e2235;
             border: 2px solid rgba(124, 58, 237, 0.4);
         }
 
         .cast-photo-fallback {
-            width: 64px;
-            height: 64px;
+            width: 66px;
+            height: 66px;
             border-radius: 50%;
             background: #1e2235;
             border: 2px solid var(--border);
@@ -2492,14 +2604,14 @@
             align-items: center;
             justify-content: center;
             font-size: 1.6rem;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .cast-name {
             font-size: 0.78rem;
             font-weight: 700;
             color: var(--text-main);
-            line-height: 1.2;
+            line-height: 1.25;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -2511,7 +2623,7 @@
             color: var(--text-muted);
             font-style: italic;
             line-height: 1.2;
-            margin-top: 2px;
+            margin-top: 3px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -2519,14 +2631,13 @@
         }
 
         .modal-recommendations-section {
-            margin-top: 18px;
-            padding-top: 14px;
-            border-top: 1px solid var(--border);
+            padding: 20px 0 14px;
+            border-bottom: 1px solid var(--border);
         }
 
         .modal-recommendations-scroll {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             overflow-x: auto;
             padding-bottom: 10px;
             scrollbar-width: thin;
@@ -2534,10 +2645,10 @@
         }
 
         .rec-card {
-            flex: 0 0 110px;
-            width: 110px;
+            flex: 0 0 124px;
+            width: 124px;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
@@ -2552,21 +2663,21 @@
 
         .rec-poster {
             width: 100%;
-            height: 155px;
+            height: 175px;
             object-fit: cover;
             background: #1e2235;
             display: block;
         }
 
         .rec-info {
-            padding: 6px;
+            padding: 8px;
         }
 
         .rec-title {
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             font-weight: 700;
             color: var(--text-main);
-            line-height: 1.2;
+            line-height: 1.25;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -2574,11 +2685,40 @@
         }
 
         .rec-meta {
-            font-size: 0.68rem;
+            font-size: 0.7rem;
             color: var(--gold);
-            margin-top: 3px;
+            margin-top: 4px;
             display: flex;
             justify-content: space-between;
+        }
+
+        .version-switch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(124, 58, 237, 0.16);
+            border: 1px solid rgba(124, 58, 237, 0.45);
+            color: #ddd6fe;
+            padding: 9px 16px;
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .version-switch-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        }
+
+        @media (max-width: 768px) {
+            .modal-tmdb-sections {
+                padding: 0 14px;
+            }
         }
     </style>
 </head>
@@ -2589,10 +2729,12 @@
                 <h1>
                     <img src="favicon.svg" alt="🍿" class="brand-logo-icon">
                     <span class="brand-title-text">Пуканки</span>
+                    <span class="brand-new-badge">NEW • TMDB</span>
                 </h1>
-                <p>Филми, сериали и списък за гледане по-късно</p>
+                <p>Глобален TMDB каталог, официални трейлъри, актьори и БГ стрийминг</p>
             </div>
             <div class="header-actions">
+                <a href="https://pukanki.vercel.app" class="version-switch-btn" title="Към основната версия на Пуканки">← Основен Пуканки</a>
                 <select id="sortSelect" class="select-control" aria-label="Сортиране">
                     <option value="default">По ред на добавяне</option>
                     <option value="rating_desc">Рейтинг (най-висок)</option>
@@ -2702,7 +2844,7 @@
             </div>
             <div class="intermediate-content">
                 <div class="intermediate-poster-wrap">
-                    <img id="intermediatePoster" class="intermediate-poster" src="" alt="" onerror="this.classList.add('img-fallback')">
+                    <img id="intermediatePoster" class="intermediate-poster" src="" alt="" referrerpolicy="no-referrer" onerror="this.classList.add('img-fallback')">
                 </div>
                 <div class="intermediate-info">
                     <h1 id="intermediateTitle" class="intermediate-title"></h1>
@@ -3219,7 +3361,7 @@
                 });
             }
 
-            activeSuggestionIndex = 0;
+            activeSuggestionIndex = -1;
             renderTmdbSuggestionsHtml();
         }
 
@@ -3228,7 +3370,7 @@
                 return;
             }
 
-            let html = `<div class="search-suggestions-header">🍿 Резултати от TMDB & Каталога:</div>`;
+            let html = `<div class="search-suggestions-header">🍿 Резултати от TMDB & Каталога (кликни или избери със стрелките):</div>`;
             for (let i = 0; i < currentSuggestions.length; i++) {
                 const s = currentSuggestions[i];
                 const r = s.rawTmdb;
@@ -3251,7 +3393,7 @@
 
                 html = `${html}
                     <div class="search-suggestion-item tmdb-suggestion-item ${activeCls}" data-index="${i}">
-                        ${thumb ? `<img class="tmdb-thumb" src="${thumb}" alt="${title}" loading="lazy">` : `<div class="tmdb-thumb-placeholder">${isTv ? "📺" : "🎬"}</div>`}
+                        ${thumb ? `<img class="tmdb-thumb" src="${thumb}" alt="${title}" loading="lazy" referrerpolicy="no-referrer">` : `<div class="tmdb-thumb-placeholder">${isTv ? "📺" : "🎬"}</div>`}
                         <div class="tmdb-info-col">
                             <div class="tmdb-title-row">
                                 <span class="tmdb-title">${title}</span>
@@ -5265,7 +5407,7 @@
                         ${detectCamQuality(item) ? `<div class="cam-warning-banner">⚠️ Внимание: Запис от киносалон (CAM/TS). Картината може да е с по-ниско качество.</div>` : ""}
                         <div class="player-frame-box" id="mainPlayerFrameBox">
                             <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра (Изход от цял екран)">↙ Свий плеъра</button>
-                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
+                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" referrerpolicy="no-referrer" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
                         </div>
                     ` : ""}
                 </div>
@@ -5537,7 +5679,7 @@
                                 </div>
                             ` : ""}
                             ${Array.isArray(item.actors) && item.actors.length > 0 ? `
-                                <div class="modal-crew-row modal-collapsible-crew">
+                                <div class="modal-crew-row modal-collapsible-crew" id="modalPlainActorsRow">
                                     <strong class="modal-crew-label">👥 В ролите:</strong>
                                     <div class="modal-crew-chips">
                                         ${item.actors.slice(0, 15).map(a => `<button type="button" class="crew-search-btn" data-search-query="@актьор: ${escapeHtml(a)}" title="Търси филми с ${escapeHtml(a)}">${escapeHtml(a)}</button>`).join("")}
@@ -5563,17 +5705,20 @@
                             ` : ""}
                             <div class="modal-actions-row">
                                 <button type="button" id="modalWatchlistBtn" class="watchlist-modal-btn ${savedClass}">${savedLabel}</button>
-                                <button type="button" id="modalTrailerBtn" class="modal-trailer-btn" style="display: none;">🎬 Гледай Трейлър</button>
-                            </div>
-                            <div class="modal-cast-section" id="modalCastSection" style="display: none;">
-                                <div class="modal-section-title">👥 Актьорски състав (TMDB):</div>
-                                <div class="modal-cast-scroll" id="modalCastScroll"></div>
-                            </div>
-                            <div class="modal-recommendations-section" id="modalRecSection" style="display: none;">
-                                <div class="modal-section-title">✨ Препоръчани подобни заглавия:</div>
-                                <div class="modal-recommendations-scroll" id="modalRecScroll"></div>
+                                <button type="button" id="modalTrailerBtn" class="modal-trailer-btn" style="display: none;">▶ Гледай Трейлър</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="modal-tmdb-sections">
+                    <div id="modalTrailerStage" class="modal-trailer-stage" style="display: none;"></div>
+                    <div class="modal-cast-section" id="modalCastSection" style="display: none;">
+                        <div class="modal-section-title">👥 Актьорски състав (TMDB):</div>
+                        <div class="modal-cast-scroll" id="modalCastScroll"></div>
+                    </div>
+                    <div class="modal-recommendations-section" id="modalRecSection" style="display: none;">
+                        <div class="modal-section-title">✨ Препоръчани подобни заглавия:</div>
+                        <div class="modal-recommendations-scroll" id="modalRecScroll"></div>
                     </div>
                 </div>
                 <div id="modalPlayerMount">${buildPlayerSectionMarkup(item)}</div>
@@ -5650,17 +5795,19 @@
                     if (dRes.ok) {
                         details = await dRes.json();
                         credits = details.credits || null;
-                        videos = details.videos ? details.videos.results : [];
+                        const bgVideos = details.videos && Array.isArray(details.videos.results) ? details.videos.results : [];
+                        let enVideos = [];
 
-                        if (!videos || videos.length === 0) {
+                        try {
                             const vUrl = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}/videos?api_key=${TMDB_API_KEY}&language=en-US`;
                             const vRes = await fetch(vUrl);
                             if (vRes.ok) {
                                 const vData = await vRes.json();
-                                videos = vData.results || [];
+                                enVideos = Array.isArray(vData.results) ? vData.results : [];
                             }
-                        }
+                        } catch (ve) {}
 
+                        videos = bgVideos.concat(enVideos);
                         tmdbCache.details[cacheKey] = details;
                         tmdbCache.credits[cacheKey] = credits;
                         tmdbCache.videos[cacheKey] = videos;
@@ -5683,9 +5830,25 @@
             let trailerKey = "";
             if (Array.isArray(videos)) {
                 for (const v of videos) {
-                    if (v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser") && v.key) {
+                    if (v.site === "YouTube" && v.type === "Trailer" && v.official && v.key) {
                         trailerKey = v.key;
                         break;
+                    }
+                }
+                if (!trailerKey) {
+                    for (const v of videos) {
+                        if (v.site === "YouTube" && v.type === "Trailer" && v.key) {
+                            trailerKey = v.key;
+                            break;
+                        }
+                    }
+                }
+                if (!trailerKey) {
+                    for (const v of videos) {
+                        if (v.site === "YouTube" && v.type === "Teaser" && v.key) {
+                            trailerKey = v.key;
+                            break;
+                        }
                     }
                 }
                 if (!trailerKey) {
@@ -5717,7 +5880,7 @@
                     const aPhoto = actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : "";
                     castHtml = `${castHtml}
                         <div class="cast-card" data-actor-query="${aName}" title="Търси филми с ${aName}">
-                            ${aPhoto ? `<img class="cast-photo" src="${aPhoto}" alt="${aName}" loading="lazy">` : `<div class="cast-photo-fallback">👤</div>`}
+                            ${aPhoto ? `<img class="cast-photo" src="${aPhoto}" alt="${aName}" loading="lazy" referrerpolicy="no-referrer">` : `<div class="cast-photo-fallback">👤</div>`}
                             <div class="cast-name">${aName}</div>
                             ${aChar ? `<div class="cast-character">${aChar}</div>` : ""}
                         </div>
@@ -5725,6 +5888,11 @@
                 }
                 castScroll.innerHTML = castHtml;
                 castSection.style.display = "block";
+
+                const plainActorsRow = document.getElementById("modalPlainActorsRow");
+                if (plainActorsRow) {
+                    plainActorsRow.style.display = "none";
+                }
 
                 const allCards = castScroll.querySelectorAll(".cast-card");
                 for (const card of allCards) {
@@ -5756,7 +5924,7 @@
                     const rRating = rec.vote_average ? (Math.round(rec.vote_average * 10) / 10).toFixed(1) : "";
                     recHtml = `${recHtml}
                         <div class="rec-card" data-rec-id="${rec.id}" data-rec-type="${rec.media_type || mediaType}">
-                            <img class="rec-poster" src="${rPoster}" alt="${rTitle}" loading="lazy">
+                            <img class="rec-poster" src="${rPoster}" alt="${rTitle}" loading="lazy" referrerpolicy="no-referrer">
                             <div class="rec-info">
                                 <div class="rec-title">${rTitle}</div>
                                 <div class="rec-meta">
@@ -5784,43 +5952,39 @@
         }
 
         function playTrailerInModal(trailerKey, title) {
-            const iframe = document.getElementById("modalPlayerIframe");
-            const trailerUrl = `https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`;
-
-            if (iframe) {
-                iframe.src = trailerUrl;
-                const box = document.getElementById("mainPlayerFrameBox");
-                if (box) {
-                    box.scrollIntoView({ behavior: "smooth", block: "center" });
-                }
-                const label = document.getElementById("activePlayerSummaryBadge");
-                if (label) {
-                    label.textContent = "🎬 YouTube Трейлър";
-                }
+            const stage = document.getElementById("modalTrailerStage");
+            if (!stage) {
                 return;
             }
 
-            const mount = document.getElementById("modalPlayerMount");
-            if (!mount) {
-                return;
-            }
+            const embedUrl = `https://www.youtube.com/embed/${encodeURIComponent(trailerKey)}?autoplay=1&rel=0`;
+            const watchUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(trailerKey)}`;
 
-            mount.innerHTML = `
-                <div class="modal-player-section" id="modalPlayerSection">
-                    <div class="player-toolbar-row">
-                        <span class="player-current-label">🎬 YouTube Официален Трейлър:</span>
-                        <button type="button" class="theater-fullscreen-btn" id="theaterFullscreenBtn" title="Цял екран на плеъра">⛶ Цял екран</button>
+            stage.innerHTML = `
+                <div class="modal-trailer-header">
+                    <div class="modal-trailer-title">
+                        <span>🎬 Официален Трейлър — ${escapeHtml(title || "")}</span>
                     </div>
-                    <div class="player-frame-box" id="mainPlayerFrameBox">
-                        <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра">↙ Свий плеъра</button>
-                        <iframe id="modalPlayerIframe" src="${trailerUrl}" allow="autoplay *; fullscreen *; encrypted-media *" allowfullscreen="true"></iframe>
+                    <div class="modal-trailer-actions">
+                        <a class="modal-trailer-ext-link" href="${watchUrl}" target="_blank" rel="noopener noreferrer">↗ Отвори в YouTube</a>
+                        <button type="button" class="modal-trailer-close-btn" id="closeTrailerStageBtn">✕ Затвори</button>
                     </div>
                 </div>
+                <div class="modal-trailer-frame-wrap">
+                    <iframe src="${embedUrl}" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
             `;
-            const box = document.getElementById("mainPlayerFrameBox");
-            if (box) {
-                box.scrollIntoView({ behavior: "smooth", block: "center" });
+            stage.style.display = "block";
+
+            const closeBtn = document.getElementById("closeTrailerStageBtn");
+            if (closeBtn) {
+                closeBtn.onclick = () => {
+                    stage.style.display = "none";
+                    stage.innerHTML = "";
+                };
             }
+
+            stage.scrollIntoView({ behavior: "smooth", block: "center" });
         }
 
         async function openTmdbItemById(id, mediaType) {
