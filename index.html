@@ -3976,7 +3976,7 @@
             const shieldBtn = document.getElementById("playerAdShieldBtn");
             const isShieldActive = !shieldBtn || !shieldBtn.classList.contains("is-disabled");
             if (isShieldActive) {
-                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation");
                 return;
             }
             iframe.removeAttribute("sandbox");
@@ -5586,7 +5586,7 @@
                         <div class="player-frame-box" id="mainPlayerFrameBox">
                             <div class="theater-exit-hotspot" id="theaterExitHotspot" title="Покажи бутона за свиване"></div>
                             <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра (Изход от цял екран)">↙ Свий плеъра</button>
-                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" ${isYouTubeUrl(firstEmbedUrl) ? 'referrerpolicy="strict-origin-when-cross-origin"' : 'sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media" referrerpolicy="no-referrer"'} allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
+                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" ${isYouTubeUrl(firstEmbedUrl) ? 'referrerpolicy="strict-origin-when-cross-origin"' : 'sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" referrerpolicy="no-referrer"'} allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
                         </div>
                     ` : ""}
                 </div>
@@ -7271,7 +7271,7 @@
                 iframe.src = s;
                 return;
             }
-            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
+            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation");
             shieldBtn.classList.remove("is-disabled");
             shieldBtn.innerHTML = "🛡️ Анти-реклама";
             shieldBtn.title = "Блокира изскачащите реклами при клик. Кликни тук, ако някое видео не зарежда.";
