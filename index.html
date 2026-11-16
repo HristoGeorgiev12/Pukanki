@@ -2262,6 +2262,52 @@
             color: #fff;
         }
 
+        .player-next-btn {
+            background: rgba(124, 58, 237, 0.18);
+            border: 1px solid rgba(124, 58, 237, 0.45);
+            color: #c4b5fd;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .player-next-btn:hover {
+            background: rgba(124, 58, 237, 0.35);
+            border-color: #8b5cf6;
+            color: #fff;
+        }
+
+        .player-tab-dead {
+            opacity: 0.42 !important;
+            text-decoration: line-through !important;
+            border-color: rgba(239, 68, 68, 0.45) !important;
+            filter: grayscale(0.7);
+        }
+
+        .player-tab-alive {
+            border-color: rgba(52, 211, 153, 0.6) !important;
+        }
+
+        .player-check-status {
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: #34d399;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         .player-frame-box.theater-mode {
             position: fixed !important;
             inset: 0 !important;
@@ -4867,9 +4913,13 @@
                     ` : ""}
                     ${firstEmbedUrl ? `
                         <div class="player-toolbar-row">
-                            <span class="player-current-label">▶ Видео плеър:</span>
+                            <span class="player-current-label">
+                                ▶ Видео плеър:
+                                <span class="player-check-status" id="playerCheckStatus" style="display: none;"></span>
+                            </span>
                             <div class="player-toolbar-actions">
                                 <button type="button" class="player-play-btn" id="playerPlayBtn" title="Пусни видеото без изскачащи реклами">▶ Пусни плеъра</button>
+                                <button type="button" class="player-next-btn" id="playerNextBtn" title="Превключи към следващия наличен плеър">⏭️ Следващ плеър</button>
                                 <button type="button" class="player-adshield-btn" id="playerAdShieldBtn" title="Блокира изскачащите реклами при клик">🛡️ Анти-реклама</button>
                                 <button type="button" class="theater-fullscreen-btn" id="theaterFullscreenBtn" title="Цял екран на плеъра">⛶ Цял екран</button>
                             </div>
@@ -5172,6 +5222,7 @@
                 topbarTitle.textContent = item.title ? `${item.title}${item.year ? ` (${item.year})` : ""}` : "";
             }
             checkAndClampModalContent();
+            runQuickPlayerHealthCheck();
             movieModal.scrollTop = 0;
             const modalContent = movieModal.querySelector(".modal-content");
             if (modalContent) {
@@ -6246,10 +6297,103 @@
             iframe.src = s;
         }
 
+        function switchToNextPlayer() {
+            const tabs = Array.from(modalBody.querySelectorAll(".player-tabs-direct .player-tab"));
+            if (tabs.length <= 1) {
+                return;
+            }
+            let currentIdx = -1;
+            for (let i = 0; i < tabs.length; i++) {
+                if (tabs[i].classList.contains("active")) {
+                    currentIdx = i;
+                    break;
+                }
+            }
+            let nextIdx = (currentIdx + 1) % tabs.length;
+            for (let step = 1; step < tabs.length; step++) {
+                const candIdx = (currentIdx + step) % tabs.length;
+                if (!tabs[candIdx].classList.contains("player-tab-dead")) {
+                    nextIdx = candIdx;
+                    break;
+                }
+            }
+            tabs[nextIdx].click();
+        }
+
+        async function runQuickPlayerHealthCheck() {
+            const tabs = Array.from(modalBody.querySelectorAll(".player-tabs-direct .player-tab"));
+            if (tabs.length <= 1) {
+                return;
+            }
+            const urls = tabs.map(t => t.dataset.embedUrl).filter(Boolean);
+            if (urls.length <= 1) {
+                return;
+            }
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2800);
+                const resp = await fetch("/api/check-player", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ urls }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (!resp.ok) {
+                    return;
+                }
+                const data = await resp.json();
+                if (!data || !Array.isArray(data.results)) {
+                    return;
+                }
+
+                for (let i = 0; i < data.results.length; i++) {
+                    const res = data.results[i];
+                    const tab = tabs[i];
+                    if (tab) {
+                        if (!res.alive) {
+                            tab.classList.add("player-tab-dead");
+                            tab.title = "Плеърът връща грешка или е свален (404)";
+                        }
+                        if (res.alive) {
+                            tab.classList.add("player-tab-alive");
+                            tab.title = "Работещ плеър";
+                        }
+                    }
+                }
+
+                const firstAlive = typeof data.activeIndex === "number" ? data.activeIndex : -1;
+                if (firstAlive > 0 && data.results[0] && !data.results[0].alive) {
+                    const targetTab = tabs[firstAlive];
+                    if (targetTab && !targetTab.classList.contains("active")) {
+                        targetTab.click();
+                        const statusEl = document.getElementById("playerCheckStatus");
+                        if (statusEl) {
+                            statusEl.style.display = "inline-flex";
+                            statusEl.innerHTML = `✓ Избран работещ: ${targetTab.textContent.trim()}`;
+                            setTimeout(() => {
+                                if (statusEl) {
+                                    statusEl.style.display = "none";
+                                }
+                            }, 4500);
+                        }
+                    }
+                }
+            } catch (err) {}
+        }
+
         modalBody.addEventListener("click", (event) => {
             const playBtn = event.target.closest("#playerPlayBtn");
             if (playBtn) {
                 handlePlayerPlay();
+                return;
+            }
+
+            const nextBtn = event.target.closest("#playerNextBtn");
+            if (nextBtn) {
+                switchToNextPlayer();
                 return;
             }
 
@@ -6322,6 +6466,7 @@
                 const mount = document.getElementById("modalPlayerMount");
                 if (mount) {
                     mount.innerHTML = buildPlayerSectionMarkup(state.activeModalItem);
+                    runQuickPlayerHealthCheck();
                 }
                 return;
             }
@@ -6332,6 +6477,7 @@
                 const mount = document.getElementById("modalPlayerMount");
                 if (mount) {
                     mount.innerHTML = buildPlayerSectionMarkup(state.activeModalItem);
+                    runQuickPlayerHealthCheck();
                 }
                 return;
             }
