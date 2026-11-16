@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <title>Пуканки</title>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Пуканки NEW — TMDB & Стрийминг</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="alternate icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍿</text></svg>">
     <style>
@@ -647,7 +647,7 @@
             border-radius: 11px;
             box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75), 0 0 16px rgba(124, 58, 237, 0.2);
             z-index: 250;
-            max-height: min(390px, 60vh);
+            max-height: min(460px, 68vh);
             overflow-y: auto;
             overflow-x: hidden;
             display: flex;
@@ -1670,6 +1670,7 @@
             background-size: cover;
             background-position: center;
             border-bottom: 1px solid var(--border);
+            overflow: hidden;
         }
 
         .modal-hero::before {
@@ -1698,6 +1699,11 @@
             border-radius: 12px;
             border: 1px solid var(--border);
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-info {
+            min-width: 0;
+            max-width: 100%;
         }
 
         .modal-info h2 {
@@ -2410,29 +2416,445 @@
             z-index: -9999 !important;
         }
 
+        .brand-new-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #7c3aed, #ec4899);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
+            vertical-align: middle;
+        }
+
+        .tmdb-suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+            user-select: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+
+        .tmdb-suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .tmdb-suggestion-item:hover,
+        .tmdb-suggestion-item.active {
+            background: rgba(124, 58, 237, 0.3);
+        }
+
+        .tmdb-thumb {
+            width: 40px;
+            height: 58px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #1e2235;
+            flex-shrink: 0;
+        }
+
+        .tmdb-thumb-placeholder {
+            width: 40px;
+            height: 58px;
+            border-radius: 6px;
+            background: #1e2235;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .tmdb-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .tmdb-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tmdb-title {
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tmdb-orig-title {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .tmdb-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .tmdb-badge-local {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            padding: 1px 7px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .tmdb-badge-live {
+            background: rgba(124, 58, 237, 0.2);
+            color: #c4b5fd;
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            padding: 1px 7px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .modal-tagline {
+            font-size: 0.98rem;
+            font-style: italic;
+            color: #c4b5fd;
+            margin: -2px 0 12px;
+            line-height: 1.4;
+            opacity: 0.95;
+        }
+
+        .modal-trailer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #fff;
+            border: 1px solid rgba(248, 113, 113, 0.35);
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .modal-trailer-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(220, 38, 38, 0.5);
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .intermediate-trailer-btn {
+            background: rgba(220, 38, 38, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            color: #fca5a5;
+        }
+
+        .intermediate-trailer-btn:hover {
+            background: rgba(220, 38, 38, 0.4);
+            border-color: rgba(239, 68, 68, 0.7);
+            color: #fff;
+        }
+
+        .modal-tmdb-sections {
+            padding: 0 32px;
+            background: rgba(13, 15, 24, 0.65);
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .modal-trailer-stage {
+            margin: 20px 0 6px;
+            background: #0b0d16;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+        }
+
+        .modal-trailer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 16px;
+            background: rgba(220, 38, 38, 0.14);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .modal-trailer-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #fca5a5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-trailer-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-trailer-ext-link {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #e5e7eb;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+
+        .modal-trailer-ext-link:hover {
+            background: rgba(255, 255, 255, 0.16);
+            color: #fff;
+        }
+
+        .modal-trailer-close-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .modal-trailer-close-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: #fff;
+        }
+
+        .modal-trailer-frame-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            max-height: 520px;
+            background: #000;
+        }
+
+        .modal-trailer-frame-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
+
+        .modal-cast-section {
+            padding: 20px 0 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-section-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-cast-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(124, 58, 237, 0.6) rgba(15, 18, 32, 0.85);
+        }
+
+        .modal-cast-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .modal-cast-scroll::-webkit-scrollbar-thumb {
+            background: rgba(124, 58, 237, 0.6);
+            border-radius: 6px;
+        }
+
+        .cast-card {
+            flex: 0 0 106px;
+            width: 106px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cast-card:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: rgba(124, 58, 237, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .cast-photo {
+            width: 66px;
+            height: 66px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 8px;
+            background: #1e2235;
+            border: 2px solid rgba(124, 58, 237, 0.4);
+        }
+
+        .cast-photo-fallback {
+            width: 66px;
+            height: 66px;
+            border-radius: 50%;
+            background: #1e2235;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+
+        .cast-name {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.25;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .cast-character {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-style: italic;
+            line-height: 1.2;
+            margin-top: 3px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .modal-recommendations-section {
+            padding: 20px 0 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-recommendations-scroll {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(124, 58, 237, 0.6) rgba(15, 18, 32, 0.85);
+        }
+
+        .rec-card {
+            flex: 0 0 124px;
+            width: 124px;
+            cursor: pointer;
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .rec-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(124, 58, 237, 0.6);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .rec-poster {
+            width: 100%;
+            height: 175px;
+            object-fit: cover;
+            background: #1e2235;
+            display: block;
+        }
+
+        .rec-info {
+            padding: 8px;
+        }
+
+        .rec-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.25;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .rec-meta {
+            font-size: 0.7rem;
+            color: var(--gold);
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
         .version-switch-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(236, 72, 153, 0.25));
-            border: 1px solid rgba(236, 72, 153, 0.5);
-            color: #fdf2f8;
+            background: rgba(124, 58, 237, 0.16);
+            border: 1px solid rgba(124, 58, 237, 0.45);
+            color: #ddd6fe;
             padding: 9px 16px;
             border-radius: 999px;
             font-size: 0.86rem;
             font-weight: 700;
             text-decoration: none;
             white-space: nowrap;
-            box-shadow: 0 4px 14px rgba(236, 72, 153, 0.25);
             transition: all 0.2s ease;
         }
 
         .version-switch-btn:hover {
-            background: linear-gradient(135deg, #7c3aed, #ec4899);
-            border-color: #ec4899;
+            background: var(--accent);
+            border-color: var(--accent);
             color: #fff;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(236, 72, 153, 0.45);
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        }
+
+        @media (max-width: 768px) {
+            .modal-tmdb-sections {
+                padding: 0 14px;
+            }
         }
     </style>
 </head>
@@ -2443,11 +2865,12 @@
                 <h1>
                     <img src="favicon.svg" alt="🍿" class="brand-logo-icon">
                     <span class="brand-title-text">Пуканки</span>
+                    <span class="brand-new-badge">NEW • TMDB</span>
                 </h1>
-                <p>Филми, сериали и списък за гледане по-късно</p>
+                <p>Глобален TMDB каталог, официални трейлъри, актьори и БГ стрийминг</p>
             </div>
             <div class="header-actions">
-                <a href="https://pukanki-git-pukankinew-only-me-27f1.vercel.app" class="version-switch-btn" title="Отвори новата тестова версия с TMDB API, трейлъри и актьори">✨ Пуканки NEW (TMDB) ↗</a>
+                <a href="https://pukanki.vercel.app" class="version-switch-btn" title="Към основната версия на Пуканки">← Основен Пуканки</a>
                 <select id="sortSelect" class="select-control" aria-label="Сортиране">
                     <option value="default">По ред на добавяне</option>
                     <option value="rating_desc">Рейтинг (най-висок)</option>
@@ -2557,7 +2980,7 @@
             </div>
             <div class="intermediate-content">
                 <div class="intermediate-poster-wrap">
-                    <img id="intermediatePoster" class="intermediate-poster" src="" alt="" onerror="this.classList.add('img-fallback')">
+                    <img id="intermediatePoster" class="intermediate-poster" src="" alt="" referrerpolicy="no-referrer" onerror="this.classList.add('img-fallback')">
                 </div>
                 <div class="intermediate-info">
                     <h1 id="intermediateTitle" class="intermediate-title"></h1>
@@ -2567,6 +2990,10 @@
                         <button type="button" id="intermediatePlayBtn" class="intermediate-btn intermediate-play-btn" title="Пусни филма на цял екран">
                             <span class="btn-icon">▶</span>
                             <span>Гледай</span>
+                        </button>
+                        <button type="button" id="intermediateTrailerBtn" class="intermediate-btn intermediate-trailer-btn" title="Гледай официален трейлър" style="display: none;">
+                            <span class="btn-icon">🎬</span>
+                            <span>Трейлър</span>
                         </button>
                         <button type="button" id="intermediateInfoBtn" class="intermediate-btn intermediate-info-btn" title="Виж подробна информация за филма">
                             <span class="btn-icon">ℹ</span>
@@ -2727,6 +3154,15 @@
         const countWatchlist = document.getElementById("countWatchlist");
         const searchInput = document.getElementById("searchInput");
         const searchSuggestions = document.getElementById("searchSuggestions");
+
+        const TMDB_API_KEY = "4e44d9029b1270a757cddc766a1bcb63";
+        const tmdbCache = {
+            details: {},
+            credits: {},
+            videos: {},
+            search: {}
+        };
+        let tmdbSearchDebounce = null;
 
         const SEARCH_FIELD_SUGGESTIONS = [
             {
@@ -2905,6 +3341,16 @@
             if (!item) {
                 return;
             }
+            if (item.isTmdb) {
+                hideSearchSuggestions();
+                if (item.localMatch) {
+                    openIntermediateScreen(item.localMatch);
+                    return;
+                }
+                const liveItem = createTmdbItemObject(item.rawTmdb);
+                openIntermediateScreen(liveItem);
+                return;
+            }
             if (item.isStudio) {
                 searchInput.value = `${triggerChar}студио: ${item.name}`;
                 hideSearchSuggestions();
@@ -2925,6 +3371,183 @@
             hideSearchSuggestions();
             searchInput.focus();
             applyFilters();
+        }
+
+        function createTmdbItemObject(raw) {
+            const isTv = raw.media_type === "tv";
+            const title = raw.title || raw.name || "Без заглавие";
+            const originalTitle = raw.original_title || raw.original_name || title;
+            const yearStr = (raw.release_date || raw.first_air_date || "").slice(0, 4);
+            const year = yearStr ? parseInt(yearStr, 10) : null;
+            const poster = raw.poster_path ? `https://image.tmdb.org/t/p/w500${raw.poster_path}` : "";
+            const backdrop = raw.backdrop_path ? `https://image.tmdb.org/t/p/w1280${raw.backdrop_path}` : poster;
+            const rating = raw.vote_average ? Math.round(raw.vote_average * 10) / 10 : null;
+            const id = raw.id;
+
+            return {
+                id: `tmdb_${id}`,
+                tmdb_id: id,
+                title: title,
+                original_title: originalTitle,
+                type: isTv ? "tv" : "movie",
+                year: year,
+                rating: rating,
+                poster_url: poster,
+                backdrop_url: backdrop,
+                overview: raw.overview || "Няма налично описание на български.",
+                genres: [],
+                actors: [],
+                directors: [],
+                origins: ["TMDB Live"],
+                sources: [
+                    {
+                        name: "VidLink (HD)",
+                        embed_url: isTv ? `https://vidlink.pro/tv/${id}/1/1` : `https://vidlink.pro/movie/${id}`,
+                        direct_embed: true
+                    },
+                    {
+                        name: "Vidsrc (Multi)",
+                        embed_url: isTv ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=1&episode=1` : `https://vidsrc.me/embed/movie?tmdb=${id}`,
+                        direct_embed: true
+                    },
+                    {
+                        name: "Embed.su",
+                        embed_url: isTv ? `https://embed.su/embed/tv/${id}/1/1` : `https://embed.su/embed/movie/${id}`,
+                        direct_embed: true
+                    },
+                    {
+                        name: "SuperEmbed",
+                        embed_url: isTv ? `https://multiembed.mov/?video_id=${id}&tmdb=1&s=1&e=1` : `https://multiembed.mov/?video_id=${id}&tmdb=1`,
+                        direct_embed: true
+                    }
+                ]
+            };
+        }
+
+        async function searchTmdbLive(query) {
+            const cleanQuery = query.trim();
+            if (cleanQuery.length < 2) {
+                return;
+            }
+
+            let results = [];
+            if (tmdbCache.search[cleanQuery]) {
+                results = tmdbCache.search[cleanQuery];
+            } else {
+                try {
+                    const url = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&language=bg-BG&query=${encodeURIComponent(cleanQuery)}&include_adult=false`;
+                    const res = await fetch(url);
+                    if (res.ok) {
+                        const data = await res.json();
+                        results = Array.isArray(data.results) ? data.results : [];
+                        tmdbCache.search[cleanQuery] = results;
+                    }
+                } catch (e) {
+                    return;
+                }
+            }
+
+            const currentVal = searchInput ? searchInput.value.trim() : "";
+            if (currentVal !== cleanQuery) {
+                return;
+            }
+
+            const validItems = [];
+            for (const r of results) {
+                if (r.media_type === "movie" || r.media_type === "tv") {
+                    validItems.push(r);
+                }
+                if (validItems.length >= 7) {
+                    break;
+                }
+            }
+
+            if (validItems.length === 0) {
+                return;
+            }
+
+            currentSuggestions = [];
+            for (let i = 0; i < validItems.length; i++) {
+                const r = validItems[i];
+                const rId = r.id;
+                const rTitle = (r.title || r.name || "").toLowerCase();
+                const rOrigTitle = (r.original_title || r.original_name || "").toLowerCase();
+
+                let localMatch = null;
+                for (const item of state.items) {
+                    if (item.tmdb_id && Number(item.tmdb_id) === Number(rId)) {
+                        localMatch = item;
+                        break;
+                    }
+                    const itemTitle = (item.title || "").toLowerCase();
+                    if (itemTitle === rTitle) {
+                        localMatch = item;
+                        break;
+                    }
+                    if (item.original_title && item.original_title.toLowerCase() === rOrigTitle && rOrigTitle) {
+                        localMatch = item;
+                        break;
+                    }
+                }
+
+                currentSuggestions.push({
+                    isTmdb: true,
+                    rawTmdb: r,
+                    localMatch: localMatch
+                });
+            }
+
+            activeSuggestionIndex = -1;
+            renderTmdbSuggestionsHtml();
+        }
+
+        function renderTmdbSuggestionsHtml() {
+            if (!searchSuggestions || currentSuggestions.length === 0) {
+                return;
+            }
+
+            let html = `<div class="search-suggestions-header">🍿 Резултати от TMDB & Каталога (кликни или избери със стрелките):</div>`;
+            for (let i = 0; i < currentSuggestions.length; i++) {
+                const s = currentSuggestions[i];
+                const r = s.rawTmdb;
+                const activeCls = i === activeSuggestionIndex ? "active" : "";
+                const title = escapeHtml(r.title || r.name || "Без заглавие");
+                const orig = r.original_title || r.original_name || "";
+                const showOrig = orig && orig.toLowerCase() !== (r.title || r.name || "").toLowerCase();
+                const year = (r.release_date || r.first_air_date || "").slice(0, 4);
+                const isTv = r.media_type === "tv";
+                const rating = r.vote_average ? (Math.round(r.vote_average * 10) / 10).toFixed(1) : "";
+                const thumb = r.poster_path ? `https://image.tmdb.org/t/p/w92${r.poster_path}` : "";
+
+                let badgeHtml = "";
+                if (s.localMatch) {
+                    const hasBg = hasBgSource(s.localMatch);
+                    badgeHtml = `<span class="tmdb-badge-local">${hasBg ? "🟢 БГ Аудио" : "🟢 В каталога"}</span>`;
+                } else {
+                    badgeHtml = `<span class="tmdb-badge-live">✨ TMDB Стрийминг</span>`;
+                }
+
+                html = `${html}
+                    <div class="search-suggestion-item tmdb-suggestion-item ${activeCls}" data-index="${i}">
+                        ${thumb ? `<img class="tmdb-thumb" src="${thumb}" alt="${title}" loading="lazy" referrerpolicy="no-referrer">` : `<div class="tmdb-thumb-placeholder">${isTv ? "📺" : "🎬"}</div>`}
+                        <div class="tmdb-info-col">
+                            <div class="tmdb-title-row">
+                                <span class="tmdb-title">${title}</span>
+                                ${showOrig ? `<span class="tmdb-orig-title">(${escapeHtml(orig)})</span>` : ""}
+                            </div>
+                            <div class="tmdb-meta-row">
+                                <span>${isTv ? "📺 Сериал" : "🎬 Филм"}</span>
+                                ${year ? `<span>📅 ${year}</span>` : ""}
+                                ${rating ? `<span>★ ${rating}</span>` : ""}
+                                ${badgeHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            searchSuggestions.innerHTML = html;
+            searchSuggestions.style.display = "flex";
         }
 
         function updateSuggestionHighlight() {
@@ -2968,6 +3591,7 @@
         const intermediateMetaRow = document.getElementById("intermediateMetaRow");
         const intermediateOverview = document.getElementById("intermediateOverview");
         const intermediatePlayBtn = document.getElementById("intermediatePlayBtn");
+        const intermediateTrailerBtn = document.getElementById("intermediateTrailerBtn");
         const intermediateInfoBtn = document.getElementById("intermediateInfoBtn");
         const intermediateBackBtn = document.getElementById("intermediateBackBtn");
 
@@ -3329,7 +3953,41 @@
                 .replaceAll("'", "&#039;");
         }
 
+        function isAudioOrSubtitleLabel(val) {
+            const s = `${val ?? ""}`.trim().toLowerCase();
+            return s === "бг аудио" || s === "бг субтитри" || s === "bg audio" || s === "bg sub" || s === "субтитри";
+        }
+
+        function isYouTubeUrl(url) {
+            const u = `${url ?? ""}`.toLowerCase();
+            return u.includes("youtube.com") || u.includes("youtu.be");
+        }
+
+        function configurePlayerIframe(iframe, url) {
+            if (!iframe) {
+                return;
+            }
+            if (isYouTubeUrl(url)) {
+                iframe.removeAttribute("sandbox");
+                iframe.referrerPolicy = "strict-origin-when-cross-origin";
+                return;
+            }
+            iframe.referrerPolicy = "no-referrer";
+            const shieldBtn = document.getElementById("playerAdShieldBtn");
+            const isShieldActive = !shieldBtn || !shieldBtn.classList.contains("is-disabled");
+            if (isShieldActive) {
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation");
+                return;
+            }
+            iframe.removeAttribute("sandbox");
+        }
+
         function hasBgSource(item) {
+            const sources = Array.isArray(item.player_sources) ? item.player_sources : [];
+            const hasBgPlayer = sources.some(s => s.group === "bg" || (s.name && !s.name.includes("💬") && !s.name.toLowerCase().includes("суб")));
+            if (hasBgPlayer) {
+                return true;
+            }
             if (item.is_bg_audio === true || item.has_filmi2k_bg === true) {
                 return true;
             }
@@ -3551,7 +4209,7 @@
             for (const item of items) {
                 const genres = Array.isArray(item.genres) ? item.genres : [];
                 for (const genre of genres) {
-                    if (genre && `${genre}`.trim().toLowerCase() !== "бг аудио") {
+                    if (genre && !isAudioOrSubtitleLabel(genre)) {
                         genreSet.add(genre);
                     }
                 }
@@ -4522,7 +5180,7 @@
                 const rawGenres = Array.isArray(item.genres) ? item.genres : [];
                 const displayGenres = [];
                 for (const genre of rawGenres) {
-                    if (`${genre}`.trim().toLowerCase() === "бг аудио") {
+                    if (isAudioOrSubtitleLabel(genre)) {
                         continue;
                     }
                     displayGenres.push(genre);
@@ -4928,7 +5586,7 @@
                         <div class="player-frame-box" id="mainPlayerFrameBox">
                             <div class="theater-exit-hotspot" id="theaterExitHotspot" title="Покажи бутона за свиване"></div>
                             <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра (Изход от цял екран)">↙ Свий плеъра</button>
-                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media" referrerpolicy="no-referrer" allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
+                            <iframe id="modalPlayerIframe" src="${firstEmbedUrl}" ${isYouTubeUrl(firstEmbedUrl) ? 'referrerpolicy="strict-origin-when-cross-origin"' : 'sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" referrerpolicy="no-referrer"'} allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
                         </div>
                     ` : ""}
                 </div>
@@ -5022,6 +5680,23 @@
                 intermediateOverview.textContent = item.overview || "Няма налично описание.";
             }
 
+            if (intermediateTrailerBtn) {
+                intermediateTrailerBtn.style.display = "inline-flex";
+                intermediateTrailerBtn.onclick = () => {
+                    if (intermediateScreen) {
+                        intermediateScreen.classList.remove("open");
+                        intermediateScreen.style.display = "none";
+                    }
+                    openMovieModal(item);
+                    setTimeout(() => {
+                        const trailerBtn = document.getElementById("modalTrailerBtn");
+                        if (trailerBtn) {
+                            trailerBtn.click();
+                        }
+                    }, 350);
+                };
+            }
+
             if (intermediateScreen) {
                 intermediateScreen.style.display = "flex";
                 intermediateScreen.classList.add("open");
@@ -5108,7 +5783,7 @@
             let genresHtml = "";
             const genres = Array.isArray(item.genres) ? item.genres : [];
             for (const genre of genres) {
-                if (`${genre}`.trim().toLowerCase() === "бг аудио") {
+                if (isAudioOrSubtitleLabel(genre)) {
                     continue;
                 }
                 genresHtml = `${genresHtml}<span class="chip">${escapeHtml(genre)}</span>`;
@@ -5144,6 +5819,7 @@
                         <img class="modal-poster" src="${poster}" alt="${title}" referrerpolicy="no-referrer" onerror="this.style.display='none'">
                         <div class="modal-info">
                             <h2>${title}</h2>
+                            <div class="modal-tagline" id="modalTagline" style="display: none;"></div>
                             <div class="modal-submeta">
                                 ${typePill}
                                 ${hasBgSource(item) ? '<span class="modal-bg-pill">БГ Аудио</span>' : ""}
@@ -5182,7 +5858,7 @@
                                 </div>
                             ` : ""}
                             ${Array.isArray(item.actors) && item.actors.length > 0 ? `
-                                <div class="modal-crew-row modal-collapsible-crew">
+                                <div class="modal-crew-row modal-collapsible-crew" id="modalPlainActorsRow">
                                     <strong class="modal-crew-label">👥 В ролите:</strong>
                                     <div class="modal-crew-chips">
                                         ${item.actors.slice(0, 15).map(a => `<button type="button" class="crew-search-btn" data-search-query="@актьор: ${escapeHtml(a)}" title="Търси филми с ${escapeHtml(a)}">${escapeHtml(a)}</button>`).join("")}
@@ -5208,8 +5884,20 @@
                             ` : ""}
                             <div class="modal-actions-row">
                                 <button type="button" id="modalWatchlistBtn" class="watchlist-modal-btn ${savedClass}">${savedLabel}</button>
+                                <button type="button" id="modalTrailerBtn" class="modal-trailer-btn" style="display: none;">▶ Гледай Трейлър</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="modal-tmdb-sections">
+                    <div id="modalTrailerStage" class="modal-trailer-stage" style="display: none;"></div>
+                    <div class="modal-cast-section" id="modalCastSection" style="display: none;">
+                        <div class="modal-section-title">👥 Актьорски състав (TMDB):</div>
+                        <div class="modal-cast-scroll" id="modalCastScroll"></div>
+                    </div>
+                    <div class="modal-recommendations-section" id="modalRecSection" style="display: none;">
+                        <div class="modal-section-title">✨ Препоръчани подобни заглавия:</div>
+                        <div class="modal-recommendations-scroll" id="modalRecScroll"></div>
                     </div>
                 </div>
                 <div id="modalPlayerMount">${buildPlayerSectionMarkup(item)}</div>
@@ -5222,6 +5910,7 @@
                 topbarTitle.textContent = item.title ? `${item.title}${item.year ? ` (${item.year})` : ""}` : "";
             }
             checkAndClampModalContent();
+            enrichModalWithTmdbData(item);
             runQuickPlayerHealthCheck();
             movieModal.scrollTop = 0;
             const modalContent = movieModal.querySelector(".modal-content");
@@ -5234,6 +5923,269 @@
                     backBtn.focus();
                 }, 60);
             }
+        }
+
+        async function enrichModalWithTmdbData(item) {
+            let tmdbId = item.tmdb_id ? Number(item.tmdb_id) : null;
+            const isTv = item.type === "tv";
+            const mediaType = isTv ? "tv" : "movie";
+
+            if (!tmdbId) {
+                const searchKey = `${item.title}_${item.year || ""}_${mediaType}`;
+                if (tmdbCache.search[searchKey]) {
+                    tmdbId = tmdbCache.search[searchKey];
+                } else {
+                    try {
+                        const searchUrl = `https://api.themoviedb.org/3/search/${mediaType}?api_key=${TMDB_API_KEY}&language=bg-BG&query=${encodeURIComponent(item.title)}&include_adult=false`;
+                        const sRes = await fetch(searchUrl);
+                        if (sRes.ok) {
+                            const sData = await sRes.json();
+                            if (Array.isArray(sData.results) && sData.results.length > 0) {
+                                tmdbId = sData.results[0].id;
+                                tmdbCache.search[searchKey] = tmdbId;
+                            }
+                        }
+                    } catch (e) {
+                        return;
+                    }
+                }
+            }
+
+            if (!tmdbId) {
+                return;
+            }
+
+            if (!state.activeModalItem || (state.activeModalItem !== item && state.activeModalItem.id !== item.id)) {
+                return;
+            }
+
+            let details = null;
+            let credits = null;
+            let videos = null;
+
+            const cacheKey = `${mediaType}_${tmdbId}`;
+            if (tmdbCache.details[cacheKey]) {
+                details = tmdbCache.details[cacheKey];
+                credits = tmdbCache.credits[cacheKey];
+                videos = tmdbCache.videos[cacheKey];
+            } else {
+                try {
+                    const dUrl = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${TMDB_API_KEY}&language=bg-BG&append_to_response=credits,videos,recommendations`;
+                    const dRes = await fetch(dUrl);
+                    if (dRes.ok) {
+                        details = await dRes.json();
+                        credits = details.credits || null;
+                        const bgVideos = details.videos && Array.isArray(details.videos.results) ? details.videos.results : [];
+                        let enVideos = [];
+
+                        try {
+                            const vUrl = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}/videos?api_key=${TMDB_API_KEY}&language=en-US`;
+                            const vRes = await fetch(vUrl);
+                            if (vRes.ok) {
+                                const vData = await vRes.json();
+                                enVideos = Array.isArray(vData.results) ? vData.results : [];
+                            }
+                        } catch (ve) {}
+
+                        videos = bgVideos.concat(enVideos);
+                        tmdbCache.details[cacheKey] = details;
+                        tmdbCache.credits[cacheKey] = credits;
+                        tmdbCache.videos[cacheKey] = videos;
+                    }
+                } catch (e) {
+                    return;
+                }
+            }
+
+            if (!state.activeModalItem || (state.activeModalItem !== item && state.activeModalItem.id !== item.id)) {
+                return;
+            }
+
+            const taglineEl = document.getElementById("modalTagline");
+            if (taglineEl && details && details.tagline) {
+                taglineEl.textContent = `„${details.tagline}“`;
+                taglineEl.style.display = "block";
+            }
+
+            let trailerKey = "";
+            if (Array.isArray(videos)) {
+                for (const v of videos) {
+                    if (v.site === "YouTube" && v.type === "Trailer" && v.official && v.key) {
+                        trailerKey = v.key;
+                        break;
+                    }
+                }
+                if (!trailerKey) {
+                    for (const v of videos) {
+                        if (v.site === "YouTube" && v.type === "Trailer" && v.key) {
+                            trailerKey = v.key;
+                            break;
+                        }
+                    }
+                }
+                if (!trailerKey) {
+                    for (const v of videos) {
+                        if (v.site === "YouTube" && v.type === "Teaser" && v.key) {
+                            trailerKey = v.key;
+                            break;
+                        }
+                    }
+                }
+                if (!trailerKey) {
+                    for (const v of videos) {
+                        if (v.site === "YouTube" && v.key) {
+                            trailerKey = v.key;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            const trailerBtn = document.getElementById("modalTrailerBtn");
+            if (trailerBtn && trailerKey) {
+                trailerBtn.style.display = "inline-flex";
+                trailerBtn.onclick = () => {
+                    playTrailerInModal(trailerKey, details ? details.title || details.name : item.title);
+                };
+            }
+
+            const castList = credits && Array.isArray(credits.cast) ? credits.cast.slice(0, 20) : [];
+            const castSection = document.getElementById("modalCastSection");
+            const castScroll = document.getElementById("modalCastScroll");
+            if (castSection && castScroll && castList.length > 0) {
+                let castHtml = "";
+                for (const actor of castList) {
+                    const aName = escapeHtml(actor.name || "");
+                    const aChar = escapeHtml(actor.character || "");
+                    const aPhoto = actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : "";
+                    castHtml = `${castHtml}
+                        <div class="cast-card" data-actor-query="${aName}" title="Търси филми с ${aName}">
+                            ${aPhoto ? `<img class="cast-photo" src="${aPhoto}" alt="${aName}" loading="lazy" referrerpolicy="no-referrer">` : `<div class="cast-photo-fallback">👤</div>`}
+                            <div class="cast-name">${aName}</div>
+                            ${aChar ? `<div class="cast-character">${aChar}</div>` : ""}
+                        </div>
+                    `;
+                }
+                castScroll.innerHTML = castHtml;
+                castSection.style.display = "block";
+
+                const plainActorsRow = document.getElementById("modalPlainActorsRow");
+                if (plainActorsRow) {
+                    plainActorsRow.style.display = "none";
+                }
+
+                const allCards = castScroll.querySelectorAll(".cast-card");
+                for (const card of allCards) {
+                    card.addEventListener("click", () => {
+                        const q = card.dataset.actorQuery;
+                        if (!q) {
+                            return;
+                        }
+                        closeMovieModal();
+                        searchInput.value = `@актьор: ${q}`;
+                        searchInput.focus();
+                        applyFilters();
+                    });
+                }
+            }
+
+            const recs = details && details.recommendations && Array.isArray(details.recommendations.results) ? details.recommendations.results.slice(0, 12) : [];
+            const recSection = document.getElementById("modalRecSection");
+            const recScroll = document.getElementById("modalRecScroll");
+            if (recSection && recScroll && recs.length > 0) {
+                let recHtml = "";
+                for (const rec of recs) {
+                    const rTitle = escapeHtml(rec.title || rec.name || "");
+                    const rPoster = rec.poster_path ? `https://image.tmdb.org/t/p/w342${rec.poster_path}` : "";
+                    if (!rPoster) {
+                        continue;
+                    }
+                    const rYear = (rec.release_date || rec.first_air_date || "").slice(0, 4);
+                    const rRating = rec.vote_average ? (Math.round(rec.vote_average * 10) / 10).toFixed(1) : "";
+                    recHtml = `${recHtml}
+                        <div class="rec-card" data-rec-id="${rec.id}" data-rec-type="${rec.media_type || mediaType}">
+                            <img class="rec-poster" src="${rPoster}" alt="${rTitle}" loading="lazy" referrerpolicy="no-referrer">
+                            <div class="rec-info">
+                                <div class="rec-title">${rTitle}</div>
+                                <div class="rec-meta">
+                                    <span>${rYear}</span>
+                                    ${rRating ? `<span>★ ${rRating}</span>` : ""}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                if (recHtml) {
+                    recScroll.innerHTML = recHtml;
+                    recSection.style.display = "block";
+
+                    const allRecCards = recScroll.querySelectorAll(".rec-card");
+                    for (const card of allRecCards) {
+                        card.addEventListener("click", () => {
+                            const recId = Number(card.dataset.recId);
+                            const recType = card.dataset.recType;
+                            openTmdbItemById(recId, recType);
+                        });
+                    }
+                }
+            }
+        }
+
+        function playTrailerInModal(trailerKey, title) {
+            const stage = document.getElementById("modalTrailerStage");
+            if (!stage) {
+                return;
+            }
+
+            const embedUrl = `https://www.youtube.com/embed/${encodeURIComponent(trailerKey)}?autoplay=1&rel=0`;
+            const watchUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(trailerKey)}`;
+
+            stage.innerHTML = `
+                <div class="modal-trailer-header">
+                    <div class="modal-trailer-title">
+                        <span>🎬 Официален Трейлър — ${escapeHtml(title || "")}</span>
+                    </div>
+                    <div class="modal-trailer-actions">
+                        <a class="modal-trailer-ext-link" href="${watchUrl}" target="_blank" rel="noopener noreferrer">↗ Отвори в YouTube</a>
+                        <button type="button" class="modal-trailer-close-btn" id="closeTrailerStageBtn">✕ Затвори</button>
+                    </div>
+                </div>
+                <div class="modal-trailer-frame-wrap">
+                    <iframe src="${embedUrl}" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            `;
+            stage.style.display = "block";
+
+            const closeBtn = document.getElementById("closeTrailerStageBtn");
+            if (closeBtn) {
+                closeBtn.onclick = () => {
+                    stage.style.display = "none";
+                    stage.innerHTML = "";
+                };
+            }
+
+            stage.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
+        async function openTmdbItemById(id, mediaType) {
+            for (const item of state.items) {
+                if (item.tmdb_id && Number(item.tmdb_id) === Number(id)) {
+                    openMovieModal(item);
+                    return;
+                }
+            }
+
+            const mType = mediaType === "tv" ? "tv" : "movie";
+            try {
+                const url = `https://api.themoviedb.org/3/${mType}/${id}?api_key=${TMDB_API_KEY}&language=bg-BG`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const data = await res.json();
+                    data.media_type = mType;
+                    const newItem = createTmdbItemObject(data);
+                    openMovieModal(newItem);
+                }
+            } catch (e) {}
         }
 
         function handleMovieBack() {
@@ -5565,11 +6517,17 @@
                     if (fItem.overview && !matched.overview) {
                         matched.overview = fItem.overview;
                     }
-                    const mGenres = Array.isArray(matched.genres) ? matched.genres : [];
-                    const langGenre = fItem.is_subtitled ? "БГ Субтитри" : "БГ Аудио";
-                    if (!mGenres.includes(langGenre)) {
-                        mGenres.push(langGenre);
+                    if (Array.isArray(fItem.genres)) {
+                        const mGenres = Array.isArray(matched.genres) ? matched.genres : [];
+                        for (const fg of fItem.genres) {
+                            if (!isAudioOrSubtitleLabel(fg) && !mGenres.includes(fg)) {
+                                mGenres.push(fg);
+                            }
+                        }
                         matched.genres = mGenres;
+                    }
+                    if (fItem.is_subtitled) {
+                        matched.is_subtitled = true;
                     }
                     continue;
                 }
@@ -5833,10 +6791,20 @@
         searchInput.addEventListener("input", () => {
             const val = searchInput.value;
             if (!val.startsWith("#") && !val.startsWith("@")) {
-                hideSearchSuggestions();
                 applyFilters();
+                const cleanQuery = val.trim();
+                if (cleanQuery.length < 2) {
+                    hideSearchSuggestions();
+                    return;
+                }
+                clearTimeout(tmdbSearchDebounce);
+                tmdbSearchDebounce = setTimeout(() => {
+                    searchTmdbLive(cleanQuery);
+                }, 280);
                 return;
             }
+
+            clearTimeout(tmdbSearchDebounce);
 
             const trigger = val[0];
             const after = val.slice(1);
@@ -6255,7 +7223,12 @@
             } catch (e) {}
 
             const rawSrc = iframe.getAttribute("src") || iframe.src || "";
-            if (rawSrc && !rawSrc.includes("autoplay=1") && !rawSrc.includes("autoplay=true")) {
+            if (isYouTubeUrl(rawSrc)) {
+                if (!rawSrc.includes("autoplay=1")) {
+                    const joinChar = rawSrc.includes("?") ? "&" : "?";
+                    iframe.src = `${rawSrc}${joinChar}autoplay=1`;
+                }
+            } else if (!rawSrc.includes("autoplay=1") && !rawSrc.includes("autoplay=true")) {
                 const joinChar = rawSrc.includes("?") ? "&" : "?";
                 iframe.src = `${rawSrc}${joinChar}autoplay=1&autoPlay=true`;
             }
@@ -6279,6 +7252,15 @@
             if (!iframe || !shieldBtn) {
                 return;
             }
+            const rawSrc = iframe.getAttribute("src") || iframe.src || "";
+            if (isYouTubeUrl(rawSrc)) {
+                iframe.removeAttribute("sandbox");
+                iframe.referrerPolicy = "strict-origin-when-cross-origin";
+                shieldBtn.classList.remove("is-disabled");
+                shieldBtn.innerHTML = "🛡️ YouTube (Чист)";
+                shieldBtn.title = "YouTube плеърът не изисква анти-реклама.";
+                return;
+            }
             const hasSandbox = iframe.hasAttribute("sandbox");
             if (hasSandbox) {
                 iframe.removeAttribute("sandbox");
@@ -6289,7 +7271,7 @@
                 iframe.src = s;
                 return;
             }
-            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
+            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation");
             shieldBtn.classList.remove("is-disabled");
             shieldBtn.innerHTML = "🛡️ Анти-реклама";
             shieldBtn.title = "Блокира изскачащите реклами при клик. Кликни тук, ако някое видео не зарежда.";
@@ -6504,12 +7486,9 @@
             tabBtn.classList.add("active");
             const iframe = document.getElementById("modalPlayerIframe");
             if (iframe) {
-                const shieldBtn = document.getElementById("playerAdShieldBtn");
-                const isShieldActive = !shieldBtn || !shieldBtn.classList.contains("is-disabled");
-                if (isShieldActive) {
-                    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation allow-encrypted-media");
-                }
-                iframe.src = tabBtn.dataset.embedUrl;
+                const targetUrl = tabBtn.dataset.embedUrl || "";
+                configurePlayerIframe(iframe, targetUrl);
+                iframe.src = targetUrl;
             }
             const activeBadge = document.getElementById("activePlayerSummaryBadge");
             if (activeBadge) {

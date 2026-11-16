@@ -22441,7 +22441,7 @@
     "rating": null,
     "countries": [],
     "genres": [
-      "БГ Аудио"
+      "БГ Субтитри"
     ],
     "tags": [],
     "actors": [],
@@ -22449,7 +22449,7 @@
     "overview": "Гледай Стълбата на Якоб и субтитри онлайн с българско аудио в PlayTube.",
     "poster_url": "https://jupiter.andaraverse.com/upload/photos/2026/11/VomF6RghGEGWljokvWrx_04_927cffbcc5def30ecc037f37439e7f54_image.jpg",
     "backdrop_url": "https://jupiter.andaraverse.com/upload/photos/2026/11/VomF6RghGEGWljokvWrx_04_927cffbcc5def30ecc037f37439e7f54_image.jpg",
-    "is_bg_audio": true,
+    "is_bg_audio": false,
     "is_subtitled": true,
     "type": "movie",
     "origins": [
@@ -22459,7 +22459,7 @@
       {
         "id": "pt-ext-3bWGQgqzMu57TdH",
         "name": "🌐 PlayTube (Сайт)",
-        "group": "bg",
+        "group": "sub",
         "embed_url": "https://playtube.tv/watch/стълбата-на-якоб-1990-бг-аудио-и-субтитри_3bWGQgqzMu57TdH.html",
         "direct_embed": false
       }

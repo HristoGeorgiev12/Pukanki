@@ -286,6 +286,19 @@ def scrape_movie_detail(stub: dict) -> dict | None:
     if orig_title:
         tags.append(orig_title.lower())
 
+    try:
+        from scrapers.audio_verifier import classify_audio_type
+        final_title = bg_title or orig_title
+        is_bg, is_sub, _ = classify_audio_type(final_title, overview, genres, player_sources)
+        if is_sub and not is_bg:
+            genres = [g for g in genres if g != "БГ Аудио"]
+            if "БГ Субтитри" not in genres:
+                genres.append("БГ Субтитри")
+            for s in player_sources:
+                s["group"] = "sub"
+    except Exception:
+        is_bg, is_sub = True, False
+
     return {
         "post_id": stub.get("post_id"),
         "tmdb_id": None,
@@ -303,8 +316,9 @@ def scrape_movie_detail(stub: dict) -> dict | None:
         "overview": overview,
         "poster_url": poster_url,
         "backdrop_url": poster_url,
-        "is_bg_audio": True,
-        "has_filmi2k_bg": True,
+        "is_bg_audio": is_bg,
+        "is_subtitled": is_sub,
+        "has_filmi2k_bg": is_bg,
         "player_sources": player_sources,
     }
 

@@ -190,6 +190,18 @@ def parse_page(movie_url: str) -> dict:
 
     slug = movie_url.split("/")[-1].replace(".html", "")
 
+    try:
+        from scrapers.audio_verifier import classify_audio_type
+        is_bg, is_sub, _ = classify_audio_type(title, overview, genres, player_sources)
+        if is_sub and not is_bg:
+            genres = [g for g in genres if g != "БГ Аудио"]
+            if "БГ Субтитри" not in genres:
+                genres.append("БГ Субтитри")
+            for s in player_sources:
+                s["group"] = "sub"
+    except Exception:
+        is_bg, is_sub = True, False
+
     return {
         "post_id": f"fz-{news_id}",
         "tmdb_id": None,
@@ -211,7 +223,8 @@ def parse_page(movie_url: str) -> dict:
         "overview": overview,
         "poster_url": poster_url,
         "backdrop_url": poster_url,
-        "is_bg_audio": True,
+        "is_bg_audio": is_bg,
+        "is_subtitled": is_sub,
         "origins": ["Filmizip"],
         "player_sources": player_sources
     }
