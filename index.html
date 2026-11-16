@@ -2924,28 +2924,122 @@
             cursor: none !important;
         }
 
+        .tv-filters-toggle-btn {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            background: rgba(59, 130, 246, 0.16);
+            border: 1px solid rgba(96, 165, 250, 0.45);
+            color: #dbeafe;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            margin-left: auto;
+        }
+
+        .tv-filters-toggle-btn:hover,
+        .tv-filters-toggle-btn.active {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-color: #93c5fd;
+            color: #ffffff;
+        }
+
+        /* Compact Netflix / Jellyfin TV Layout */
+        body.tv-mode .container {
+            padding-top: 8px !important;
+        }
+
+        body.tv-mode header {
+            margin-bottom: 6px !important;
+            padding: 4px 0 !important;
+        }
+
+        body.tv-mode header .brand p,
+        body.tv-mode #statsCounter {
+            display: none !important;
+        }
+
+        body.tv-mode header .brand h1 {
+            font-size: 1.35rem !important;
+        }
+
+        body.tv-mode .type-tabs-bar {
+            margin-bottom: 10px !important;
+            padding-bottom: 4px !important;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        body.tv-mode .tv-filters-toggle-btn {
+            display: inline-flex !important;
+        }
+
+        body.tv-mode:not(.tv-filters-open) .filters-panel {
+            display: none !important;
+        }
+
         body.tv-mode .movies-grid {
-            grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
-            gap: 20px;
-            padding: 12px 6px;
+            grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+            gap: 14px !important;
+            padding: 6px 4px !important;
+        }
+
+        @media (max-width: 980px) {
+            body.tv-mode .movies-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+                gap: 12px !important;
+            }
+        }
+
+        @media (max-width: 720px) {
+            body.tv-mode .movies-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+        }
+
+        body.tv-mode .card-sources,
+        body.tv-mode .card-genres {
+            display: none !important;
+        }
+
+        body.tv-mode .card-body {
+            padding: 8px 9px !important;
         }
 
         body.tv-mode .card-title {
-            font-size: 1.02rem;
+            font-size: 0.86rem !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            margin-bottom: 2px !important;
+        }
+
+        body.tv-mode .card-meta {
+            font-size: 0.75rem !important;
         }
 
         .movie-card:focus,
         .movie-card:focus-visible,
         .movie-card.tv-focused {
-            outline: 4px solid #c084fc !important;
+            outline: 3px solid #c084fc !important;
             outline-offset: 2px !important;
             border-color: #e879f9 !important;
-            transform: scale(1.06) translateY(-4px) !important;
-            box-shadow: 0 0 0 6px rgba(192, 132, 252, 0.35), 0 18px 40px rgba(0, 0, 0, 0.9) !important;
+            transform: scale(1.05) translateY(-3px) !important;
+            box-shadow: 0 0 0 5px rgba(192, 132, 252, 0.38), 0 14px 32px rgba(0, 0, 0, 0.9) !important;
             z-index: 30 !important;
         }
 
         .type-tab-btn:focus-visible,
+        .tv-filters-toggle-btn:focus-visible,
+        .tv-mode-toggle-btn:focus-visible,
+        .version-switch-btn:focus-visible,
         .player-tab:focus-visible,
         .season-btn:focus-visible,
         .episode-btn:focus-visible,
@@ -2953,6 +3047,12 @@
         .modal-back-btn:focus-visible,
         .related-card:focus-visible,
         body.tv-mode .type-tab-btn:focus,
+        body.tv-mode .tv-filters-toggle-btn:focus,
+        body.tv-mode .tv-mode-toggle-btn:focus,
+        body.tv-mode .version-switch-btn:focus,
+        body.tv-mode .select-control:focus,
+        body.tv-mode .input-control:focus,
+        body.tv-mode .genre-filter-badge:focus,
         body.tv-mode .player-tab:focus,
         body.tv-mode .season-btn:focus,
         body.tv-mode .episode-btn:focus,
@@ -2962,7 +3062,7 @@
             outline: 3px solid #f472b6 !important;
             outline-offset: 2px !important;
             box-shadow: 0 0 0 5px rgba(244, 114, 182, 0.35), 0 8px 24px rgba(0, 0, 0, 0.8) !important;
-            transform: scale(1.05) !important;
+            transform: scale(1.04) !important;
             z-index: 25 !important;
         }
     </style>
@@ -3008,6 +3108,9 @@
             </button>
             <button type="button" class="type-tab-btn" data-type-filter="watchlist">
                 🔖 За по-късно <span class="tab-count" id="countWatchlist">0</span>
+            </button>
+            <button type="button" id="tvFiltersToggleBtn" class="tv-filters-toggle-btn" title="Покажи или скрий търсачката и филтрите">
+                🔍 Търсене &amp; Филтри
             </button>
         </nav>
 
@@ -8024,29 +8127,93 @@
                 return;
             }
 
-            // 2. Main Catalog Grid & Category Tabs D-Pad Navigation
+            // 2. Main Catalog Grid, Top Bar & Filters D-Pad Navigation
             if (intermediateScreen && intermediateScreen.classList.contains("open")) {
                 return;
             }
 
             const cards = Array.from(moviesContainer.querySelectorAll(".movie-card"));
-            const tabBtns = Array.from(typeTabsBar.querySelectorAll(".type-tab-btn"));
+            const headerControls = Array.from(document.querySelectorAll(".header-actions button, .header-actions a, .header-actions select")).filter(el => el.offsetParent !== null);
+            const tabControls = Array.from(typeTabsBar.querySelectorAll(".type-tab-btn, #tvFiltersToggleBtn")).filter(el => el.offsetParent !== null);
+            const filterControls = Array.from(document.querySelectorAll(".filters-panel input, .filters-panel select, .filters-panel button")).filter(el => el.offsetParent !== null);
 
-            if (tabBtns.includes(activeEl)) {
+            // Navigation inside Header Row
+            if (headerControls.includes(activeEl)) {
                 event.preventDefault();
-                const tIdx = tabBtns.indexOf(activeEl);
+                const hIdx = headerControls.indexOf(activeEl);
                 if (event.key === "ArrowRight") {
-                    const nextTab = tabBtns[(tIdx + 1) % tabBtns.length];
-                    nextTab.focus();
-                    nextTab.click();
+                    headerControls[(hIdx + 1) % headerControls.length].focus();
                 } else if (event.key === "ArrowLeft") {
-                    const prevTab = tabBtns[(tIdx - 1 + tabBtns.length) % tabBtns.length];
+                    headerControls[(hIdx - 1 + headerControls.length) % headerControls.length].focus();
+                } else if (event.key === "ArrowDown") {
+                    const activeTab = typeTabsBar.querySelector(".type-tab-btn.active") || tabControls[0];
+                    if (activeTab) {
+                        activeTab.focus();
+                    }
+                }
+                return;
+            }
+
+            // Navigation inside Category Tabs Row
+            if (tabControls.includes(activeEl)) {
+                event.preventDefault();
+                const tIdx = tabControls.indexOf(activeEl);
+                if (event.key === "ArrowRight") {
+                    const nextTab = tabControls[(tIdx + 1) % tabControls.length];
+                    nextTab.focus();
+                    if (nextTab.classList.contains("type-tab-btn")) {
+                        nextTab.click();
+                    }
+                } else if (event.key === "ArrowLeft") {
+                    const prevTab = tabControls[(tIdx - 1 + tabControls.length) % tabControls.length];
                     prevTab.focus();
-                    prevTab.click();
-                } else if (event.key === "ArrowDown" && cards.length > 0) {
-                    const targetCard = cards[state.lastFocusedCardIndex] || cards[0];
-                    targetCard.focus();
-                    targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                    if (prevTab.classList.contains("type-tab-btn")) {
+                        prevTab.click();
+                    }
+                } else if (event.key === "ArrowUp" && headerControls.length > 0) {
+                    headerControls[0].focus();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } else if (event.key === "ArrowDown") {
+                    if (filterControls.length > 0) {
+                        filterControls[0].focus();
+                    } else if (cards.length > 0) {
+                        const targetCard = cards[state.lastFocusedCardIndex] || cards[0];
+                        targetCard.focus();
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                }
+                return;
+            }
+
+            // Navigation inside Filters Panel (when open)
+            if (filterControls.includes(activeEl)) {
+                event.preventDefault();
+                const fIdx = filterControls.indexOf(activeEl);
+                if (event.key === "ArrowRight") {
+                    if (fIdx + 1 < filterControls.length) {
+                        filterControls[fIdx + 1].focus();
+                    }
+                } else if (event.key === "ArrowLeft") {
+                    if (fIdx - 1 >= 0) {
+                        filterControls[fIdx - 1].focus();
+                    }
+                } else if (event.key === "ArrowUp") {
+                    if (fIdx > 0) {
+                        filterControls[Math.max(0, fIdx - 4)].focus();
+                    } else {
+                        const activeTab = typeTabsBar.querySelector(".type-tab-btn.active") || tabControls[0];
+                        if (activeTab) {
+                            activeTab.focus();
+                        }
+                    }
+                } else if (event.key === "ArrowDown") {
+                    if (fIdx + 4 < filterControls.length) {
+                        filterControls[fIdx + 4].focus();
+                    } else if (cards.length > 0) {
+                        const targetCard = cards[0];
+                        targetCard.focus();
+                        targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
                 }
                 return;
             }
@@ -8060,7 +8227,11 @@
             if (cardIdx === -1) {
                 const startIdx = (state.lastFocusedCardIndex !== null && cards[state.lastFocusedCardIndex]) ? state.lastFocusedCardIndex : 0;
                 cards[startIdx].focus();
-                cards[startIdx].scrollIntoView({ behavior: "smooth", block: "center" });
+                if (startIdx < 6) {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } else {
+                    cards[startIdx].scrollIntoView({ behavior: "smooth", block: "center" });
+                }
                 return;
             }
 
@@ -8086,11 +8257,15 @@
                 targetCardIdx = Math.min(cards.length - 1, cardIdx + cols);
             } else if (event.key === "ArrowUp") {
                 if (cardIdx - cols < 0) {
-                    const activeTab = typeTabsBar.querySelector(".type-tab-btn.active") || tabBtns[0];
-                    if (activeTab) {
-                        activeTab.focus();
-                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    if (filterControls.length > 0) {
+                        filterControls[0].focus();
+                    } else {
+                        const activeTab = typeTabsBar.querySelector(".type-tab-btn.active") || tabControls[0];
+                        if (activeTab) {
+                            activeTab.focus();
+                        }
                     }
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                     return;
                 }
                 targetCardIdx = cardIdx - cols;
@@ -8113,7 +8288,11 @@
             if (nextCard) {
                 state.lastFocusedCardIndex = targetCardIdx;
                 nextCard.focus();
-                nextCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                if (targetCardIdx < cols) {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } else {
+                    nextCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
             }
         });
 
@@ -8124,6 +8303,7 @@
         // Smart TV Auto-Detection & Manual Toggle
         (function initSmartTvMode() {
             const tvToggleBtn = document.getElementById("tvModeToggleBtn");
+            const tvFiltersBtn = document.getElementById("tvFiltersToggleBtn");
             const ua = navigator.userAgent || "";
             const isSmartTvUa = /SmartTV|Tizen|Web0S|WebOS|VIDAA|BRAVIA|AFT|Android TV|GoogleTV|Hisense|PhilipsTV|Viera|NetCast|CrKey|Xbox|PlayStation/i.test(ua);
             const savedTvPref = localStorage.getItem("pukanki_tv_mode");
@@ -8131,6 +8311,9 @@
 
             function setTvMode(enabled) {
                 document.body.classList.toggle("tv-mode", enabled);
+                if (!enabled) {
+                    document.body.classList.remove("tv-filters-open");
+                }
                 if (tvToggleBtn) {
                     tvToggleBtn.classList.toggle("active", enabled);
                     tvToggleBtn.innerHTML = enabled ? "📺 ТВ Режим: ВКЛ" : "📺 ТВ Режим";
@@ -8148,7 +8331,19 @@
                         const firstCard = moviesContainer.querySelector(".movie-card");
                         if (firstCard) {
                             firstCard.focus();
+                            window.scrollTo({ top: 0, behavior: "smooth" });
                         }
+                    }
+                });
+            }
+
+            if (tvFiltersBtn) {
+                tvFiltersBtn.addEventListener("click", () => {
+                    const isOpen = document.body.classList.toggle("tv-filters-open");
+                    tvFiltersBtn.classList.toggle("active", isOpen);
+                    tvFiltersBtn.innerHTML = isOpen ? "✕ Скрий филтрите" : "🔍 Търсене & Филтри";
+                    if (isOpen && searchInput) {
+                        searchInput.focus();
                     }
                 });
             }
