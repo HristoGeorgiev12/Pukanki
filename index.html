@@ -2856,6 +2856,78 @@
                 padding: 0 14px;
             }
         }
+
+        /* Smart TV & D-Pad Navigation Mode (Netflix / HBO / Jellyfin style) */
+        .tv-mode-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(124, 58, 237, 0.16);
+            border: 1px solid rgba(168, 85, 247, 0.45);
+            color: #e9d5ff;
+            padding: 9px 14px;
+            border-radius: 999px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .tv-mode-toggle-btn:hover,
+        .tv-mode-toggle-btn.active {
+            background: linear-gradient(135deg, #7c3aed, #9333ea);
+            border-color: #c084fc;
+            color: #ffffff;
+            box-shadow: 0 0 18px rgba(168, 85, 247, 0.55);
+        }
+
+        body.tv-dpad-active,
+        body.tv-dpad-active * {
+            cursor: none !important;
+        }
+
+        body.tv-mode .movies-grid {
+            grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+            gap: 20px;
+            padding: 12px 6px;
+        }
+
+        body.tv-mode .card-title {
+            font-size: 1.02rem;
+        }
+
+        .movie-card:focus,
+        .movie-card:focus-visible,
+        .movie-card.tv-focused {
+            outline: 4px solid #c084fc !important;
+            outline-offset: 2px !important;
+            border-color: #e879f9 !important;
+            transform: scale(1.06) translateY(-4px) !important;
+            box-shadow: 0 0 0 6px rgba(192, 132, 252, 0.35), 0 18px 40px rgba(0, 0, 0, 0.9) !important;
+            z-index: 30 !important;
+        }
+
+        .type-tab-btn:focus-visible,
+        .player-tab:focus-visible,
+        .season-btn:focus-visible,
+        .episode-btn:focus-visible,
+        .player-toolbar-actions button:focus-visible,
+        .modal-back-btn:focus-visible,
+        .related-card:focus-visible,
+        body.tv-mode .type-tab-btn:focus,
+        body.tv-mode .player-tab:focus,
+        body.tv-mode .season-btn:focus,
+        body.tv-mode .episode-btn:focus,
+        body.tv-mode .player-toolbar-actions button:focus,
+        body.tv-mode .modal-back-btn:focus,
+        body.tv-mode .related-card:focus {
+            outline: 3px solid #f472b6 !important;
+            outline-offset: 2px !important;
+            box-shadow: 0 0 0 5px rgba(244, 114, 182, 0.35), 0 8px 24px rgba(0, 0, 0, 0.8) !important;
+            transform: scale(1.05) !important;
+            z-index: 25 !important;
+        }
     </style>
 </head>
 <body>
@@ -2870,6 +2942,7 @@
                 <p>Глобален TMDB каталог, официални трейлъри, актьори и БГ стрийминг</p>
             </div>
             <div class="header-actions">
+                <button type="button" id="tvModeToggleBtn" class="tv-mode-toggle-btn" title="Превключи ТВ Режим (навигация само със стрелки като Netflix / Jellyfin)">📺 ТВ Режим</button>
                 <a href="https://pukanki.vercel.app" class="version-switch-btn" title="Към основната версия на Пуканки">← Основен Пуканки</a>
                 <select id="sortSelect" class="select-control" aria-label="Сортиране">
                     <option value="default">По ред на добавяне</option>
@@ -3059,6 +3132,9 @@
                 return true;
             }
             if (source.name && DISABLED_PLAYERS.has(source.name)) {
+                return true;
+            }
+            if (source.embed_url && source.embed_url.includes("filmizip.com/player.html")) {
                 return true;
             }
             return false;
@@ -7693,9 +7769,199 @@
                     event.preventDefault();
                     event.stopPropagation();
                     handleMovieBack();
+                    return;
                 }
             }
+
+            // Smart TV / D-Pad Spatial Navigation (Arrow keys without mouse)
+            const isArrowKey = event.key === "ArrowRight" || event.key === "ArrowLeft" || event.key === "ArrowDown" || event.key === "ArrowUp";
+            if (!isArrowKey) {
+                return;
+            }
+
+            const activeEl = document.activeElement;
+            const isTypingInInput = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA" || activeEl.tagName === "SELECT");
+            if (isTypingInInput) {
+                if (event.key === "ArrowDown" && activeEl === searchInput && (!searchSuggestions || searchSuggestions.style.display === "none")) {
+                    event.preventDefault();
+                    activeEl.blur();
+                } else {
+                    return;
+                }
+            }
+
+            document.body.classList.add("tv-dpad-active");
+
+            // 1. Inside Movie Modal D-Pad Navigation
+            if (movieModal.classList.contains("open")) {
+                const focusables = Array.from(
+                    movieModal.querySelectorAll(
+                        "#modalBackToGridBtn, .season-btn, .episode-btn, #modalPlayerTabs .player-tab:not(.player-tab-dead), #externalPlayersDetails .player-tab, .player-toolbar-actions button, #modalWatchlistBtn, .related-card"
+                    )
+                ).filter(el => el.offsetParent !== null);
+
+                if (focusables.length === 0) {
+                    return;
+                }
+
+                event.preventDefault();
+                for (const rCard of movieModal.querySelectorAll(".related-card")) {
+                    if (!rCard.hasAttribute("tabindex")) {
+                        rCard.setAttribute("tabindex", "0");
+                    }
+                }
+
+                const curIdx = focusables.indexOf(activeEl);
+                if (curIdx === -1) {
+                    const playBtn = document.getElementById("playerPlayBtn") || focusables[0];
+                    playBtn.focus();
+                    playBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    return;
+                }
+
+                let nextIdx = curIdx;
+                if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                    nextIdx = Math.min(focusables.length - 1, curIdx + 1);
+                } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+                    nextIdx = Math.max(0, curIdx - 1);
+                }
+                const targetEl = focusables[nextIdx];
+                if (targetEl) {
+                    targetEl.focus();
+                    targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+                return;
+            }
+
+            // 2. Main Catalog Grid & Category Tabs D-Pad Navigation
+            if (intermediateScreen && intermediateScreen.classList.contains("open")) {
+                return;
+            }
+
+            const cards = Array.from(moviesContainer.querySelectorAll(".movie-card"));
+            const tabBtns = Array.from(typeTabsBar.querySelectorAll(".type-tab-btn"));
+
+            if (tabBtns.includes(activeEl)) {
+                event.preventDefault();
+                const tIdx = tabBtns.indexOf(activeEl);
+                if (event.key === "ArrowRight") {
+                    const nextTab = tabBtns[(tIdx + 1) % tabBtns.length];
+                    nextTab.focus();
+                    nextTab.click();
+                } else if (event.key === "ArrowLeft") {
+                    const prevTab = tabBtns[(tIdx - 1 + tabBtns.length) % tabBtns.length];
+                    prevTab.focus();
+                    prevTab.click();
+                } else if (event.key === "ArrowDown" && cards.length > 0) {
+                    const targetCard = cards[state.lastFocusedCardIndex] || cards[0];
+                    targetCard.focus();
+                    targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+                return;
+            }
+
+            if (cards.length === 0) {
+                return;
+            }
+
+            event.preventDefault();
+            let cardIdx = cards.indexOf(activeEl);
+            if (cardIdx === -1) {
+                const startIdx = (state.lastFocusedCardIndex !== null && cards[state.lastFocusedCardIndex]) ? state.lastFocusedCardIndex : 0;
+                cards[startIdx].focus();
+                cards[startIdx].scrollIntoView({ behavior: "smooth", block: "center" });
+                return;
+            }
+
+            // Calculate columns count dynamically based on grid geometry
+            let cols = 1;
+            if (cards.length > 1) {
+                const firstTop = cards[0].getBoundingClientRect().top;
+                for (let c = 1; c < cards.length; c++) {
+                    if (Math.abs(cards[c].getBoundingClientRect().top - firstTop) < 20) {
+                        cols++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            let targetCardIdx = cardIdx;
+            if (event.key === "ArrowRight") {
+                targetCardIdx = Math.min(cards.length - 1, cardIdx + 1);
+            } else if (event.key === "ArrowLeft") {
+                targetCardIdx = Math.max(0, cardIdx - 1);
+            } else if (event.key === "ArrowDown") {
+                targetCardIdx = Math.min(cards.length - 1, cardIdx + cols);
+            } else if (event.key === "ArrowUp") {
+                if (cardIdx - cols < 0) {
+                    const activeTab = typeTabsBar.querySelector(".type-tab-btn.active") || tabBtns[0];
+                    if (activeTab) {
+                        activeTab.focus();
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                    return;
+                }
+                targetCardIdx = cardIdx - cols;
+            }
+
+            // Auto-load next batch when approaching end of visible cards
+            if (targetCardIdx >= cards.length - cols && state.visibleCount < state.filtered.length) {
+                state.visibleCount += PAGE_BATCH_SIZE;
+                renderMoviesGrid();
+                const updatedCards = Array.from(moviesContainer.querySelectorAll(".movie-card"));
+                if (updatedCards[targetCardIdx]) {
+                    state.lastFocusedCardIndex = targetCardIdx;
+                    updatedCards[targetCardIdx].focus();
+                    updatedCards[targetCardIdx].scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+                return;
+            }
+
+            const nextCard = cards[targetCardIdx];
+            if (nextCard) {
+                state.lastFocusedCardIndex = targetCardIdx;
+                nextCard.focus();
+                nextCard.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
         });
+
+        window.addEventListener("mousemove", () => {
+            document.body.classList.remove("tv-dpad-active");
+        }, { passive: true });
+
+        // Smart TV Auto-Detection & Manual Toggle
+        (function initSmartTvMode() {
+            const tvToggleBtn = document.getElementById("tvModeToggleBtn");
+            const ua = navigator.userAgent || "";
+            const isSmartTvUa = /SmartTV|Tizen|Web0S|WebOS|VIDAA|BRAVIA|AFT|Android TV|GoogleTV|Hisense|PhilipsTV|Viera|NetCast|CrKey|Xbox|PlayStation/i.test(ua);
+            const savedTvPref = localStorage.getItem("pukanki_tv_mode");
+            const shouldEnableTv = savedTvPref === "1" || (savedTvPref === null && isSmartTvUa);
+
+            function setTvMode(enabled) {
+                document.body.classList.toggle("tv-mode", enabled);
+                if (tvToggleBtn) {
+                    tvToggleBtn.classList.toggle("active", enabled);
+                    tvToggleBtn.innerHTML = enabled ? "📺 ТВ Режим: ВКЛ" : "📺 ТВ Режим";
+                }
+            }
+
+            setTvMode(shouldEnableTv);
+
+            if (tvToggleBtn) {
+                tvToggleBtn.addEventListener("click", () => {
+                    const nowEnabled = !document.body.classList.contains("tv-mode");
+                    localStorage.setItem("pukanki_tv_mode", nowEnabled ? "1" : "0");
+                    setTvMode(nowEnabled);
+                    if (nowEnabled) {
+                        const firstCard = moviesContainer.querySelector(".movie-card");
+                        if (firstCard) {
+                            firstCard.focus();
+                        }
+                    }
+                });
+            }
+        })();
 
         modalBody.addEventListener("click", (event) => {
             const crewBtn = event.target.closest(".crew-search-btn");
