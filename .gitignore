@@ -3,6 +3,7 @@ __pycache__/
 *$py.class
 *.bak
 *.zip
+!.chat_session_backup/*.zip
 scratch/
 player_health_cache.json
 .env
