@@ -929,7 +929,7 @@
         .genres-circle-footer {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             padding: 14px 24px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             background: rgba(255, 255, 255, 0.02);
@@ -1031,8 +1031,10 @@
 
             .genres-circle-header {
                 padding: 10px 12px;
-                flex-direction: column;
-                align-items: stretch;
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: space-between;
                 gap: 8px;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
@@ -1063,19 +1065,8 @@
             }
 
             .genres-circle-header-actions {
-                width: 100%;
-            }
-
-            .genres-circle-search-wrap {
-                width: 100%;
-            }
-
-            .genres-circle-search {
-                width: 100%;
-            }
-
-            .genres-circle-search:focus {
-                width: 100%;
+                width: auto;
+                flex-shrink: 0;
             }
 
             .genres-circle-body {
@@ -1165,13 +1156,8 @@
 
             .genres-circle-footer {
                 padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .genres-circle-legend {
                 justify-content: center;
-                font-size: 0.72rem;
+                gap: 8px;
             }
 
             .genres-circle-footer-buttons {
@@ -4938,10 +4924,6 @@
                     </div>
                 </div>
                 <div class="genres-circle-header-actions">
-                    <div class="genres-circle-search-wrap">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" id="genreWheelSearchInput" class="genres-circle-search" placeholder="Търси жанр..." autocomplete="off">
-                    </div>
                     <button type="button" id="closeGenresCircleModalBtn" class="genres-circle-close-btn" aria-label="Затвори" title="Затвори">✕</button>
                 </div>
             </div>
@@ -4963,11 +4945,6 @@
             </div>
 
             <div class="genres-circle-footer">
-                <div class="genres-circle-legend">
-                    <span class="legend-item"><span class="legend-dot legend-neutral"></span> Неутрален</span>
-                    <span class="legend-item"><span class="legend-dot legend-active"></span> ✓ Включен</span>
-                    <span class="legend-item"><span class="legend-dot legend-excluded"></span> ✕ Изключен</span>
-                </div>
                 <div class="genres-circle-footer-buttons">
                     <button type="button" id="footerClearGenresWheelBtn" class="circle-btn circle-btn-secondary">↺ Изчисти</button>
                     <button type="button" id="footerApplyGenresWheelBtn" class="circle-btn circle-btn-primary">✓ Приложи филтрите</button>
