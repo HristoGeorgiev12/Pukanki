@@ -334,9 +334,9 @@
             pointer-events: none;
         }
 
-        /* 1. Quick Presets Bar */
+        /* 1. Quick Presets Bar (Скрито временно) */
         .quick-presets-bar {
-            display: flex;
+            display: none !important;
             align-items: center;
             gap: 10px;
             width: 100%;
@@ -4430,8 +4430,8 @@
         </div>
 
         <section class="filters-panel" id="filtersPanel">
-            <!-- 1. Quick Discovery Presets Carousel & Actions -->
-            <div class="quick-presets-bar" id="quickPresetsBar" role="toolbar" aria-label="Бързи филтри">
+            <!-- 1. Quick Discovery Presets Carousel & Actions (Скрито временно) -->
+            <div class="quick-presets-bar" id="quickPresetsBar" style="display: none;" role="toolbar" aria-label="Бързи филтри">
                 <span class="quick-presets-label">⚡ Бързи:</span>
                 <div class="quick-presets-scroll" id="quickPresetsScroll">
                     <button type="button" class="quick-preset-chip" data-preset="top-rated" title="Филми с рейтинг над 7.5">
