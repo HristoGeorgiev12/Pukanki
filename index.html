@@ -8401,7 +8401,13 @@
             }
 
             if (!firstEmbedUrl && !tvControlsHtml && !embeddedTabsHtml && !externalTabsHtml) {
-                return "";
+                return `
+                    <div class="modal-player-section" style="padding: 24px; text-align: center; background: rgba(15, 23, 42, 0.45); border-radius: 14px; border: 1px dashed rgba(255, 255, 255, 0.12); margin-top: 20px;">
+                        <div style="font-size: 2.2rem; margin-bottom: 8px;">🔒</div>
+                        <div style="font-size: 1.05rem; font-weight: 700; color: #f8fafc; margin-bottom: 6px;">Все още няма наличен стрийм в българските сайтове</div>
+                        <div style="font-size: 0.86rem; color: #94a3b8; max-width: 500px; margin: 0 auto;">Заглавието е добавено от световния каталог на TMDB. Можете да изгледате официалния трейлър и да прегледате актьорския състав.</div>
+                    </div>
+                `;
             }
 
             const openAttr = "";
@@ -8537,12 +8543,25 @@
                 const stCls = st.toLowerCase().replace(/[^a-z0-9]/g, "");
                 metaHtml = `${metaHtml}<button type="button" class="crew-search-btn studio-pill studio-${stCls}" data-search-query="@студио: ${escapeHtml(st)}" title="Търси филми от ${escapeHtml(st)}">🏢 ${escapeHtml(st)}</button>`;
             }
+            const isPlayable = !item.isTmdbUnmatched && (
+                getActivePlayerSources(item).length > 0 ||
+                Boolean(item.filmi2k_url || item.filmizip_url || item.filmi9_url || item.url) ||
+                (Array.isArray(item.seasons) && item.seasons.length > 0)
+            );
+            if (!isPlayable) {
+                metaHtml = `${metaHtml}<span class="modal-type-pill" style="background: rgba(148, 163, 184, 0.15); border: 1px solid rgba(148, 163, 184, 0.35); color: #94a3b8;">🔒 Очаква се в БГ каталозите</span>`;
+            }
+
             if (intermediateMetaRow) {
                 intermediateMetaRow.innerHTML = metaHtml;
             }
 
             if (intermediateOverview) {
                 intermediateOverview.textContent = item.overview || "Няма налично описание.";
+            }
+
+            if (intermediatePlayBtn) {
+                intermediatePlayBtn.style.display = isPlayable ? "inline-flex" : "none";
             }
 
             if (intermediateTrailerBtn) {
@@ -8569,8 +8588,12 @@
             document.body.classList.add("movie-page-active");
 
             setTimeout(() => {
-                if (intermediatePlayBtn) {
+                if (isPlayable && intermediatePlayBtn) {
                     intermediatePlayBtn.focus();
+                } else if (intermediateTrailerBtn && intermediateTrailerBtn.style.display !== "none") {
+                    intermediateTrailerBtn.focus();
+                } else if (intermediateInfoBtn) {
+                    intermediateInfoBtn.focus();
                 }
             }, 60);
         }
@@ -8600,6 +8623,14 @@
         function handleIntermediatePlay() {
             const item = state.activeIntermediateItem;
             if (!item) {
+                return;
+            }
+            const isPlayable = !item.isTmdbUnmatched && (
+                getActivePlayerSources(item).length > 0 ||
+                Boolean(item.filmi2k_url || item.filmizip_url || item.filmi9_url || item.url) ||
+                (Array.isArray(item.seasons) && item.seasons.length > 0)
+            );
+            if (!isPlayable) {
                 return;
             }
             if (intermediateScreen) {
