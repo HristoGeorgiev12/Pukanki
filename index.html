@@ -6429,8 +6429,11 @@
 
         function closeMovieModal(fromPopstate = false) {
             if (!fromPopstate && window.location.hash.startsWith("#movie=")) {
-                window.history.back();
-                return;
+                try {
+                    history.replaceState(null, "", window.location.pathname + window.location.search);
+                } catch (e) {
+                    window.location.hash = "";
+                }
             }
             exitPlayerFullscreen();
             movieModal.classList.remove("open");
