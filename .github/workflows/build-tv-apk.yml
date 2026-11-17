@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   build:
-    name: Build & Release TV APK
+    name: Build TV APK
     runs-on: ubuntu-latest
 
     steps:
@@ -25,25 +25,21 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Prepare Gradle Wrapper
+      - name: Build APK with Gradle
         run: |
           cd android-tv
-          gradle wrapper
-          chmod +x gradlew
+          gradle assembleDebug --stacktrace
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
 
-      - name: Build Debug APK
-        run: |
-          cd android-tv
-          ./gradlew assembleDebug --stacktrace
-
-      - name: Copy & Rename APK
+      - name: Copy & Prepare APK
         run: |
           mkdir -p output
-          cp android-tv/app/build/outputs/apk/debug/*.apk output/Pukanki-TV.apk
-          ls -la output/
+          find android-tv/app/build/outputs/apk -name "*.apk" -exec cp {} output/Pukanki-TV.apk \;
+          ls -lh output/
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -51,20 +47,20 @@ jobs:
           name: Pukanki-TV-APK
           path: output/Pukanki-TV.apk
 
-      - name: Create GitHub Release
+      - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
           tag_name: tv-v1.0.0
           name: Pukanki TV v1.0.0 APK
           body: |
-            ### 🍿 Пуканки TV App за Android TV & Google TV
+            ### 🍿 Пуканки TV App за Google TV & Android TV
             
-            - **Лесно управление с дистанционно (D-Pad)**: стрелки и OK бутон без мишка.
-            - **Истински пълен екран (Leanback)**.
-            - **Автоматично обновяване**: зарежда сайта директно от Vercel.
+            - Оптимизирано за управление само със стрелките на дистанционното (D-Pad).
+            - Директен пълен екран без браузърни ленти.
+            - Зарежда автоматично актуалната версия на сайта.
             
-            **Директен линк за сваляне в Downloader**:
+            **Директен линк за сваляне в Downloader:**
             `https://github.com/HristoGeorgiev12/Pukanki/releases/download/tv-v1.0.0/Pukanki-TV.apk`
           files: output/Pukanki-TV.apk
         env:
