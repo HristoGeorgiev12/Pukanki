@@ -9682,7 +9682,8 @@
 
                 for (const item of combined) {
                     if (item.tmdb_id) {
-                        byTmdb.set(Number(item.tmdb_id), item);
+                        const mTypeKey = item.type === "tv" ? "tv" : "movie";
+                        byTmdb.set(`${mTypeKey}_${item.tmdb_id}`, item);
                     }
                     const tk = normalizeTitleKey(item.title);
                     const ok = normalizeTitleKey(item.original_title);
@@ -9743,7 +9744,10 @@
                         const tk = normalizeTitleKey(rTitle);
                         const ok = normalizeTitleKey(rOrig);
 
-                        let matched = byTmdb.get(Number(raw.id));
+                        let matched = byTmdb.get(`${mType}_${raw.id}`);
+                        if (matched && matched.year && rawYear && Math.abs(Number(matched.year) - rawYear) > 1) {
+                            matched = null;
+                        }
                         if (!matched && rawYear) {
                             if (tk && byTitleYear.has(`${tk}_${rawYear}`)) {
                                 matched = byTitleYear.get(`${tk}_${rawYear}`);
@@ -9758,6 +9762,14 @@
                                 if (!candYear || !rawYear || Math.abs(candYear - rawYear) <= 1) {
                                     matched = candidate;
                                 }
+                            }
+                        }
+
+                        if (matched) {
+                            const isFutureChart = req.chart === "future_12m" || req.chart === "upcoming";
+                            const isPastItem = matched.year && Number(matched.year) < 2025;
+                            if (isFutureChart && isPastItem) {
+                                matched = null;
                             }
                         }
 
