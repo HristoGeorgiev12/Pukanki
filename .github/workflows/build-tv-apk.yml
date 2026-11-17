@@ -35,9 +35,19 @@ jobs:
         run: |
           export PATH="$PWD/gradle-8.4/bin:$PATH"
           cd android-tv
-          gradle assembleDebug --stacktrace
+          gradle assembleDebug --stacktrace --info > ../gradle_build.log 2>&1 || {
+            tail -n 80 ../gradle_build.log
+            exit 1
+          }
         env:
           ANDROID_HOME: /usr/local/lib/android/sdk
+
+      - name: Upload Build Log on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-build-log
+          path: gradle_build.log
 
       - name: Copy & Prepare APK
         run: |
