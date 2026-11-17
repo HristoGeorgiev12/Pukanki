@@ -115,6 +115,34 @@ class LocalDevHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Expires", "0")
         super().end_headers()
 
+    def do_HEAD(self):
+        if self.path.startswith("/api/ping"):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.send_header("Content-Length", "2")
+            self.end_headers()
+            return
+        super().do_HEAD()
+
+    def do_GET(self):
+        print(f"[*] GET {self.path}", flush=True)
+        if self.path.startswith("/api/ping"):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.send_header("Content-Length", "2")
+            self.end_headers()
+            self.wfile.write(b"OK")
+            return
+        if self.path.startswith("/api/speedtest"):
+            chunk = b"X" * (256 * 1024)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/octet-stream")
+            self.send_header("Content-Length", str(len(chunk)))
+            self.end_headers()
+            self.wfile.write(chunk)
+            return
+        super().do_GET()
+
     def do_POST(self):
         if self.path.startswith("/api/check-player"):
             content_len = int(self.headers.get("Content-Length", 0))
