@@ -1805,48 +1805,85 @@
         /* Available (Color) vs Unavailable (Grayscale / Desaturated) */
         .movie-card.is-available {
             opacity: 1;
-            filter: none;
         }
 
         .movie-card.is-unavailable {
-            opacity: 0.58;
-            filter: grayscale(100%) contrast(0.92);
-            transition: transform 0.22s ease, opacity 0.22s ease, filter 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+            opacity: 0.75;
+            transition: transform 0.22s ease, opacity 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .movie-card.is-unavailable .poster-wrap {
+            filter: grayscale(100%) contrast(0.90);
+            transition: filter 0.22s ease;
         }
 
         .movie-card.is-unavailable:hover,
         .movie-card.is-unavailable:focus,
         .movie-card.is-unavailable:focus-visible {
-            opacity: 0.9;
-            filter: grayscale(25%) contrast(0.98);
+            opacity: 0.96;
         }
 
-        /* Movie Card Distinct Coloring (Purple / Violet) */
+        .movie-card.is-unavailable:hover .poster-wrap,
+        .movie-card.is-unavailable:focus .poster-wrap {
+            filter: grayscale(30%) contrast(0.96);
+        }
+
+        /* Movie Card Distinct Coloring (Purple / Violet) - Instantly visible before hover */
         .movie-card.card-type-movie {
-            background: linear-gradient(180deg, rgba(23, 21, 40, 0.95) 0%, rgba(15, 17, 30, 0.95) 100%);
-            border: 1px solid rgba(139, 92, 246, 0.26);
+            background: linear-gradient(180deg, rgba(28, 18, 48, 0.98) 0%, rgba(16, 12, 32, 0.98) 100%);
+            border: 2px solid rgba(168, 85, 247, 0.45);
+            border-top: 3.5px solid #a855f7;
+            box-shadow: 0 4px 18px rgba(139, 92, 246, 0.16);
+        }
+
+        .movie-card.card-type-movie .card-body {
+            background: linear-gradient(180deg, rgba(32, 20, 56, 0.85) 0%, rgba(18, 13, 34, 0.98) 100%);
+        }
+
+        .movie-card.card-type-movie .poster-wrap {
+            border-bottom: 2px solid rgba(168, 85, 247, 0.35);
+        }
+
+        .movie-card.card-type-movie .card-meta {
+            color: #d8b4fe;
         }
 
         .movie-card.card-type-movie:hover,
         .movie-card.card-type-movie:focus,
         .movie-card.card-type-movie:focus-visible {
-            border-color: #a855f7;
+            border-color: #c084fc;
+            border-top-color: #d8b4fe;
             outline: 2px solid #c084fc;
-            box-shadow: 0 12px 28px rgba(124, 58, 237, 0.42), 0 0 18px rgba(139, 92, 246, 0.35);
+            box-shadow: 0 12px 28px rgba(124, 58, 237, 0.45), 0 0 22px rgba(168, 85, 247, 0.4);
         }
 
-        /* TV Series Card Distinct Coloring (Cyan / Sky Blue) */
+        /* TV Series Card Distinct Coloring (Cyan / Sky Blue) - Instantly visible before hover */
         .movie-card.card-type-tv {
-            background: linear-gradient(180deg, rgba(14, 25, 42, 0.95) 0%, rgba(12, 18, 30, 0.95) 100%);
-            border: 1px solid rgba(14, 165, 233, 0.26);
+            background: linear-gradient(180deg, rgba(10, 30, 56, 0.98) 0%, rgba(8, 18, 38, 0.98) 100%);
+            border: 2px solid rgba(14, 165, 233, 0.50);
+            border-top: 3.5px solid #0ea5e9;
+            box-shadow: 0 4px 18px rgba(14, 165, 233, 0.18);
+        }
+
+        .movie-card.card-type-tv .card-body {
+            background: linear-gradient(180deg, rgba(12, 36, 68, 0.85) 0%, rgba(8, 20, 42, 0.98) 100%);
+        }
+
+        .movie-card.card-type-tv .poster-wrap {
+            border-bottom: 2px solid rgba(14, 165, 233, 0.40);
+        }
+
+        .movie-card.card-type-tv .card-meta {
+            color: #7dd3fc;
         }
 
         .movie-card.card-type-tv:hover,
         .movie-card.card-type-tv:focus,
         .movie-card.card-type-tv:focus-visible {
             border-color: #38bdf8;
+            border-top-color: #7dd3fc;
             outline: 2px solid #38bdf8;
-            box-shadow: 0 12px 28px rgba(2, 132, 199, 0.42), 0 0 18px rgba(6, 182, 212, 0.35);
+            box-shadow: 0 12px 28px rgba(2, 132, 199, 0.45), 0 0 22px rgba(56, 189, 248, 0.4);
         }
 
         .poster-wrap {
