@@ -492,8 +492,8 @@
             border: 1px solid rgba(168, 85, 247, 0.4);
             border-radius: 26px;
             width: 95vw;
-            max-width: 880px;
-            max-height: 94vh;
+            max-width: 900px;
+            max-height: 96vh;
             display: flex;
             flex-direction: column;
             box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 50px rgba(168, 85, 247, 0.25);
@@ -597,8 +597,8 @@
         }
 
         .genres-circle-body {
-            padding: 16px 20px 24px;
-            overflow-y: auto;
+            padding: 8px 16px 14px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -609,8 +609,8 @@
         /* Radial Stage */
         .genres-radial-stage {
             position: relative;
-            width: min(760px, 92vw);
-            height: min(760px, 92vw);
+            width: min(780px, calc(94vh - 160px), 92vw);
+            height: min(780px, calc(94vh - 160px), 92vw);
             aspect-ratio: 1 / 1;
             margin: 0 auto;
             border-radius: 50%;
@@ -630,25 +630,11 @@
             transform: translate(-50%, -50%);
         }
 
-        .genres-orbit-ring-outer {
-            width: 90%;
-            height: 82%;
-            border: 1.5px dashed rgba(168, 85, 247, 0.22);
-            box-shadow: inset 0 0 30px rgba(168, 85, 247, 0.04);
-        }
-
-        .genres-orbit-ring-mid {
-            width: 62%;
-            height: 55%;
-            border: 1.5px dashed rgba(192, 132, 252, 0.20);
-            box-shadow: inset 0 0 25px rgba(192, 132, 252, 0.03);
-        }
-
-        .genres-orbit-ring-inner {
-            width: 40%;
-            height: 35%;
-            border: 1.5px dashed rgba(56, 189, 248, 0.22);
-            box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.04);
+        .genres-orbit-ring-single {
+            width: 84%;
+            height: 84%;
+            border: 1.5px dashed rgba(168, 85, 247, 0.35);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.12), inset 0 0 25px rgba(168, 85, 247, 0.05);
         }
 
         /* Central Hub */
@@ -750,19 +736,21 @@
         .radial-genre-node {
             position: absolute;
             transform: translate(-50%, -50%);
-            display: inline-flex;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            max-width: 124px;
-            border-radius: 999px;
-            background: rgba(22, 28, 48, 0.90);
+            justify-content: center;
+            gap: 2px;
+            width: 52px;
+            padding: 3px 1px;
+            border-radius: 10px;
+            background: rgba(22, 28, 48, 0.92);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.14);
             color: #e2e8f0;
-            font-size: 0.72rem;
+            font-size: 0.62rem;
             font-weight: 600;
-            white-space: nowrap;
+            line-height: 1.15;
             cursor: pointer;
             user-select: none;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
@@ -770,15 +758,21 @@
             z-index: 5;
         }
 
+        .radial-genre-node .node-emoji {
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+
         .radial-genre-node .node-label {
-            max-width: 90px;
+            max-width: 48px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            text-align: center;
         }
 
         .radial-genre-node:hover {
-            transform: translate(-50%, -50%) scale(1.18);
+            transform: translate(-50%, -50%) scale(1.22);
             border-color: #c084fc;
             color: #ffffff;
             box-shadow: 0 0 18px rgba(168, 85, 247, 0.6);
@@ -787,6 +781,7 @@
 
         .radial-genre-node:hover .node-label {
             max-width: none;
+            white-space: normal;
         }
 
         .radial-genre-node.active {
@@ -821,15 +816,20 @@
         }
 
         .radial-node-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            font-size: 0.62rem;
+            font-size: 0.60rem;
             font-weight: 900;
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         }
 
         /* Footer */
@@ -4660,9 +4660,7 @@
 
             <div class="genres-circle-body">
                 <div class="genres-radial-stage" id="genresRadialStage">
-                    <div class="genres-orbit-ring genres-orbit-ring-outer"></div>
-                    <div class="genres-orbit-ring genres-orbit-ring-mid"></div>
-                    <div class="genres-orbit-ring genres-orbit-ring-inner"></div>
+                    <div class="genres-orbit-ring genres-orbit-ring-single"></div>
 
                     <!-- Central Interactive Hub -->
                     <div class="genres-radial-hub" id="genresRadialHub">
@@ -6936,94 +6934,35 @@
                 return;
             }
 
-            const fallbackGenres = ["Екшън", "Комедия", "Драма", "Фантастика", "Трилър", "Ужаси", "Анимация", "Семеен", "Приключенски", "Криминален", "Мистерия", "Романс", "Фентъзи", "Документален", "Исторически", "Военен", "Музика", "Уестърн"];
-            const all = (state.allGenres && state.allGenres.length > 0) ? state.allGenres : fallbackGenres;
-
-            const priorityList = [
-                "Екшън", "Комедия", "Драма", "Трилър", "Фантастика", "Научна-фантастика", "Ужаси", "Ужас",
-                "Романс", "Криминален", "Семеен", "Приключенски", "Приключение", "Анимация", "Фентъзи",
-                "Мистерия", "Документален", "Исторически", "Военен", "Музика", "Уестърн", "Биографичен"
+            const fallbackGenres = [
+                "Азиатски", "Анимация", "Биографичен", "Български", "Военен", "Документален", "Драма", "Европейски",
+                "Екшън", "Еротичен", "Индийски", "Исторически", "Коледни", "Комедия", "Криминален", "Мистерия",
+                "Музикален", "Научна фантастика", "Приключенски", "Риалити", "Романтичен", "Руски", "Семеен",
+                "Скандинавски", "Спортен", "Телевизионен филм", "Тийн", "Трилър", "Турски", "Уестърн", "Ужаси", "Фентъзи"
             ];
+            const rawGenres = (state.allGenres && state.allGenres.length > 0) ? state.allGenres : fallbackGenres;
 
-            const prioritySet = new Set();
-            for (const p of priorityList) {
-                if (all.includes(p)) {
-                    prioritySet.add(p);
+            const uniqueCanonical = [];
+            for (const g of rawGenres) {
+                const canon = typeof getCanonicalGenre === "function" ? getCanonicalGenre(g) : g;
+                if (canon && !uniqueCanonical.includes(canon)) {
+                    uniqueCanonical.push(canon);
                 }
             }
 
-            const innerGenres = [];
-            const midGenres = [];
-            const outerGenres = [];
-
-            for (const p of priorityList) {
-                if (!all.includes(p)) {
-                    continue;
-                }
-                if (innerGenres.length < 6) {
-                    innerGenres.push(p);
-                    continue;
-                }
-                if (midGenres.length < 14) {
-                    midGenres.push(p);
-                    continue;
-                }
-                outerGenres.push(p);
-            }
-
-            for (const g of all) {
-                if (innerGenres.includes(g) || midGenres.includes(g) || outerGenres.includes(g)) {
-                    continue;
-                }
-                outerGenres.push(g);
-            }
+            uniqueCanonical.sort((a, b) => a.localeCompare(b, "bg"));
 
             const normalizedFilter = (filterText || "").trim().toLowerCase();
             let nodesHtml = "";
-            const nodeCoords = [];
+            const totalCount = uniqueCanonical.length;
+            const radiusPercent = 42.0;
 
-            // Ring 1 (Inner, Rx = 20%, Ry = 17.5%)
-            const innerCount = innerGenres.length;
-            for (let i = 0; i < innerCount; i++) {
-                const genre = innerGenres[i];
-                const angle = (2 * Math.PI * i / innerCount) - (Math.PI / 2);
-                nodeCoords.push({
-                    genre: genre,
-                    x: 50 + 20.0 * Math.cos(angle),
-                    y: 50 + 17.5 * Math.sin(angle)
-                });
-            }
-
-            // Ring 2 (Middle, Rx = 31%, Ry = 27.5%, staggered)
-            const midCount = midGenres.length;
-            const midOffset = innerCount > 0 ? (Math.PI / innerCount) : 0;
-            for (let i = 0; i < midCount; i++) {
-                const genre = midGenres[i];
-                const angle = (2 * Math.PI * i / midCount) - (Math.PI / 2) + midOffset;
-                nodeCoords.push({
-                    genre: genre,
-                    x: 50 + 31.0 * Math.cos(angle),
-                    y: 50 + 27.5 * Math.sin(angle)
-                });
-            }
-
-            // Ring 3 (Outer, staggered crown radius)
-            const outerCount = outerGenres.length;
-            const outerOffset = midCount > 0 ? (Math.PI / midCount) : 0;
-            for (let i = 0; i < outerCount; i++) {
-                const genre = outerGenres[i];
-                const angle = (2 * Math.PI * i / outerCount) - (Math.PI / 2) + outerOffset;
-                const rx = (i % 2 === 0) ? 48.0 : 42.5;
-                const ry = (i % 2 === 0) ? 44.0 : 39.0;
-                nodeCoords.push({
-                    genre: genre,
-                    x: 50 + rx * Math.cos(angle),
-                    y: 50 + ry * Math.sin(angle)
-                });
-            }
-
-            for (const item of nodeCoords) {
-                nodesHtml = `${nodesHtml}${createRadialGenreNodeHtml(item.genre, item.x, item.y, normalizedFilter)}`;
+            for (let i = 0; i < totalCount; i++) {
+                const genre = uniqueCanonical[i];
+                const angle = (2 * Math.PI * i / totalCount) - (Math.PI / 2);
+                const x = 50 + radiusPercent * Math.cos(angle);
+                const y = 50 + radiusPercent * Math.sin(angle);
+                nodesHtml = `${nodesHtml}${createRadialGenreNodeHtml(genre, x, y, normalizedFilter)}`;
             }
 
             orbitLayer.innerHTML = nodesHtml;
@@ -7058,7 +6997,7 @@
             }
 
             return `<button type="button" class="${classes.join(" ")}" data-radial-genre="${safeGenre}" style="left: ${x.toFixed(2)}%; top: ${y.toFixed(2)}%;" title="${safeGenre} (Кликнете за избор)">
-                <span>${emoji}</span>
+                <span class="node-emoji">${emoji}</span>
                 <span class="node-label">${safeGenre}</span>
                 ${badge}
             </button>`;
