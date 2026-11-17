@@ -11655,7 +11655,7 @@
             const tvToggleBtn = document.getElementById("tvModeToggleBtn");
             const tvFiltersBtn = document.getElementById("tvFiltersToggleBtn");
             const ua = navigator.userAgent || "";
-            const isSmartTvUa = /SmartTV|Tizen|Web0S|WebOS|VIDAA|BRAVIA|AFT|Android TV|GoogleTV|Hisense|PhilipsTV|Viera|NetCast|CrKey|Xbox|PlayStation/i.test(ua);
+            const isSmartTvUa = /SmartTV|Tizen|Web0S|WebOS|VIDAA|BRAVIA|AFT|Android TV|GoogleTV|Hisense|PhilipsTV|PukankiTV|Viera|NetCast|CrKey|Xbox|PlayStation/i.test(ua);
             const savedTvPref = localStorage.getItem("pukanki_tv_mode");
             const shouldEnableTv = savedTvPref === "1" || (savedTvPref === null && isSmartTvUa);
 
@@ -11667,6 +11667,14 @@
                 if (tvToggleBtn) {
                     tvToggleBtn.classList.toggle("active", enabled);
                     tvToggleBtn.innerHTML = enabled ? "📺 ТВ Режим: ВКЛ" : "📺 ТВ Режим";
+                }
+                if (enabled) {
+                    setTimeout(() => {
+                        const firstCard = moviesContainer ? moviesContainer.querySelector(".movie-card") : null;
+                        if (firstCard && !document.activeElement?.closest(".movie-modal")) {
+                            firstCard.focus();
+                        }
+                    }, 500);
                 }
             }
 
