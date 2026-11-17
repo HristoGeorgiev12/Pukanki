@@ -9075,11 +9075,19 @@
                 modalContent.scrollTop = 0;
             }
             const backBtn = document.getElementById("moviePageBackBtn");
-            if (backBtn) {
-                setTimeout(() => {
+            const playBtnInit = document.getElementById("playerPlayBtn");
+            const isTvFocus = document.body.classList.contains("tv-mode");
+            setTimeout(() => {
+                if (isTvFocus && playBtnInit) {
+                    playBtnInit.focus();
+                    const playerMount = document.getElementById("modalPlayerMount");
+                    if (playerMount) {
+                        playerMount.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                } else if (backBtn) {
                     backBtn.focus();
-                }, 60);
-            }
+                }
+            }, 80);
         }
 
         async function enrichModalWithTmdbData(item) {
@@ -11013,6 +11021,39 @@
                     }
                 } catch (e) {}
 
+                const hasNativeTvBridge = Boolean(window.PukankiTVAndroid && typeof window.PukankiTVAndroid.tapAtRatio === "function");
+                if (hasNativeTvBridge) {
+                    iframe.scrollIntoView({ behavior: "instant", block: "center" });
+                    setTimeout(() => {
+                        const rect = iframe.getBoundingClientRect();
+                        if (rect.width > 0 && rect.height > 0 && window.innerWidth > 0 && window.innerHeight > 0) {
+                            const xRatio = (rect.left + rect.width / 2) / window.innerWidth;
+                            const yRatio = (rect.top + rect.height / 2) / window.innerHeight;
+                            try {
+                                window.PukankiTVAndroid.tapAtRatio(xRatio, yRatio);
+                            } catch (bridgeErr) {}
+                        }
+                        setTimeout(() => {
+                            const btn = document.getElementById("playerPlayBtn");
+                            if (btn) {
+                                btn.focus({ preventScroll: true });
+                            }
+                        }, 180);
+                    }, 80);
+
+                    showToast("🎬 Докоснахме плеъра! Ако видеото не тръгне от първия път, натисни OK отново.");
+                    if (playBtn) {
+                        playBtn.innerHTML = "✓ Докоснато";
+                        setTimeout(() => {
+                            if (playBtn) {
+                                playBtn.innerHTML = "▶ Пусни плеъра";
+                                playBtn.classList.remove("is-active");
+                            }
+                        }, 2200);
+                    }
+                    return;
+                }
+
                 iframe.focus();
                 iframe.scrollIntoView({ behavior: "smooth", block: "center" });
 
@@ -11419,6 +11460,29 @@
             }
         });
 
+        function handleUiBackAction() {
+            const box = document.getElementById("mainPlayerFrameBox");
+            if (box && (box.classList.contains("theater-mode") || box.classList.contains("is-fullscreen") || document.fullscreenElement || document.webkitFullscreenElement)) {
+                exitPlayerFullscreen(box);
+                const tBtn = document.getElementById("theaterFullscreenBtn") || document.getElementById("playerPlayBtn");
+                if (tBtn) {
+                    setTimeout(() => tBtn.focus({ preventScroll: true }), 60);
+                }
+                return true;
+            }
+            const genresCircleModal = document.getElementById("genresCircleModal");
+            if (genresCircleModal && genresCircleModal.style.display !== "none") {
+                closeGenresCircleModal();
+                return true;
+            }
+            if (movieModal.classList.contains("open") || (intermediateScreen && intermediateScreen.classList.contains("open"))) {
+                handleMovieBack();
+                return true;
+            }
+            return false;
+        }
+        window.handleAndroidTvBack = handleUiBackAction;
+
         document.addEventListener("keydown", (event) => {
             const isBackKey = event.key === "Escape" ||
                 event.key === "GoBack" ||
@@ -11427,27 +11491,10 @@
                 event.keyCode === 10009 ||
                 event.keyCode === 461;
 
-            if (isBackKey) {
-                const box = document.getElementById("mainPlayerFrameBox");
-                if (box && (box.classList.contains("theater-mode") || box.classList.contains("is-fullscreen") || document.fullscreenElement || document.webkitFullscreenElement)) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    exitPlayerFullscreen(box);
-                    return;
-                }
-                const genresCircleModal = document.getElementById("genresCircleModal");
-                if (genresCircleModal && genresCircleModal.style.display !== "none") {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    closeGenresCircleModal();
-                    return;
-                }
-                if (movieModal.classList.contains("open") || (intermediateScreen && intermediateScreen.classList.contains("open"))) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    handleMovieBack();
-                    return;
-                }
+            if (isBackKey && handleUiBackAction()) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
             }
 
             // Smart TV / D-Pad Spatial Navigation (Arrow keys without mouse)

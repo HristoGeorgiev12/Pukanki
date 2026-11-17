@@ -65,17 +65,18 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: tv-v1.0.0
-          name: Pukanki TV v1.0.0 APK
+          tag_name: tv-v1.0.1
+          name: Pukanki TV v1.0.1 APK
           body: |
-            ### 🍿 Пуканки TV App за Google TV & Android TV
+            ### 🍿 Пуканки TV App v1.0.1 за Google TV & Android TV
             
-            - Оптимизирано за дистанционно (D-Pad навигация без курсор).
-            - Чист цял екран (Leanback).
+            - **Системен клик с дистанционното:** Бутонът `▶ Пусни плеъра` вече докосва директно центъра на видеото (работи на Streamtape, Filemoon, Uqload и др.).
+            - **Пълен HTML5 екран:** Поддръжка за вградения цял екран в плеърите и чисто връщане с бутона Назад.
+            - **Защита от рекламни пренасочвания:** Блокира изскачащи прозорци и външни редиректи извън приложението.
             - Автоматично обновяване от Vercel.
             
             **Директен линк за сваляне в Downloader:**
-            `https://github.com/HristoGeorgiev12/Pukanki/releases/download/tv-v1.0.0/Pukanki-TV.apk`
+            `https://github.com/HristoGeorgiev12/Pukanki/releases/download/tv-v1.0.1/Pukanki-TV.apk`
           files: output/Pukanki-TV.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
