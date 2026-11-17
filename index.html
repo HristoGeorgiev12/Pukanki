@@ -560,6 +560,139 @@
             padding: 6px 10px;
             border-radius: 8px;
             border: 1px dashed rgba(255, 255, 255, 0.1);
+            line-height: 1.4;
+        }
+
+        .builder-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .builder-group-label {
+            font-size: 0.77rem;
+            font-weight: 700;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .builder-link-btn {
+            background: none;
+            border: none;
+            color: #a78bfa;
+            font-size: 0.72rem;
+            cursor: pointer;
+            padding: 1px 4px;
+            text-decoration: underline;
+        }
+
+        .builder-link-btn:hover {
+            color: #c084fc;
+        }
+
+        .builder-pills-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .builder-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            border-radius: 8px;
+            padding: 5px 11px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            user-select: none;
+        }
+
+        .builder-pill:hover {
+            background: rgba(168, 85, 247, 0.16);
+            border-color: rgba(168, 85, 247, 0.4);
+            color: #ffffff;
+        }
+
+        .builder-pill.active {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-color: #c084fc;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
+        }
+
+        .builder-genres-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            max-height: 125px;
+            overflow-y: auto;
+            padding: 6px;
+            background: rgba(0, 0, 0, 0.28);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .builder-genre-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.11);
+            color: #cbd5e1;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            user-select: none;
+        }
+
+        .builder-genre-chip:hover {
+            background: rgba(234, 179, 8, 0.15);
+            border-color: rgba(234, 179, 8, 0.4);
+            color: #ffffff;
+        }
+
+        .builder-genre-chip.active {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            border-color: #fde047;
+            color: #0b0f19;
+            font-weight: 800;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+        }
+
+        .builder-actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .builder-secondary-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            color: #cbd5e1;
+            padding: 6px 12px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .builder-secondary-btn:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #ffffff;
         }
 
         .custom-presets-list {
@@ -4392,19 +4525,82 @@
             </div>
             
             <div class="filter-settings-body">
-                <!-- Section 1: Save Current Active Filter -->
+                <!-- Section 1: Create or Save Custom Preset (Filter Builder) -->
                 <div class="filter-settings-section">
                     <div class="filter-settings-section-head">
-                        <span class="section-badge section-badge-gold">⭐ Запазване</span>
-                        <h3>Запази текущата комбинация</h3>
+                        <span class="section-badge section-badge-gold">⭐ Създаване &amp; Запазване</span>
+                        <h3>Създай свой бърз филтър</h3>
                     </div>
-                    <p class="filter-section-desc">Добавете активните в момента филтри като нов бърз бутон на главния екран.</p>
+                    <p class="filter-section-desc">Изберете желаните жанрове и комбинации директно тук или ги заредете от екрана:</p>
+                    
                     <div class="save-filter-input-row">
                         <input type="text" id="customFilterNameInput" class="custom-filter-input" placeholder="Име на филтъра (напр. Любими Sci-Fi, Нови БГ, Семейни...)" maxlength="32">
-                        <button type="button" id="confirmSaveFilterBtn" class="confirm-save-filter-btn" title="Запази новия филтър">
-                            <span>⭐ Запази</span>
+                        <button type="button" id="confirmSaveFilterBtn" class="confirm-save-filter-btn" title="Запази новия бърз филтър">
+                            <span>⭐ Запази бутон</span>
                         </button>
                     </div>
+
+                    <!-- 1. Media Type Selector -->
+                    <div class="builder-group">
+                        <span class="builder-group-label">Тип съдържание:</span>
+                        <div class="builder-pills-row" id="builderTypePills">
+                            <button type="button" class="builder-pill active" data-b-type="">Всички</button>
+                            <button type="button" class="builder-pill" data-b-type="movie">🎬 Филми</button>
+                            <button type="button" class="builder-pill" data-b-type="tv">📺 Сериали</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Audio/Translation Selector -->
+                    <div class="builder-group">
+                        <span class="builder-group-label">Превод и аудио:</span>
+                        <div class="builder-pills-row" id="builderAudioPills">
+                            <button type="button" class="builder-pill active" data-b-audio="">Всички</button>
+                            <button type="button" class="builder-pill" data-b-audio="bg-audio">🇧🇬 Само БГ Аудио</button>
+                            <button type="button" class="builder-pill" data-b-audio="sub">💬 БГ Субтитри</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Interactive Multi-select Genres -->
+                    <div class="builder-group">
+                        <div class="builder-group-label">
+                            <span>Избор на Жанрове (кликнете за избор):</span>
+                            <button type="button" id="builderClearGenresBtn" class="builder-link-btn" title="Премахни избраните жанрове">Изчисти жанровете</button>
+                        </div>
+                        <div class="builder-genres-wrap" id="builderGenresList"></div>
+                    </div>
+
+                    <!-- 4. Release Year Selector -->
+                    <div class="builder-group">
+                        <span class="builder-group-label">Период на издаване:</span>
+                        <div class="builder-pills-row" id="builderYearPills">
+                            <button type="button" class="builder-pill active" data-b-year-from="" data-b-year-to="">Всички</button>
+                            <button type="button" class="builder-pill" data-b-year-from="2024" data-b-year-to="2026">2024–2026</button>
+                            <button type="button" class="builder-pill" data-b-year-from="2020" data-b-year-to="2023">2020–2023</button>
+                            <button type="button" class="builder-pill" data-b-year-from="2010" data-b-year-to="2019">2010–2019</button>
+                            <button type="button" class="builder-pill" data-b-year-from="" data-b-year-to="2009">Ретро (&lt; 2010)</button>
+                        </div>
+                    </div>
+
+                    <!-- 5. Sort Selector -->
+                    <div class="builder-group">
+                        <span class="builder-group-label">Сортиране:</span>
+                        <div class="builder-pills-row" id="builderSortPills">
+                            <button type="button" class="builder-pill active" data-b-sort="default">По подразбиране</button>
+                            <button type="button" class="builder-pill" data-b-sort="rating_desc">🌟 Топ рейтинг</button>
+                            <button type="button" class="builder-pill" data-b-sort="year_desc">📅 Най-нови</button>
+                        </div>
+                    </div>
+
+                    <!-- Actions & Live Summary -->
+                    <div class="builder-actions-row">
+                        <button type="button" id="builderSyncFromScreenBtn" class="builder-secondary-btn" title="Зареди филтрите, които в момента са активни на началния екран">
+                            <span>📥 Зареди от екрана</span>
+                        </button>
+                        <button type="button" id="builderResetBtn" class="builder-secondary-btn" title="Изчисти избраните настройки">
+                            <span>✕ Изчисти избора</span>
+                        </button>
+                    </div>
+
                     <div id="currentFilterSummaryBadge" class="current-filter-summary"></div>
                 </div>
 
@@ -6587,6 +6783,18 @@
             return true;
         }
 
+        function setTypeFilter(targetType) {
+            const val = targetType || "all";
+            state.typeFilter = val;
+            if (typeTabsBar) {
+                const allBtns = typeTabsBar.querySelectorAll(".type-tab-btn");
+                for (const b of allBtns) {
+                    b.classList.toggle("active", (b.dataset.typeFilter || "") === val);
+                }
+            }
+            updateEpisodesFilterVisibility();
+        }
+
         function applyCustomPreset(cp) {
             if (!cp) {
                 return;
@@ -6652,6 +6860,142 @@
             applyFilters();
         }
 
+        const builderState = {
+            type: "",
+            audio: "",
+            genres: new Set(),
+            yearFrom: "",
+            yearTo: "",
+            sort: "default"
+        };
+
+        function renderBuilderGenreChips() {
+            const wrap = document.getElementById("builderGenresList");
+            if (!wrap) {
+                return;
+            }
+            const fallbackGenres = ["Екшън", "Комедия", "Драма", "Фантастика", "Трилър", "Ужаси", "Анимация", "Семеен", "Приключенски", "Криминален", "Мистерия", "Романс", "Фентъзи", "Документален", "Исторически", "Военен", "Музика", "Уестърн"];
+            const genres = (state.allGenres && state.allGenres.length > 0) ? state.allGenres : fallbackGenres;
+
+            let html = "";
+            for (const g of genres) {
+                const isSel = builderState.genres.has(g);
+                const emoji = typeof getGenreEmoji === "function" ? getGenreEmoji(g) : "🎬";
+                html = `${html}
+                    <button type="button" class="builder-genre-chip ${isSel ? "active" : ""}" data-b-genre="${escapeHtml(g)}">
+                        <span>${emoji}</span>
+                        <span>${escapeHtml(g)}</span>
+                        ${isSel ? '<span style="margin-left: 2px;">✓</span>' : ''}
+                    </button>
+                `;
+            }
+            wrap.innerHTML = html;
+        }
+
+        function updateBuilderUIFromState() {
+            const typePills = document.querySelectorAll("#builderTypePills .builder-pill");
+            for (const p of typePills) {
+                p.classList.toggle("active", (p.dataset.bType || "") === builderState.type);
+            }
+
+            const audioPills = document.querySelectorAll("#builderAudioPills .builder-pill");
+            for (const p of audioPills) {
+                p.classList.toggle("active", (p.dataset.bAudio || "") === builderState.audio);
+            }
+
+            const yearPills = document.querySelectorAll("#builderYearPills .builder-pill");
+            for (const p of yearPills) {
+                const yf = p.dataset.bYearFrom || "";
+                const yt = p.dataset.bYearTo || "";
+                const matches = (yf === builderState.yearFrom && yt === builderState.yearTo);
+                p.classList.toggle("active", matches);
+            }
+
+            const sortPills = document.querySelectorAll("#builderSortPills .builder-pill");
+            for (const p of sortPills) {
+                p.classList.toggle("active", (p.dataset.bSort || "default") === builderState.sort);
+            }
+
+            renderBuilderGenreChips();
+            updateBuilderSummaryBadge();
+        }
+
+        function updateBuilderSummaryBadge() {
+            const summaryEl = document.getElementById("currentFilterSummaryBadge");
+            if (!summaryEl) {
+                return;
+            }
+            const parts = [];
+            if (builderState.type === "movie") parts.push("🎬 Филми");
+            if (builderState.type === "tv") parts.push("📺 Сериали");
+            if (builderState.audio === "bg-audio") parts.push("🇧🇬 БГ Аудио");
+            if (builderState.audio === "sub") parts.push("💬 БГ Субтитри");
+            if (builderState.genres.size > 0) parts.push(Array.from(builderState.genres).join(", "));
+            if (builderState.yearFrom || builderState.yearTo) parts.push(`📅 ${builderState.yearFrom || "..."} — ${builderState.yearTo || "..."}`);
+            if (builderState.sort && builderState.sort !== "default") {
+                parts.push(builderState.sort === "rating_desc" ? "🌟 Топ рейтинг" : "📅 Най-нови");
+            }
+            if (parts.length === 0) {
+                summaryEl.textContent = "Изберете желаните жанрове и настройки от бутоните по-горе.";
+            } else {
+                summaryEl.innerHTML = `<strong>Избрана комбинация:</strong> ${parts.join(" • ")}`;
+            }
+        }
+
+        function generateAutoPresetName() {
+            const parts = [];
+            if (builderState.genres.size > 0) {
+                parts.push(Array.from(builderState.genres).slice(0, 2).join(" & "));
+            }
+            if (builderState.audio === "bg-audio") {
+                parts.push("БГ Аудио");
+            } else if (builderState.audio === "sub") {
+                parts.push("Субс");
+            }
+            if (builderState.type === "movie") {
+                parts.push("Филми");
+            } else if (builderState.type === "tv") {
+                parts.push("Сериали");
+            }
+            if (parts.length > 0) {
+                return parts.join(" • ");
+            }
+            return "";
+        }
+
+        function syncBuilderFromScreenFilters() {
+            builderState.type = state.typeFilter === "all" ? "" : (state.typeFilter || "");
+            builderState.audio = state.audioSubFilter || "";
+            builderState.genres = new Set(state.selectedGenres);
+            builderState.yearFrom = yearFromSelect ? yearFromSelect.value : "";
+            builderState.yearTo = yearToSelect ? yearToSelect.value : "";
+            builderState.sort = sortSelect ? sortSelect.value : "default";
+
+            const nameInput = document.getElementById("customFilterNameInput");
+            if (nameInput) {
+                const autoName = generateAutoPresetName();
+                if (autoName) {
+                    nameInput.value = autoName;
+                }
+            }
+
+            updateBuilderUIFromState();
+        }
+
+        function resetBuilderState() {
+            builderState.type = "";
+            builderState.audio = "";
+            builderState.genres.clear();
+            builderState.yearFrom = "";
+            builderState.yearTo = "";
+            builderState.sort = "default";
+            const nameInput = document.getElementById("customFilterNameInput");
+            if (nameInput) {
+                nameInput.value = "";
+            }
+            updateBuilderUIFromState();
+        }
+
         function openFilterSettingsModal(autoFocusName = false) {
             const modal = document.getElementById("filterSettingsModal");
             if (!modal) {
@@ -6659,17 +7003,20 @@
             }
             modal.style.display = "flex";
 
-            const summaryEl = document.getElementById("currentFilterSummaryBadge");
-            if (summaryEl) {
-                summaryEl.textContent = `Текуща селекция: ${getCurrentFilterSnapshotSummary()}`;
+            const hasActiveScreenFilters = state.selectedGenres.size > 0 ||
+                Boolean(state.audioSubFilter) ||
+                Boolean(yearFromSelect && yearFromSelect.value) ||
+                (state.typeFilter && state.typeFilter !== "all");
+
+            if (hasActiveScreenFilters) {
+                syncBuilderFromScreenFilters();
+            } else {
+                resetBuilderState();
             }
 
             const nameInput = document.getElementById("customFilterNameInput");
-            if (nameInput) {
-                nameInput.value = "";
-                if (autoFocusName) {
-                    setTimeout(() => nameInput.focus(), 80);
-                }
+            if (nameInput && autoFocusName) {
+                setTimeout(() => nameInput.focus(), 80);
             }
 
             renderFilterSettingsModalLists();
@@ -6976,27 +7323,113 @@
                 });
             }
 
+            // Builder Controls Event Handlers
+            const builderTypePills = document.getElementById("builderTypePills");
+            if (builderTypePills) {
+                builderTypePills.addEventListener("click", (e) => {
+                    const btn = e.target.closest(".builder-pill");
+                    if (!btn) {
+                        return;
+                    }
+                    builderState.type = btn.dataset.bType || "";
+                    updateBuilderUIFromState();
+                });
+            }
+
+            const builderAudioPills = document.getElementById("builderAudioPills");
+            if (builderAudioPills) {
+                builderAudioPills.addEventListener("click", (e) => {
+                    const btn = e.target.closest(".builder-pill");
+                    if (!btn) {
+                        return;
+                    }
+                    builderState.audio = btn.dataset.bAudio || "";
+                    updateBuilderUIFromState();
+                });
+            }
+
+            const builderYearPills = document.getElementById("builderYearPills");
+            if (builderYearPills) {
+                builderYearPills.addEventListener("click", (e) => {
+                    const btn = e.target.closest(".builder-pill");
+                    if (!btn) {
+                        return;
+                    }
+                    builderState.yearFrom = btn.dataset.bYearFrom || "";
+                    builderState.yearTo = btn.dataset.bYearTo || "";
+                    updateBuilderUIFromState();
+                });
+            }
+
+            const builderSortPills = document.getElementById("builderSortPills");
+            if (builderSortPills) {
+                builderSortPills.addEventListener("click", (e) => {
+                    const btn = e.target.closest(".builder-pill");
+                    if (!btn) {
+                        return;
+                    }
+                    builderState.sort = btn.dataset.bSort || "default";
+                    updateBuilderUIFromState();
+                });
+            }
+
+            const builderGenresList = document.getElementById("builderGenresList");
+            if (builderGenresList) {
+                builderGenresList.addEventListener("click", (e) => {
+                    const chip = e.target.closest(".builder-genre-chip");
+                    if (!chip) {
+                        return;
+                    }
+                    const g = chip.dataset.bGenre;
+                    if (builderState.genres.has(g)) {
+                        builderState.genres.delete(g);
+                    } else {
+                        builderState.genres.add(g);
+                    }
+                    updateBuilderUIFromState();
+                });
+            }
+
+            const builderClearGenresBtn = document.getElementById("builderClearGenresBtn");
+            if (builderClearGenresBtn) {
+                builderClearGenresBtn.addEventListener("click", () => {
+                    builderState.genres.clear();
+                    updateBuilderUIFromState();
+                });
+            }
+
+            const builderSyncFromScreenBtn = document.getElementById("builderSyncFromScreenBtn");
+            if (builderSyncFromScreenBtn) {
+                builderSyncFromScreenBtn.addEventListener("click", syncBuilderFromScreenFilters);
+            }
+
+            const builderResetBtn = document.getElementById("builderResetBtn");
+            if (builderResetBtn) {
+                builderResetBtn.addEventListener("click", resetBuilderState);
+            }
+
             const confirmSaveBtn = document.getElementById("confirmSaveFilterBtn");
             if (confirmSaveBtn) {
                 confirmSaveBtn.addEventListener("click", () => {
                     const input = document.getElementById("customFilterNameInput");
                     const rawName = input ? input.value.trim() : "";
                     const customs = getUserCustomPresets();
-                    const name = rawName || `Моят филтър ${customs.length + 1}`;
+                    const autoName = generateAutoPresetName();
+                    const name = rawName || autoName || `Моят филтър ${customs.length + 1}`;
                     const newPreset = {
                         id: `custom_${Date.now()}`,
                         name: name,
-                        typeFilter: state.typeFilter,
-                        audioSubFilter: state.audioSubFilter || "",
-                        selectedGenres: Array.from(state.selectedGenres),
-                        excludedGenres: Array.from(state.excludedGenres),
-                        yearFrom: yearFromSelect ? yearFromSelect.value : "",
-                        yearTo: yearToSelect ? yearToSelect.value : "",
-                        duration: durationSelect ? durationSelect.value : "",
-                        player: playerSelect ? playerSelect.value : "",
-                        source: sourceSelect ? sourceSelect.value : "",
-                        episodes: episodesFilterSelect ? episodesFilterSelect.value : "",
-                        sort: sortSelect ? sortSelect.value : "default"
+                        typeFilter: builderState.type,
+                        audioSubFilter: builderState.audio || "",
+                        selectedGenres: Array.from(builderState.genres),
+                        excludedGenres: [],
+                        yearFrom: builderState.yearFrom || "",
+                        yearTo: builderState.yearTo || "",
+                        duration: "",
+                        player: "",
+                        source: "",
+                        episodes: "",
+                        sort: builderState.sort || "default"
                     };
                     customs.push(newPreset);
                     saveUserCustomPresets(customs);
@@ -7007,7 +7440,7 @@
                     }
                     const summaryEl = document.getElementById("currentFilterSummaryBadge");
                     if (summaryEl) {
-                        summaryEl.textContent = `✓ Филтърът „${name}“ е запазен успешно и е добавен на главния екран!`;
+                        summaryEl.innerHTML = `<span style="color: #4ade80; font-weight: 700;">✓ Филтърът „${escapeHtml(name)}“ е запазен успешно и е добавен като бутон на главния екран!</span>`;
                     }
                 });
             }
