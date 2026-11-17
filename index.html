@@ -431,6 +431,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
             white-space: nowrap;
             flex-shrink: 0;
+            height: 42px;
         }
 
         .genre-wheel-btn:hover {
@@ -4842,15 +4843,9 @@
                         </select>
                     </div>
 
-                    <button type="button" id="toggleGenresBtn" class="genre-toggle-btn" title="Покажи или скрий значките за жанрове">
-                        <span>🎭 Жанрове</span>
-                        <span id="genreToggleBadge" class="genre-active-badge" style="display: none;">0</span>
-                        <span id="genreToggleArrow" class="genre-toggle-arrow">▾</span>
-                    </button>
-
-                    <button type="button" id="openGenresWheelBtn" class="genre-wheel-btn" title="Отвори интерактивното кръгово колело на жанровете (Тест)">
+                    <button type="button" id="openGenresWheelBtn" class="genre-wheel-btn" title="Отвори интерактивното колело на жанровете">
                         <span class="wheel-btn-icon">🎡</span>
-                        <span>Жанров кръг</span>
+                        <span>Жанрове</span>
                         <span id="genreWheelBadge" class="genre-active-badge" style="display: none;">0</span>
                     </button>
                 </div>
@@ -4901,22 +4896,6 @@
                 <span class="active-filters-label">Приложени:</span>
                 <div id="activeFiltersTagsList" class="active-filters-tags-list"></div>
                 <button type="button" id="clearAllTagsBtn" class="clear-all-tags-btn" title="Премахни всички филтри">✕ Изчисти всички</button>
-            </div>
-
-            <!-- 5. Redesigned Genres Collapsible Grid -->
-            <div id="genresCollapsible" class="genres-collapsible collapsed">
-                <div class="genre-header-row">
-                    <div class="genre-hint">
-                        <span>💡 <strong>1 клик</strong> = Включи (<strong class="hint-plus">+</strong>)</span>
-                        <span><strong>2 клика</strong> = Изключи (<strong class="hint-minus">✕</strong>)</span>
-                        <span><strong>3 клика</strong> = Нулирай</span>
-                    </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <button type="button" id="openGenresWheelCollapsibleBtn" class="genre-wheel-mini-link" title="Отвори интерактивното кръгово колело">🎡 Кръг на жанровете</button>
-                        <button type="button" id="clearGenresOnlyBtn" class="clear-genres-btn" title="Изчисти всички параметри и филтри">Изчисти параметри</button>
-                    </div>
-                </div>
-                <div id="genreBadgesBar" class="genre-badges-bar"></div>
             </div>
         </section>
 
@@ -5612,11 +5591,8 @@
                 }
             }
         }
-        const genreBadgesBar = document.getElementById("genreBadgesBar");
-        const toggleGenresBtn = document.getElementById("toggleGenresBtn");
-        const genresCollapsible = document.getElementById("genresCollapsible");
-        const genreToggleBadge = document.getElementById("genreToggleBadge");
-        const genreToggleArrow = document.getElementById("genreToggleArrow");
+        const openGenresWheelBtn = document.getElementById("openGenresWheelBtn");
+        const genreWheelBadge = document.getElementById("genreWheelBadge");
         const audioSubFilterSelect = document.getElementById("audioSubFilterSelect");
         const episodesFilterSelect = document.getElementById("episodesFilterSelect");
         const resetFiltersBtn = document.getElementById("resetFiltersBtn");
@@ -6366,76 +6342,20 @@
         }
 
         function renderGenreBadges() {
-            const isAllNeutral = state.selectedGenres.size === 0 && state.excludedGenres.size === 0;
-            const allActiveClass = isAllNeutral ? "active" : "";
-            let badgesHtml = `<button type="button" class="genre-filter-badge ${allActiveClass}" data-genre="__ALL__"><span class="badge-emoji">🌟</span> Всички</button>`;
-
-            let availableGenres = null;
-            if (!isAllNeutral) {
-                availableGenres = new Set();
-                for (const item of state.items) {
-                    if (!matchesTypeTab(item) || !matchesSelectedGenres(item)) {
-                        continue;
-                    }
-                    const itemGenres = Array.isArray(item.genres) ? item.genres : [];
-                    for (const g of itemGenres) {
-                        const canon = getCanonicalGenre(g);
-                        if (canon) {
-                            availableGenres.add(canon);
-                        }
-                    }
-                }
-            }
-
-            for (const genre of state.allGenres) {
-                const isSelected = state.selectedGenres.has(genre);
-                const isExcluded = state.excludedGenres.has(genre);
-                const safeGenre = escapeHtml(genre);
-                const emoji = getGenreEmoji(genre);
-
-                if (!isSelected && !isExcluded && availableGenres && !availableGenres.has(genre)) {
-                    continue;
-                }
-
-                if (isSelected) {
-                    badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge active" data-genre="${safeGenre}"><span class="badge-status-icon">✓</span> <span class="badge-emoji">${emoji}</span> ${safeGenre}</button>`;
-                    continue;
-                }
-
-                if (isExcluded) {
-                    badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge excluded" data-genre="${safeGenre}"><span class="badge-status-icon">✕</span> <span class="badge-emoji">${emoji}</span> ${safeGenre}</button>`;
-                    continue;
-                }
-
-                badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge" data-genre="${safeGenre}"><span class="badge-emoji">${emoji}</span> ${safeGenre}</button>`;
-            }
-
-            genreBadgesBar.innerHTML = badgesHtml;
-
             const totalActiveGenres = state.selectedGenres.size + state.excludedGenres.size;
-            if (genreToggleBadge && toggleGenresBtn) {
-                if (totalActiveGenres > 0) {
-                    genreToggleBadge.textContent = `${totalActiveGenres}`;
-                    genreToggleBadge.style.display = "inline-block";
-                    toggleGenresBtn.classList.add("has-active");
-                } else {
-                    genreToggleBadge.style.display = "none";
-                    toggleGenresBtn.classList.remove("has-active");
-                }
+            const badgeEl = document.getElementById("genreWheelBadge");
+            const btnEl = document.getElementById("openGenresWheelBtn");
+            if (!badgeEl || !btnEl) {
+                return;
             }
-
-            const genreWheelBadge = document.getElementById("genreWheelBadge");
-            const openGenresWheelBtn = document.getElementById("openGenresWheelBtn");
-            if (genreWheelBadge && openGenresWheelBtn) {
-                if (totalActiveGenres > 0) {
-                    genreWheelBadge.textContent = `${totalActiveGenres}`;
-                    genreWheelBadge.style.display = "inline-block";
-                    openGenresWheelBtn.classList.add("has-active");
-                } else {
-                    genreWheelBadge.style.display = "none";
-                    openGenresWheelBtn.classList.remove("has-active");
-                }
+            if (totalActiveGenres > 0) {
+                badgeEl.textContent = `${totalActiveGenres}`;
+                badgeEl.style.display = "inline-block";
+                btnEl.classList.add("has-active");
+                return;
             }
+            badgeEl.style.display = "none";
+            btnEl.classList.remove("has-active");
         }
 
         function populateFilterOptions(items) {
@@ -7777,13 +7697,6 @@
                 });
             }
 
-            const clearGenresBtn = document.getElementById("clearGenresOnlyBtn");
-            if (clearGenresBtn) {
-                clearGenresBtn.addEventListener("click", () => {
-                    resetAllFilters(true);
-                });
-            }
-
             const clearAllTagsBtn = document.getElementById("clearAllTagsBtn");
             if (clearAllTagsBtn) {
                 clearAllTagsBtn.addEventListener("click", () => {
@@ -7912,37 +7825,25 @@
             }
 
             let genreCulpritFound = false;
-            const allBadgeEls = genreBadgesBar.querySelectorAll(".genre-filter-badge");
             for (const genre of state.selectedGenres) {
                 if (hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreGenre: genre })) {
-                    for (const b of allBadgeEls) {
-                        if (b.dataset.genre === genre) {
-                            b.classList.add("filter-culprit");
-                        }
-                    }
                     reasons.push(`Жанр (+ ${genre})`);
                     genreCulpritFound = true;
                 }
             }
             for (const genre of state.excludedGenres) {
                 if (hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreGenre: genre })) {
-                    for (const b of allBadgeEls) {
-                        if (b.dataset.genre === genre) {
-                            b.classList.add("filter-culprit");
-                        }
-                    }
                     reasons.push(`Изключен жанр (✕ ${genre})`);
                     genreCulpritFound = true;
                 }
             }
             const hasActiveGenres = state.selectedGenres.size > 0 || state.excludedGenres.size > 0;
             if (!genreCulpritFound && hasActiveGenres && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreAllGenres: true })) {
-                for (const b of allBadgeEls) {
-                    if (state.selectedGenres.has(b.dataset.genre) || state.excludedGenres.has(b.dataset.genre)) {
-                        b.classList.add("filter-culprit");
-                    }
-                }
                 reasons.push("Комбинация от жанрове");
+                genreCulpritFound = true;
+            }
+            if (genreCulpritFound && openGenresWheelBtn) {
+                openGenresWheelBtn.classList.add("filter-culprit");
             }
 
             if (state.typeFilter !== "all" && hasAnyMatchWithOverrides(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource, { ignoreType: true })) {
@@ -10116,33 +10017,8 @@
             resetFiltersBtn.addEventListener("click", resetAllFilters);
         }
 
-        if (toggleGenresBtn && genresCollapsible) {
-            const GENRES_COLLAPSED_KEY = "local_media_genres_collapsed_v1";
-            const isInitialCollapsed = localStorage.getItem(GENRES_COLLAPSED_KEY) === "true";
-            if (isInitialCollapsed) {
-                genresCollapsible.classList.add("collapsed");
-                if (genreToggleArrow) {
-                    genreToggleArrow.textContent = "▸";
-                }
-            }
-
-            toggleGenresBtn.addEventListener("click", () => {
-                const nowCollapsed = genresCollapsible.classList.toggle("collapsed");
-                if (genreToggleArrow) {
-                    genreToggleArrow.textContent = nowCollapsed ? "▸" : "▾";
-                }
-                localStorage.setItem(GENRES_COLLAPSED_KEY, `${nowCollapsed}`);
-            });
-        }
-
-        const openGenresWheelBtn = document.getElementById("openGenresWheelBtn");
         if (openGenresWheelBtn) {
             openGenresWheelBtn.addEventListener("click", openGenresCircleModal);
-        }
-
-        const openGenresWheelCollapsibleBtn = document.getElementById("openGenresWheelCollapsibleBtn");
-        if (openGenresWheelCollapsibleBtn) {
-            openGenresWheelCollapsibleBtn.addEventListener("click", openGenresCircleModal);
         }
 
         const closeGenresCircleModalBtn = document.getElementById("closeGenresCircleModalBtn");
@@ -10294,61 +10170,6 @@
         loadMoreBtn.addEventListener("click", () => {
             state.visibleCount += PAGE_BATCH_SIZE;
             renderMoviesGrid();
-        });
-
-        genreBadgesBar.addEventListener("click", (event) => {
-            const badge = event.target.closest(".genre-filter-badge");
-            if (!badge) {
-                return;
-            }
-
-            const genre = badge.dataset.genre;
-            if (genre === "__ALL__") {
-                state.selectedGenres.clear();
-                state.excludedGenres.clear();
-                applyFilters();
-                return;
-            }
-
-            if (state.selectedGenres.has(genre)) {
-                state.selectedGenres.delete(genre);
-                state.excludedGenres.add(genre);
-                applyFilters();
-                return;
-            }
-
-            if (state.excludedGenres.has(genre)) {
-                state.excludedGenres.delete(genre);
-                applyFilters();
-                return;
-            }
-
-            state.selectedGenres.add(genre);
-            applyFilters();
-        });
-
-        genreBadgesBar.addEventListener("contextmenu", (event) => {
-            const badge = event.target.closest(".genre-filter-badge");
-            if (!badge) {
-                return;
-            }
-
-            const genre = badge.dataset.genre;
-            if (genre === "__ALL__") {
-                return;
-            }
-
-            event.preventDefault();
-            state.selectedGenres.delete(genre);
-
-            if (state.excludedGenres.has(genre)) {
-                state.excludedGenres.delete(genre);
-                applyFilters();
-                return;
-            }
-
-            state.excludedGenres.add(genre);
-            applyFilters();
         });
 
         moviesContainer.addEventListener("click", (event) => {
