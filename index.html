@@ -4755,6 +4755,11 @@
                     <span>Предстоящи</span>
                     <span class="tmdb-chip-count" id="tmdbCountUpcoming">0</span>
                 </button>
+                <button type="button" class="tmdb-chart-chip" data-tmdb-chart="future_12m">
+                    <span class="chart-icon">📅</span>
+                    <span>Очаквани до 12 м.</span>
+                    <span class="tmdb-chip-count" id="tmdbCountFuture12m">0</span>
+                </button>
                 <button type="button" class="tmdb-chart-chip" data-tmdb-chart="on_the_air">
                     <span class="chart-icon">📺</span>
                     <span>Актуални сериали</span>
@@ -5396,11 +5401,31 @@
             applyFilters();
         }
 
+        function formatReleaseDateBg(dateStr) {
+            if (!dateStr || typeof dateStr !== "string") {
+                return "";
+            }
+            const parts = dateStr.split("-");
+            if (parts.length !== 3) {
+                return dateStr;
+            }
+            const y = parts[0];
+            const m = parts[1];
+            const d = parts[2];
+            const monthsBg = ["яну", "фев", "мар", "апр", "май", "юни", "юли", "авг", "сеп", "окт", "ное", "дек"];
+            const mIdx = parseInt(m, 10) - 1;
+            if (mIdx >= 0 && mIdx < 12) {
+                return `${parseInt(d, 10)} ${monthsBg[mIdx]} ${y}`;
+            }
+            return `${d}.${m}.${y}`;
+        }
+
         function createTmdbItemObject(raw) {
             const isTv = raw.media_type === "tv";
             const title = raw.title || raw.name || "Без заглавие";
             const originalTitle = raw.original_title || raw.original_name || title;
-            const yearStr = (raw.release_date || raw.first_air_date || "").slice(0, 4);
+            const rawReleaseDate = raw.release_date || raw.first_air_date || "";
+            const yearStr = rawReleaseDate.slice(0, 4);
             const year = yearStr ? parseInt(yearStr, 10) : null;
             const poster = raw.poster_path ? `https://image.tmdb.org/t/p/w500${raw.poster_path}` : "";
             const backdrop = raw.backdrop_path ? `https://image.tmdb.org/t/p/w1280${raw.backdrop_path}` : poster;
@@ -5414,6 +5439,7 @@
                 original_title: originalTitle,
                 type: isTv ? "tv" : "movie",
                 year: year,
+                release_date: rawReleaseDate || null,
                 rating: rating,
                 poster_url: poster,
                 backdrop_url: backdrop,
@@ -6223,6 +6249,7 @@
             let tmdbNowPlayingCount = 0;
             let tmdbTopRatedCount = 0;
             let tmdbUpcomingCount = 0;
+            let tmdbFuture12mCount = 0;
             let tmdbOnAirCount = 0;
             const uniqueBySite = new Map();
 
@@ -6250,6 +6277,9 @@
                     }
                     if (charts.includes("upcoming")) {
                         tmdbUpcomingCount++;
+                    }
+                    if (charts.includes("future_12m")) {
+                        tmdbFuture12mCount++;
                     }
                     if (charts.includes("on_the_air")) {
                         tmdbOnAirCount++;
@@ -6293,6 +6323,7 @@
             setChipCount("tmdbCountNowPlaying", tmdbNowPlayingCount);
             setChipCount("tmdbCountTopRated", tmdbTopRatedCount);
             setChipCount("tmdbCountUpcoming", tmdbUpcomingCount);
+            setChipCount("tmdbCountFuture12m", tmdbFuture12mCount);
             setChipCount("tmdbCountOnAir", tmdbOnAirCount);
         }
 
@@ -8142,7 +8173,7 @@
                         <div class="card-body">
                             <h3 class="card-title" title="${title}">${title}</h3>
                             <div class="card-meta">
-                                <span>${year}</span>
+                                <span>${(item.release_date && new Date(item.release_date) > new Date()) ? `📅 ${formatReleaseDateBg(item.release_date)}` : year}</span>
                                 ${item.rating ? `<span class="card-meta-rating">★ ${item.rating}</span>` : ""}
                                 ${durationOrSeasons ? `<span>• ${durationOrSeasons}</span>` : ""}
                             </div>
@@ -8554,7 +8585,9 @@
             if (hasBgSource(item)) {
                 metaHtml = `${metaHtml}<span class="modal-bg-pill">🇧🇬 БГ Аудио</span>`;
             }
-            if (year) {
+            if (item.release_date && new Date(item.release_date) > new Date()) {
+                metaHtml = `${metaHtml}<span>📅 Премиера: ${formatReleaseDateBg(item.release_date)}</span>`;
+            } else if (year) {
                 metaHtml = `${metaHtml}<span>📅 ${year}</span>`;
             }
             if (!isTv && item.duration_minutes) {
@@ -9707,6 +9740,12 @@
 
         async function loadTmdbGlobalCatalogAndMatch(combined) {
             try {
+                const todayDate = new Date();
+                const todayStr = todayDate.toISOString().slice(0, 10);
+                const futureDate = new Date();
+                futureDate.setDate(futureDate.getDate() + 365);
+                const futureStr = futureDate.toISOString().slice(0, 10);
+
                 const chartRequests = [
                     { chart: "trending_day", url: `https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "movie" },
                     { chart: "trending_day", url: `https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`, defaultType: "movie" },
@@ -9721,6 +9760,10 @@
                     { chart: "top_rated", url: `https://api.themoviedb.org/3/tv/top_rated?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "tv" },
                     { chart: "upcoming", url: `https://api.themoviedb.org/3/movie/upcoming?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "movie" },
                     { chart: "upcoming", url: `https://api.themoviedb.org/3/movie/upcoming?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`, defaultType: "movie" },
+                    { chart: "future_12m", url: `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&language=bg-BG&sort_by=popularity.desc&primary_release_date.gte=${todayStr}&primary_release_date.lte=${futureStr}&page=1`, defaultType: "movie" },
+                    { chart: "future_12m", url: `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&language=bg-BG&sort_by=popularity.desc&primary_release_date.gte=${todayStr}&primary_release_date.lte=${futureStr}&page=2`, defaultType: "movie" },
+                    { chart: "future_12m", url: `https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&language=bg-BG&sort_by=popularity.desc&first_air_date.gte=${todayStr}&first_air_date.lte=${futureStr}&page=1`, defaultType: "tv" },
+                    { chart: "future_12m", url: `https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&language=bg-BG&sort_by=popularity.desc&first_air_date.gte=${todayStr}&first_air_date.lte=${futureStr}&page=2`, defaultType: "tv" },
                     { chart: "on_the_air", url: `https://api.themoviedb.org/3/tv/on_the_air?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "tv" },
                     { chart: "on_the_air", url: `https://api.themoviedb.org/3/tv/on_the_air?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`, defaultType: "tv" }
                 ];
@@ -9730,6 +9773,8 @@
                 );
 
                 const byTmdb = new Map();
+                const byTitleYear = new Map();
+                const byOrigYear = new Map();
                 const byTitle = new Map();
                 const byOrig = new Map();
                 const itemByUniqueKey = new Map();
@@ -9739,12 +9784,23 @@
                         byTmdb.set(Number(item.tmdb_id), item);
                     }
                     const tk = normalizeTitleKey(item.title);
-                    if (tk && !byTitle.has(tk)) {
-                        byTitle.set(tk, item);
-                    }
                     const ok = normalizeTitleKey(item.original_title);
-                    if (ok && !byOrig.has(ok)) {
-                        byOrig.set(ok, item);
+                    const itemYear = item.year ? parseInt(item.year, 10) : null;
+                    if (tk) {
+                        if (!byTitle.has(tk)) {
+                            byTitle.set(tk, item);
+                        }
+                        if (itemYear) {
+                            byTitleYear.set(`${tk}_${itemYear}`, item);
+                        }
+                    }
+                    if (ok) {
+                        if (!byOrig.has(ok)) {
+                            byOrig.set(ok, item);
+                        }
+                        if (itemYear) {
+                            byOrigYear.set(`${ok}_${itemYear}`, item);
+                        }
                     }
                 }
 
@@ -9781,14 +9837,35 @@
 
                         const rTitle = raw.title || raw.name || "";
                         const rOrig = raw.original_title || raw.original_name || "";
+                        const rawDate = raw.release_date || raw.first_air_date || "";
+                        const rawYear = rawDate ? parseInt(rawDate.slice(0, 4), 10) : null;
                         const tk = normalizeTitleKey(rTitle);
                         const ok = normalizeTitleKey(rOrig);
 
-                        let matched = byTmdb.get(Number(raw.id)) || (tk ? byTitle.get(tk) : null) || (ok ? byOrig.get(ok) : null);
+                        let matched = byTmdb.get(Number(raw.id));
+                        if (!matched && rawYear) {
+                            if (tk && byTitleYear.has(`${tk}_${rawYear}`)) {
+                                matched = byTitleYear.get(`${tk}_${rawYear}`);
+                            } else if (ok && byOrigYear.has(`${ok}_${rawYear}`)) {
+                                matched = byOrigYear.get(`${ok}_${rawYear}`);
+                            }
+                        }
+                        if (!matched) {
+                            const candidate = (tk ? byTitle.get(tk) : null) || (ok ? byOrig.get(ok) : null);
+                            if (candidate) {
+                                const candYear = candidate.year ? parseInt(candidate.year, 10) : null;
+                                if (!candYear || !rawYear || Math.abs(candYear - rawYear) <= 1) {
+                                    matched = candidate;
+                                }
+                            }
+                        }
 
                         if (matched) {
                             matched.isFromTmdbCatalog = true;
                             matched.tmdbMatched = true;
+                            if (rawDate && !matched.release_date) {
+                                matched.release_date = rawDate;
+                            }
                             if (!Array.isArray(matched.tmdbCharts)) {
                                 matched.tmdbCharts = [];
                             }
@@ -9818,6 +9895,9 @@
                             tmdbObj.origins = ["TMDB"];
                             tmdbObj.player_sources = [];
                             tmdbObj.tmdbCharts = [req.chart];
+                            if (rawDate) {
+                                tmdbObj.release_date = rawDate;
+                            }
                             if (Array.isArray(raw.genre_ids)) {
                                 const mappedGenres = [];
                                 for (const gid of raw.genre_ids) {
