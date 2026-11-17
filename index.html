@@ -511,41 +511,166 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 24px;
+            padding: 12px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             background: rgba(255, 255, 255, 0.02);
             gap: 16px;
         }
 
-        .genres-circle-header-info {
+        .genres-selected-rows-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .genres-filter-status-row {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
+            min-height: 32px;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 3px 8px;
+            overflow: hidden;
         }
 
-        .genres-circle-header-icon {
-            font-size: 2rem;
-            filter: drop-shadow(0 0 8px rgba(234, 179, 8, 0.6));
+        .genres-filter-status-row.included-row {
+            border-color: rgba(168, 85, 247, 0.25);
+            background: rgba(168, 85, 247, 0.06);
         }
 
-        .genres-circle-title {
-            margin: 0;
-            font-size: 1.25rem;
+        .genres-filter-status-row.excluded-row {
+            border-color: rgba(239, 68, 68, 0.25);
+            background: rgba(239, 68, 68, 0.06);
+        }
+
+        .status-row-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
             font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.01em;
+            white-space: nowrap;
+            flex-shrink: 0;
+            user-select: none;
         }
 
-        .genres-circle-subtitle {
-            margin: 3px 0 0;
-            font-size: 0.80rem;
-            color: var(--text-muted);
+        .status-badge-inc {
+            background: rgba(168, 85, 247, 0.25);
+            color: #d8b4fe;
+            border: 1px solid rgba(168, 85, 247, 0.45);
+        }
+
+        .status-badge-exc {
+            background: rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.45);
+        }
+
+        .status-badge-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 0 4px;
+        }
+
+        .status-chips-scroll {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .status-chips-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .empty-chips-hint {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.35);
+            font-style: italic;
+            white-space: nowrap;
+        }
+
+        .selected-genre-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-size: 0.70rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            white-space: nowrap;
+            user-select: none;
+            border: 1px solid transparent;
+        }
+
+        .selected-genre-chip.chip-included {
+            background: rgba(168, 85, 247, 0.28);
+            border-color: rgba(168, 85, 247, 0.55);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+        }
+
+        .selected-genre-chip.chip-included:hover {
+            background: rgba(168, 85, 247, 0.45);
+            border-color: #d8b4fe;
+            transform: scale(1.05);
+        }
+
+        .selected-genre-chip.chip-excluded {
+            background: rgba(239, 68, 68, 0.28);
+            border-color: rgba(239, 68, 68, 0.55);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+        }
+
+        .selected-genre-chip.chip-excluded:hover {
+            background: rgba(239, 68, 68, 0.45);
+            border-color: #fca5a5;
+            transform: scale(1.05);
+        }
+
+        .selected-genre-chip .chip-remove {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.22);
+            font-size: 0.55rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .selected-genre-chip:hover .chip-remove {
+            background: rgba(255, 255, 255, 0.45);
         }
 
         .genres-circle-header-actions {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-shrink: 0;
         }
 
         .genres-circle-search-wrap {
@@ -905,16 +1030,36 @@
             }
 
             .genres-circle-header {
-                padding: 12px 16px;
+                padding: 10px 12px;
                 flex-direction: column;
                 align-items: stretch;
-                gap: 10px;
+                gap: 8px;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
 
-            .genres-circle-header-info {
-                justify-content: space-between;
+            .genres-selected-rows-wrap {
                 width: 100%;
+                gap: 5px;
+            }
+
+            .genres-filter-status-row {
+                min-height: 28px;
+                padding: 2px 6px;
+                gap: 6px;
+            }
+
+            .status-row-badge {
+                font-size: 0.66rem;
+                padding: 2px 6px;
+            }
+
+            .status-chips-scroll {
+                gap: 4px;
+            }
+
+            .selected-genre-chip {
+                padding: 2px 5px;
+                font-size: 0.68rem;
             }
 
             .genres-circle-header-actions {
@@ -4767,17 +4912,35 @@
     <div id="genresCircleModal" class="genres-circle-backdrop" role="dialog" aria-modal="true" aria-labelledby="genresCircleModalTitle" style="display: none;">
         <div class="genres-circle-dialog">
             <div class="genres-circle-header">
-                <div class="genres-circle-header-info">
-                    <span class="genres-circle-header-icon">🎡</span>
-                    <div>
-                        <h2 id="genresCircleModalTitle" class="genres-circle-title">Кръгово колело на жанровете (Тест)</h2>
-                        <p class="genres-circle-subtitle">Кликнете на жанр за избор (<span style="color:#a855f7">✓ включен</span>), повторно за изключване (<span style="color:#ef4444">✕ изключен</span>) или изчистване.</p>
+                <div class="genres-selected-rows-wrap" id="genresSelectedRowsWrap">
+                    <!-- Row 1: С филтър (Включени) -->
+                    <div class="genres-filter-status-row included-row">
+                        <div class="status-row-badge status-badge-inc">
+                            <span class="status-badge-icon">✓</span>
+                            <span class="status-badge-text">С филтър</span>
+                            <span class="status-badge-count" id="incCountBadge">0</span>
+                        </div>
+                        <div class="status-chips-scroll" id="includedGenresChips">
+                            <span class="empty-chips-hint">Няма избрани (кликнете 1 път)</span>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Без филтър (Изключени) -->
+                    <div class="genres-filter-status-row excluded-row">
+                        <div class="status-row-badge status-badge-exc">
+                            <span class="status-badge-icon">✕</span>
+                            <span class="status-badge-text">Без филтър</span>
+                            <span class="status-badge-count" id="excCountBadge">0</span>
+                        </div>
+                        <div class="status-chips-scroll" id="excludedGenresChips">
+                            <span class="empty-chips-hint">Няма изключени (кликнете 2 пъти)</span>
+                        </div>
                     </div>
                 </div>
                 <div class="genres-circle-header-actions">
                     <div class="genres-circle-search-wrap">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="genreWheelSearchInput" class="genres-circle-search" placeholder="Търси в кръга..." autocomplete="off">
+                        <input type="text" id="genreWheelSearchInput" class="genres-circle-search" placeholder="Търси жанр..." autocomplete="off">
                     </div>
                     <button type="button" id="closeGenresCircleModalBtn" class="genres-circle-close-btn" aria-label="Затвори" title="Затвори">✕</button>
                 </div>
@@ -7039,6 +7202,8 @@
             const selCount = state.selectedGenres.size;
             const excCount = state.excludedGenres.size;
 
+            updateSelectedGenreRows();
+
             if (selCount === 0 && excCount === 0) {
                 statusEl.textContent = "Всички жанрове";
                 countEl.textContent = "Няма активни филтри";
@@ -7056,11 +7221,59 @@
             countEl.textContent = `Общо: ${selCount + excCount} филтъра`;
         }
 
+        function updateSelectedGenreRows() {
+            const incContainer = document.getElementById("includedGenresChips");
+            const excContainer = document.getElementById("excludedGenresChips");
+            const incCountBadge = document.getElementById("incCountBadge");
+            const excCountBadge = document.getElementById("excCountBadge");
+            if (!incContainer || !excContainer) {
+                return;
+            }
+
+            const selCount = state.selectedGenres.size;
+            const excCount = state.excludedGenres.size;
+
+            if (incCountBadge) {
+                incCountBadge.textContent = `${selCount}`;
+            }
+            if (excCountBadge) {
+                excCountBadge.textContent = `${excCount}`;
+            }
+
+            // 1. Included Row (С филтър)
+            if (selCount === 0) {
+                incContainer.innerHTML = `<span class="empty-chips-hint">Няма избрани (кликнете 1 път)</span>`;
+            } else {
+                let html = "";
+                for (const g of state.selectedGenres) {
+                    const emoji = typeof getGenreEmoji === "function" ? getGenreEmoji(g) : "🎬";
+                    const safeG = escapeHtml(g);
+                    html = `${html}<button type="button" class="selected-genre-chip chip-included" data-genre="${safeG}" title="Кликнете за премахване"><span class="chip-label">${emoji} ${safeG}</span><span class="chip-remove">✕</span></button>`;
+                }
+                incContainer.innerHTML = html;
+            }
+
+            // 2. Excluded Row (Без филтър)
+            if (excCount === 0) {
+                excContainer.innerHTML = `<span class="empty-chips-hint">Няма изключени (кликнете 2 пъти)</span>`;
+            } else {
+                let html = "";
+                for (const g of state.excludedGenres) {
+                    const emoji = typeof getGenreEmoji === "function" ? getGenreEmoji(g) : "🎬";
+                    const safeG = escapeHtml(g);
+                    html = `${html}<button type="button" class="selected-genre-chip chip-excluded" data-genre="${safeG}" title="Кликнете за премахване"><span class="chip-label">${emoji} ${safeG}</span><span class="chip-remove">✕</span></button>`;
+                }
+                excContainer.innerHTML = html;
+            }
+        }
+
         function renderGenresCircleWheel(filterText = "") {
             const orbitLayer = document.getElementById("genresRadialOrbitLayer");
             if (!orbitLayer) {
                 return;
             }
+
+            updateSelectedGenreRows();
 
             const uniqueCanonical = MASTER_GENRE_WHEEL_LIST;
             const normalizedFilter = (filterText || "").trim().toLowerCase();
@@ -9721,6 +9934,7 @@
                         badge.remove();
                     }
                 }
+                updateSelectedGenreRows();
                 updateGenresCircleHub();
                 renderGenreBadges();
             });
@@ -9755,6 +9969,29 @@
             });
         }
 
+        const genresSelectedRowsWrap = document.getElementById("genresSelectedRowsWrap");
+        if (genresSelectedRowsWrap) {
+            genresSelectedRowsWrap.addEventListener("click", (e) => {
+                const chip = e.target.closest(".selected-genre-chip");
+                if (!chip) {
+                    return;
+                }
+                const genre = chip.dataset.genre;
+                if (!genre) {
+                    return;
+                }
+                state.selectedGenres.delete(genre);
+                state.excludedGenres.delete(genre);
+                const nodeBtn = document.querySelector(`.radial-genre-node[data-radial-genre="${genre}"]`);
+                if (nodeBtn && typeof updateRadialGenreNodeDom === "function") {
+                    updateRadialGenreNodeDom(nodeBtn, genre);
+                }
+                updateSelectedGenreRows();
+                updateGenresCircleHub(genre);
+                renderGenreBadges();
+            });
+        }
+
         const genresRadialOrbitLayer = document.getElementById("genresRadialOrbitLayer");
         if (genresRadialOrbitLayer) {
             genresRadialOrbitLayer.addEventListener("click", (e) => {
@@ -9772,6 +10009,7 @@
                     state.selectedGenres.add(genre);
                 }
                 updateRadialGenreNodeDom(btn, genre);
+                updateSelectedGenreRows();
                 updateGenresCircleHub(genre);
                 renderGenreBadges();
             });
@@ -9790,6 +10028,7 @@
                     state.excludedGenres.add(genre);
                 }
                 updateRadialGenreNodeDom(btn, genre);
+                updateSelectedGenreRows();
                 updateGenresCircleHub(genre);
                 renderGenreBadges();
             });
