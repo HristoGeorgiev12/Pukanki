@@ -257,6 +257,61 @@
             display: none;
         }
 
+        .quick-presets-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            margin-left: 4px;
+        }
+
+        .preset-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .preset-action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .preset-action-btn.btn-save-filter {
+            background: rgba(234, 179, 8, 0.12);
+            border-color: rgba(234, 179, 8, 0.38);
+            color: #fde047;
+        }
+
+        .preset-action-btn.btn-save-filter:hover {
+            background: rgba(234, 179, 8, 0.24);
+            border-color: #facc15;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(234, 179, 8, 0.3);
+        }
+
+        .preset-action-btn.btn-manage-filter {
+            background: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.38);
+            color: #c084fc;
+        }
+
+        .preset-action-btn.btn-manage-filter:hover {
+            background: rgba(168, 85, 247, 0.24);
+            border-color: #a855f7;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+        }
+
         .quick-preset-chip {
             display: inline-flex;
             align-items: center;
@@ -290,8 +345,408 @@
             font-weight: 700;
         }
 
+        .quick-preset-chip.custom-user-preset {
+            background: rgba(234, 179, 8, 0.08);
+            border-color: rgba(234, 179, 8, 0.28);
+            color: #fde047;
+        }
+
+        .quick-preset-chip.custom-user-preset:hover {
+            background: rgba(234, 179, 8, 0.20);
+            border-color: #facc15;
+            color: #ffffff;
+        }
+
+        .quick-preset-chip.custom-user-preset.active {
+            background: linear-gradient(135deg, #b45309, #f59e0b);
+            border-color: #fde047;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.5);
+            font-weight: 700;
+        }
+
         .quick-preset-chip .preset-icon {
             font-size: 0.88rem;
+        }
+
+        /* Filter Settings Modal Dialog */
+        .filter-settings-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(5, 7, 15, 0.82);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .filter-settings-dialog {
+            background: linear-gradient(180deg, #131929 0%, #0d121f 100%);
+            border: 1px solid rgba(168, 85, 247, 0.28);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 640px;
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 32px rgba(124, 58, 237, 0.18);
+            overflow: hidden;
+        }
+
+        .filter-settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .filter-settings-header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-settings-header-icon {
+            font-size: 1.6rem;
+        }
+
+        .filter-settings-title {
+            margin: 0;
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .filter-settings-subtitle {
+            margin: 2px 0 0;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .filter-settings-close-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .filter-settings-close-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        .filter-settings-body {
+            padding: 20px 22px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .filter-settings-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .filter-settings-section-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .filter-settings-section-head h3 {
+            margin: 0;
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .section-badge {
+            font-size: 0.70rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(124, 58, 237, 0.18);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            color: #c084fc;
+            text-transform: uppercase;
+        }
+
+        .section-badge-gold {
+            background: rgba(234, 179, 8, 0.14);
+            border-color: rgba(234, 179, 8, 0.35);
+            color: #fde047;
+        }
+
+        .section-badge-purple {
+            background: rgba(56, 189, 248, 0.14);
+            border-color: rgba(56, 189, 248, 0.35);
+            color: #38bdf8;
+        }
+
+        .filter-section-desc {
+            margin: 0 0 12px;
+            font-size: 0.80rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .save-filter-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .custom-filter-input {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 10px;
+            padding: 9px 13px;
+            color: #ffffff;
+            font-size: 0.86rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .custom-filter-input:focus {
+            border-color: #facc15;
+            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+        }
+
+        .confirm-save-filter-btn {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            border: 1px solid #fde047;
+            border-radius: 10px;
+            padding: 9px 16px;
+            color: #0b0f19;
+            font-weight: 800;
+            font-size: 0.84rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .confirm-save-filter-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .current-filter-summary {
+            margin-top: 10px;
+            font-size: 0.77rem;
+            color: #94a3b8;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-presets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .custom-preset-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 8px 12px;
+            gap: 10px;
+        }
+
+        .custom-preset-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .custom-preset-name {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #fde047;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .custom-preset-tags {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .custom-preset-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preset-apply-btn {
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            color: #d8b4fe;
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-apply-btn:hover {
+            background: #7c3aed;
+            color: #ffffff;
+        }
+
+        .preset-del-btn {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            border-radius: 8px;
+            padding: 5px 9px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-del-btn:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .builtin-presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 8px;
+        }
+
+        .preset-toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            padding: 8px 12px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .preset-toggle-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .preset-toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .preset-toggle-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            background: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            position: relative;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .preset-toggle-checkbox:checked {
+            background: #a855f7;
+            border-color: #c084fc;
+        }
+
+        .preset-toggle-checkbox:checked::after {
+            content: "✓";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 900;
+        }
+
+        .filter-settings-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .filter-settings-reset-btn {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 0.80rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-settings-reset-btn:hover {
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        .filter-settings-done-btn {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border: 1px solid #c084fc;
+            border-radius: 10px;
+            padding: 8px 20px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-settings-done-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
         }
 
         /* 2. Primary Filters Row */
@@ -3560,9 +4015,13 @@
 
         body.tv-mode .card-title {
             font-size: 0.86rem !important;
-            white-space: nowrap !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 3 !important;
+            -webkit-box-orient: vertical !important;
             overflow: hidden !important;
-            text-overflow: ellipsis !important;
+            word-break: break-word !important;
+            white-space: normal !important;
+            min-height: 2.6em;
             margin-bottom: 2px !important;
         }
 
@@ -3668,10 +4127,10 @@
         </nav>
 
         <section class="filters-panel" id="filtersPanel">
-            <!-- 1. Quick Discovery Presets Carousel -->
+            <!-- 1. Quick Discovery Presets Carousel & Actions -->
             <div class="quick-presets-bar" id="quickPresetsBar" role="toolbar" aria-label="Бързи филтри">
                 <span class="quick-presets-label">⚡ Бързи:</span>
-                <div class="quick-presets-scroll">
+                <div class="quick-presets-scroll" id="quickPresetsScroll">
                     <button type="button" class="quick-preset-chip" data-preset="top-rated" title="Филми с рейтинг над 7.5">
                         <span class="preset-icon">🌟</span>
                         <span>Топ Рейтинг</span>
@@ -3695,6 +4154,16 @@
                     <button type="button" class="quick-preset-chip" data-preset="short-movies" title="Филми под 90 минути">
                         <span class="preset-icon">⚡</span>
                         <span>Кратки (&lt; 90 мин)</span>
+                    </button>
+                </div>
+                <div class="quick-presets-actions">
+                    <button type="button" id="quickSaveFilterBtn" class="preset-action-btn btn-save-filter" title="Запази текущо избраната комбинация от филтри">
+                        <span>⭐</span>
+                        <span>Запази</span>
+                    </button>
+                    <button type="button" id="quickManageFiltersBtn" class="preset-action-btn btn-manage-filter" title="Управление и избор на показваните бързи филтри">
+                        <span>⚙️</span>
+                        <span>Настройки</span>
                     </button>
                 </div>
             </div>
@@ -3868,6 +4337,68 @@
                 <button type="button" id="closeModalBtn" class="movie-page-close-btn" aria-label="Затвори" title="Затвори страницата">✕</button>
             </div>
             <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Filter Settings / Custom Presets Modal -->
+    <div id="filterSettingsModal" class="filter-settings-backdrop" role="dialog" aria-modal="true" aria-labelledby="filterSettingsTitle" style="display: none;">
+        <div class="filter-settings-dialog">
+            <div class="filter-settings-header">
+                <div class="filter-settings-header-info">
+                    <span class="filter-settings-header-icon">⚙️</span>
+                    <div>
+                        <h2 id="filterSettingsTitle" class="filter-settings-title">Управление на бързите филтри</h2>
+                        <p class="filter-settings-subtitle">Персонализирайте бутоните на началния екран и запазвайте свои комбинации</p>
+                    </div>
+                </div>
+                <button type="button" id="closeFilterSettingsBtn" class="filter-settings-close-btn" aria-label="Затвори" title="Затвори прозореца">✕</button>
+            </div>
+            
+            <div class="filter-settings-body">
+                <!-- Section 1: Save Current Active Filter -->
+                <div class="filter-settings-section">
+                    <div class="filter-settings-section-head">
+                        <span class="section-badge section-badge-gold">⭐ Запазване</span>
+                        <h3>Запази текущата комбинация</h3>
+                    </div>
+                    <p class="filter-section-desc">Добавете активните в момента филтри като нов бърз бутон на главния екран.</p>
+                    <div class="save-filter-input-row">
+                        <input type="text" id="customFilterNameInput" class="custom-filter-input" placeholder="Име на филтъра (напр. Любими Sci-Fi, Нови БГ, Семейни...)" maxlength="32">
+                        <button type="button" id="confirmSaveFilterBtn" class="confirm-save-filter-btn" title="Запази новия филтър">
+                            <span>⭐ Запази</span>
+                        </button>
+                    </div>
+                    <div id="currentFilterSummaryBadge" class="current-filter-summary"></div>
+                </div>
+
+                <!-- Section 2: User Saved Custom Presets -->
+                <div class="filter-settings-section">
+                    <div class="filter-settings-section-head">
+                        <span class="section-badge section-badge-gold">⭐ Моите филтри</span>
+                        <h3>Вашите запазени филтри</h3>
+                    </div>
+                    <div id="customPresetsListContainer" class="custom-presets-list"></div>
+                </div>
+
+                <!-- Section 3: Built-in Quick Presets Visibility -->
+                <div class="filter-settings-section">
+                    <div class="filter-settings-section-head">
+                        <span class="section-badge section-badge-purple">⚡ Системни филтри</span>
+                        <h3>Показване на бързите бутони</h3>
+                    </div>
+                    <p class="filter-section-desc">Изберете кои системни филтри да се показват в лентата на началния екран:</p>
+                    <div id="builtinPresetsTogglesList" class="builtin-presets-grid"></div>
+                </div>
+            </div>
+
+            <div class="filter-settings-footer">
+                <button type="button" id="resetFilterSettingsBtn" class="filter-settings-reset-btn" title="Възстанови стандартните системни филтри">
+                    <span>🔄 Фабрични настройки</span>
+                </button>
+                <button type="button" id="applyAndCloseFilterSettingsBtn" class="filter-settings-done-btn" title="Запази и затвори">
+                    <span>Готово</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -5843,10 +6374,338 @@
             }
         }
 
+        const BUILTIN_QUICK_PRESETS = [
+            { id: "top-rated", icon: "🌟", label: "Топ Рейтинг", title: "Филми с рейтинг над 7.5", defaultEnabled: true },
+            { id: "new-releases", icon: "🔥", label: "Нови 2024–2026", title: "Заглавия от 2024 до 2026 година", defaultEnabled: true },
+            { id: "bg-audio", icon: "🇧🇬", label: "Само БГ Аудио", title: "Филтрирай само заглавия с български дублаж", defaultEnabled: true },
+            { id: "subtitles", icon: "💬", label: "БГ Субтитри", title: "Филтрирай заглавия с български субтитри", defaultEnabled: true },
+            { id: "family", icon: "🍿", label: "Семейни & Анимация", title: "Анимация, Семейни и Комедия", defaultEnabled: true },
+            { id: "short-movies", icon: "⚡", label: "Кратки (< 90 мин)", title: "Филми под 90 минути", defaultEnabled: true },
+            { id: "action-thriller", icon: "💥", label: "Екшън & Трилър", title: "Екшън и Трилър филми", defaultEnabled: true },
+            { id: "horror-mystery", icon: "👻", label: "Ужаси & Мистерия", title: "Ужаси и Мистерии", defaultEnabled: true },
+            { id: "romance", icon: "💖", label: "Романтика & Драма", title: "Романтични филми и драми", defaultEnabled: false },
+            { id: "tv-miniseries", icon: "📺", label: "Минисериали", title: "Кратки сериали с до 8 епизода", defaultEnabled: false }
+        ];
+
+        const USER_CUSTOM_PRESETS_KEY = "pukanki_user_custom_presets";
+        const USER_ENABLED_PRESETS_KEY = "pukanki_user_enabled_presets";
+
+        function getUserCustomPresets() {
+            try {
+                const raw = localStorage.getItem(USER_CUSTOM_PRESETS_KEY);
+                if (!raw) {
+                    return [];
+                }
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (err) {
+                return [];
+            }
+        }
+
+        function saveUserCustomPresets(presets) {
+            try {
+                localStorage.setItem(USER_CUSTOM_PRESETS_KEY, JSON.stringify(presets));
+            } catch (err) {}
+        }
+
+        function getUserEnabledPresets() {
+            try {
+                const raw = localStorage.getItem(USER_ENABLED_PRESETS_KEY);
+                if (!raw) {
+                    return BUILTIN_QUICK_PRESETS.filter(p => p.defaultEnabled).map(p => p.id);
+                }
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed) ? parsed : BUILTIN_QUICK_PRESETS.filter(p => p.defaultEnabled).map(p => p.id);
+            } catch (err) {
+                return BUILTIN_QUICK_PRESETS.filter(p => p.defaultEnabled).map(p => p.id);
+            }
+        }
+
+        function saveUserEnabledPresets(enabledIds) {
+            try {
+                localStorage.setItem(USER_ENABLED_PRESETS_KEY, JSON.stringify(enabledIds));
+            } catch (err) {}
+        }
+
+        function renderQuickPresetsBar() {
+            const container = document.getElementById("quickPresetsScroll");
+            if (!container) {
+                return;
+            }
+
+            const enabledIds = new Set(getUserEnabledPresets());
+            const customPresets = getUserCustomPresets();
+            let html = "";
+
+            for (const preset of BUILTIN_QUICK_PRESETS) {
+                if (!enabledIds.has(preset.id)) {
+                    continue;
+                }
+                html = `${html}
+                    <button type="button" class="quick-preset-chip" data-preset="${preset.id}" title="${escapeHtml(preset.title)}">
+                        <span class="preset-icon">${preset.icon}</span>
+                        <span>${escapeHtml(preset.label)}</span>
+                    </button>
+                `;
+            }
+
+            for (const cp of customPresets) {
+                html = `${html}
+                    <button type="button" class="quick-preset-chip custom-user-preset" data-custom-id="${escapeHtml(cp.id)}" title="Персонализиран филтър: ${escapeHtml(cp.name)}">
+                        <span class="preset-icon">⭐</span>
+                        <span>${escapeHtml(cp.name)}</span>
+                    </button>
+                `;
+            }
+
+            container.innerHTML = html;
+            updateQuickPresetsState();
+        }
+
+        function getCurrentFilterSnapshotSummary() {
+            const parts = [];
+            if (state.typeFilter === "movie") {
+                parts.push("🎬 Филми");
+            } else if (state.typeFilter === "tv") {
+                parts.push("📺 Сериали");
+            }
+            if (state.audioSubFilter === "bg-audio") {
+                parts.push("🇧🇬 БГ Аудио");
+            } else if (state.audioSubFilter === "sub") {
+                parts.push("💬 Субтитри");
+            }
+            if (state.selectedGenres.size > 0) {
+                parts.push(Array.from(state.selectedGenres).join(", "));
+            }
+            if (yearFromSelect && yearFromSelect.value) {
+                parts.push(`От ${yearFromSelect.value} г.`);
+            }
+            if (yearToSelect && yearToSelect.value) {
+                parts.push(`До ${yearToSelect.value} г.`);
+            }
+            if (durationSelect && durationSelect.value) {
+                parts.push(`Времетраене: ${durationSelect.value} мин`);
+            }
+            if (playerSelect && playerSelect.value) {
+                parts.push(`Плеър: ${playerSelect.value}`);
+            }
+            if (sourceSelect && sourceSelect.value) {
+                parts.push(`Източник: ${sourceSelect.value}`);
+            }
+            if (episodesFilterSelect && episodesFilterSelect.value) {
+                parts.push(`Епизоди: ${episodesFilterSelect.value}`);
+            }
+            if (sortSelect && sortSelect.value !== "default") {
+                const sText = sortSelect.options[sortSelect.selectedIndex]?.text || sortSelect.value;
+                parts.push(`Сортиране: ${sText}`);
+            }
+            if (parts.length === 0) {
+                return "Всички заглавия (няма активни филтри)";
+            }
+            return parts.join(" • ");
+        }
+
+        function isCustomPresetActive(cp) {
+            if (!cp) {
+                return false;
+            }
+            if (cp.typeFilter && cp.typeFilter !== state.typeFilter) {
+                return false;
+            }
+            if (cp.audioSubFilter !== undefined && cp.audioSubFilter !== (state.audioSubFilter || "")) {
+                return false;
+            }
+            if (cp.yearFrom !== undefined && cp.yearFrom !== (yearFromSelect ? yearFromSelect.value : "")) {
+                return false;
+            }
+            if (cp.yearTo !== undefined && cp.yearTo !== (yearToSelect ? yearToSelect.value : "")) {
+                return false;
+            }
+            if (cp.duration !== undefined && cp.duration !== (durationSelect ? durationSelect.value : "")) {
+                return false;
+            }
+            if (cp.player !== undefined && cp.player !== (playerSelect ? playerSelect.value : "")) {
+                return false;
+            }
+            if (cp.source !== undefined && cp.source !== (sourceSelect ? sourceSelect.value : "")) {
+                return false;
+            }
+            if (cp.episodes !== undefined && cp.episodes !== (episodesFilterSelect ? episodesFilterSelect.value : "")) {
+                return false;
+            }
+            if (cp.sort !== undefined && cp.sort !== (sortSelect ? sortSelect.value : "default")) {
+                return false;
+            }
+            if (Array.isArray(cp.selectedGenres)) {
+                if (cp.selectedGenres.length !== state.selectedGenres.size) {
+                    return false;
+                }
+                for (const g of cp.selectedGenres) {
+                    if (!state.selectedGenres.has(g)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function applyCustomPreset(cp) {
+            if (!cp) {
+                return;
+            }
+            const activeNow = isCustomPresetActive(cp);
+            if (activeNow) {
+                resetAllFilters();
+                return;
+            }
+
+            if (cp.typeFilter !== undefined) {
+                setTypeFilter(cp.typeFilter);
+            }
+            state.audioSubFilter = cp.audioSubFilter || "";
+            if (audioSubFilterSelect) {
+                audioSubFilterSelect.value = state.audioSubFilter;
+                audioSubFilterSelect.classList.toggle("has-value", Boolean(state.audioSubFilter));
+            }
+
+            state.selectedGenres.clear();
+            if (Array.isArray(cp.selectedGenres)) {
+                for (const g of cp.selectedGenres) {
+                    state.selectedGenres.add(g);
+                }
+            }
+
+            state.excludedGenres.clear();
+            if (Array.isArray(cp.excludedGenres)) {
+                for (const g of cp.excludedGenres) {
+                    state.excludedGenres.add(g);
+                }
+            }
+
+            if (yearFromSelect) {
+                yearFromSelect.value = cp.yearFrom || "";
+                yearFromSelect.classList.toggle("has-value", Boolean(cp.yearFrom));
+            }
+            if (yearToSelect) {
+                yearToSelect.value = cp.yearTo || "";
+                yearToSelect.classList.toggle("has-value", Boolean(cp.yearTo));
+            }
+            if (durationSelect) {
+                durationSelect.value = cp.duration || "";
+                durationSelect.classList.toggle("has-value", Boolean(cp.duration));
+            }
+            if (playerSelect) {
+                playerSelect.value = cp.player || "";
+                playerSelect.classList.toggle("has-value", Boolean(cp.player));
+            }
+            if (sourceSelect) {
+                sourceSelect.value = cp.source || "";
+                sourceSelect.classList.toggle("has-value", Boolean(cp.source));
+            }
+            if (episodesFilterSelect) {
+                episodesFilterSelect.value = cp.episodes || "";
+                episodesFilterSelect.classList.toggle("has-value", Boolean(cp.episodes));
+            }
+            if (sortSelect) {
+                sortSelect.value = cp.sort || "default";
+                sortSelect.classList.toggle("has-value", Boolean(cp.sort && cp.sort !== "default"));
+            }
+
+            applyFilters();
+        }
+
+        function openFilterSettingsModal(autoFocusName = false) {
+            const modal = document.getElementById("filterSettingsModal");
+            if (!modal) {
+                return;
+            }
+            modal.style.display = "flex";
+
+            const summaryEl = document.getElementById("currentFilterSummaryBadge");
+            if (summaryEl) {
+                summaryEl.textContent = `Текуща селекция: ${getCurrentFilterSnapshotSummary()}`;
+            }
+
+            const nameInput = document.getElementById("customFilterNameInput");
+            if (nameInput) {
+                nameInput.value = "";
+                if (autoFocusName) {
+                    setTimeout(() => nameInput.focus(), 80);
+                }
+            }
+
+            renderFilterSettingsModalLists();
+        }
+
+        function closeFilterSettingsModal() {
+            const modal = document.getElementById("filterSettingsModal");
+            if (modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function renderFilterSettingsModalLists() {
+            const customListEl = document.getElementById("customPresetsListContainer");
+            if (customListEl) {
+                const customs = getUserCustomPresets();
+                if (customs.length === 0) {
+                    customListEl.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-muted); padding: 8px 0;">Все още нямате запазени собствени филтри. Нагласете филтрите и ги запазете с бутона по-горе.</div>`;
+                } else {
+                    let html = "";
+                    for (const cp of customs) {
+                        const tags = [];
+                        if (cp.typeFilter === "movie") tags.push("Филми");
+                        if (cp.typeFilter === "tv") tags.push("Сериали");
+                        if (cp.audioSubFilter === "bg-audio") tags.push("БГ Аудио");
+                        if (cp.audioSubFilter === "sub") tags.push("Субтитри");
+                        if (Array.isArray(cp.selectedGenres) && cp.selectedGenres.length > 0) tags.push(cp.selectedGenres.join(", "));
+                        if (cp.yearFrom || cp.yearTo) tags.push(`${cp.yearFrom || "..."} - ${cp.yearTo || "..."}`);
+                        const summaryText = tags.join(" • ") || "Всички";
+
+                        html = `${html}
+                            <div class="custom-preset-row">
+                                <div class="custom-preset-info">
+                                    <span class="custom-preset-name">⭐ ${escapeHtml(cp.name)}</span>
+                                    <span class="custom-preset-tags">${escapeHtml(summaryText)}</span>
+                                </div>
+                                <div class="custom-preset-actions">
+                                    <button type="button" class="preset-apply-btn" data-apply-custom-id="${escapeHtml(cp.id)}" title="Приложи филтъра веднага">Приложи</button>
+                                    <button type="button" class="preset-del-btn" data-del-custom-id="${escapeHtml(cp.id)}" title="Изтрий този филтър">✕</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    customListEl.innerHTML = html;
+                }
+            }
+
+            const builtinGridEl = document.getElementById("builtinPresetsTogglesList");
+            if (builtinGridEl) {
+                const enabledIds = new Set(getUserEnabledPresets());
+                let html = "";
+                for (const p of BUILTIN_QUICK_PRESETS) {
+                    const isChecked = enabledIds.has(p.id);
+                    html = `${html}
+                        <label class="preset-toggle-item">
+                            <span class="preset-toggle-label">
+                                <span>${p.icon}</span>
+                                <span>${escapeHtml(p.label)}</span>
+                            </span>
+                            <input type="checkbox" class="preset-toggle-checkbox" data-preset-toggle-id="${p.id}" ${isChecked ? "checked" : ""}>
+                        </label>
+                    `;
+                }
+                builtinGridEl.innerHTML = html;
+            }
+        }
+
         function updateQuickPresetsState() {
+            const customPresets = getUserCustomPresets();
             const chips = document.querySelectorAll(".quick-preset-chip");
             for (const chip of chips) {
                 const preset = chip.dataset.preset;
+                const customId = chip.dataset.customId;
                 let isActive = false;
                 if (preset === "top-rated") {
                     isActive = Boolean(sortSelect && sortSelect.value === "rating_desc");
@@ -5860,6 +6719,17 @@
                     isActive = state.selectedGenres.has("Анимация") || state.selectedGenres.has("Семеен");
                 } else if (preset === "short-movies") {
                     isActive = Boolean(durationSelect && durationSelect.value === "0-90");
+                } else if (preset === "action-thriller") {
+                    isActive = state.selectedGenres.has("Екшън") || state.selectedGenres.has("Трилър");
+                } else if (preset === "horror-mystery") {
+                    isActive = state.selectedGenres.has("Ужаси") || state.selectedGenres.has("Мистерия");
+                } else if (preset === "romance") {
+                    isActive = state.selectedGenres.has("Романс") || state.selectedGenres.has("Драма");
+                } else if (preset === "tv-miniseries") {
+                    isActive = state.typeFilter === "tv" && Boolean(episodesFilterSelect && episodesFilterSelect.value === "1-8");
+                } else if (customId) {
+                    const cp = customPresets.find(c => c.id === customId);
+                    isActive = isCustomPresetActive(cp);
                 }
                 chip.classList.toggle("active", isActive);
             }
@@ -5946,11 +6816,21 @@
         }
 
         function initFilterRedesignInteractions() {
+            renderQuickPresetsBar();
+
             const presetsBar = document.getElementById("quickPresetsBar");
             if (presetsBar) {
                 presetsBar.addEventListener("click", (event) => {
                     const chip = event.target.closest(".quick-preset-chip");
                     if (!chip) {
+                        return;
+                    }
+                    if (chip.dataset.customId) {
+                        const customs = getUserCustomPresets();
+                        const cp = customs.find(c => c.id === chip.dataset.customId);
+                        if (cp) {
+                            applyCustomPreset(cp);
+                        }
                         return;
                     }
                     const preset = chip.dataset.preset;
@@ -5985,8 +6865,171 @@
                         if (durationSelect) {
                             durationSelect.value = durationSelect.value === "0-90" ? "" : "0-90";
                         }
+                    } else if (preset === "action-thriller") {
+                        const hasAction = state.selectedGenres.has("Екшън") || state.selectedGenres.has("Трилър");
+                        if (hasAction) {
+                            state.selectedGenres.delete("Екшън");
+                            state.selectedGenres.delete("Трилър");
+                        } else {
+                            state.selectedGenres.add("Екшън");
+                            state.selectedGenres.add("Трилър");
+                        }
+                    } else if (preset === "horror-mystery") {
+                        const hasHorror = state.selectedGenres.has("Ужаси") || state.selectedGenres.has("Мистерия");
+                        if (hasHorror) {
+                            state.selectedGenres.delete("Ужаси");
+                            state.selectedGenres.delete("Мистерия");
+                        } else {
+                            state.selectedGenres.add("Ужаси");
+                            state.selectedGenres.add("Мистерия");
+                        }
+                    } else if (preset === "romance") {
+                        const hasRom = state.selectedGenres.has("Романс") || state.selectedGenres.has("Драма");
+                        if (hasRom) {
+                            state.selectedGenres.delete("Романс");
+                            state.selectedGenres.delete("Драма");
+                        } else {
+                            state.selectedGenres.add("Романс");
+                            state.selectedGenres.add("Драма");
+                        }
+                    } else if (preset === "tv-miniseries") {
+                        if (state.typeFilter === "tv" && episodesFilterSelect && episodesFilterSelect.value === "1-8") {
+                            episodesFilterSelect.value = "";
+                        } else {
+                            setTypeFilter("tv");
+                            if (episodesFilterSelect) {
+                                episodesFilterSelect.value = "1-8";
+                            }
+                        }
                     }
                     applyFilters();
+                });
+            }
+
+            const quickSaveBtn = document.getElementById("quickSaveFilterBtn");
+            if (quickSaveBtn) {
+                quickSaveBtn.addEventListener("click", () => {
+                    openFilterSettingsModal(true);
+                });
+            }
+
+            const quickManageBtn = document.getElementById("quickManageFiltersBtn");
+            if (quickManageBtn) {
+                quickManageBtn.addEventListener("click", () => {
+                    openFilterSettingsModal(false);
+                });
+            }
+
+            const closeFilterSettingsBtn = document.getElementById("closeFilterSettingsBtn");
+            if (closeFilterSettingsBtn) {
+                closeFilterSettingsBtn.addEventListener("click", closeFilterSettingsModal);
+            }
+
+            const applyAndCloseBtn = document.getElementById("applyAndCloseFilterSettingsBtn");
+            if (applyAndCloseBtn) {
+                applyAndCloseBtn.addEventListener("click", closeFilterSettingsModal);
+            }
+
+            const filterModal = document.getElementById("filterSettingsModal");
+            if (filterModal) {
+                filterModal.addEventListener("click", (e) => {
+                    if (e.target === filterModal) {
+                        closeFilterSettingsModal();
+                    }
+                });
+            }
+
+            const confirmSaveBtn = document.getElementById("confirmSaveFilterBtn");
+            if (confirmSaveBtn) {
+                confirmSaveBtn.addEventListener("click", () => {
+                    const input = document.getElementById("customFilterNameInput");
+                    const rawName = input ? input.value.trim() : "";
+                    const customs = getUserCustomPresets();
+                    const name = rawName || `Моят филтър ${customs.length + 1}`;
+                    const newPreset = {
+                        id: `custom_${Date.now()}`,
+                        name: name,
+                        typeFilter: state.typeFilter,
+                        audioSubFilter: state.audioSubFilter || "",
+                        selectedGenres: Array.from(state.selectedGenres),
+                        excludedGenres: Array.from(state.excludedGenres),
+                        yearFrom: yearFromSelect ? yearFromSelect.value : "",
+                        yearTo: yearToSelect ? yearToSelect.value : "",
+                        duration: durationSelect ? durationSelect.value : "",
+                        player: playerSelect ? playerSelect.value : "",
+                        source: sourceSelect ? sourceSelect.value : "",
+                        episodes: episodesFilterSelect ? episodesFilterSelect.value : "",
+                        sort: sortSelect ? sortSelect.value : "default"
+                    };
+                    customs.push(newPreset);
+                    saveUserCustomPresets(customs);
+                    renderQuickPresetsBar();
+                    renderFilterSettingsModalLists();
+                    if (input) {
+                        input.value = "";
+                    }
+                    const summaryEl = document.getElementById("currentFilterSummaryBadge");
+                    if (summaryEl) {
+                        summaryEl.textContent = `✓ Филтърът „${name}“ е запазен успешно и е добавен на главния екран!`;
+                    }
+                });
+            }
+
+            const customListEl = document.getElementById("customPresetsListContainer");
+            if (customListEl) {
+                customListEl.addEventListener("click", (e) => {
+                    const delBtn = e.target.closest("[data-del-custom-id]");
+                    if (delBtn) {
+                        const id = delBtn.dataset.delCustomId;
+                        let customs = getUserCustomPresets();
+                        customs = customs.filter(c => c.id !== id);
+                        saveUserCustomPresets(customs);
+                        renderQuickPresetsBar();
+                        renderFilterSettingsModalLists();
+                        return;
+                    }
+                    const applyBtn = e.target.closest("[data-apply-custom-id]");
+                    if (applyBtn) {
+                        const id = applyBtn.dataset.applyCustomId;
+                        const customs = getUserCustomPresets();
+                        const cp = customs.find(c => c.id === id);
+                        if (cp) {
+                            applyCustomPreset(cp);
+                            closeFilterSettingsModal();
+                        }
+                    }
+                });
+            }
+
+            const builtinTogglesEl = document.getElementById("builtinPresetsTogglesList");
+            if (builtinTogglesEl) {
+                builtinTogglesEl.addEventListener("change", (e) => {
+                    const cb = e.target.closest(".preset-toggle-checkbox");
+                    if (!cb) {
+                        return;
+                    }
+                    const allCbs = builtinTogglesEl.querySelectorAll(".preset-toggle-checkbox");
+                    const enabledIds = [];
+                    for (const c of allCbs) {
+                        if (c.checked && c.dataset.presetToggleId) {
+                            enabledIds.push(c.dataset.presetToggleId);
+                        }
+                    }
+                    saveUserEnabledPresets(enabledIds);
+                    renderQuickPresetsBar();
+                });
+            }
+
+            const resetSettingsBtn = document.getElementById("resetFilterSettingsBtn");
+            if (resetSettingsBtn) {
+                resetSettingsBtn.addEventListener("click", () => {
+                    localStorage.removeItem(USER_ENABLED_PRESETS_KEY);
+                    renderQuickPresetsBar();
+                    renderFilterSettingsModalLists();
+                    const summaryEl = document.getElementById("currentFilterSummaryBadge");
+                    if (summaryEl) {
+                        summaryEl.textContent = "Възстановени са фабричните настройки на бутоните.";
+                    }
                 });
             }
 
@@ -6496,12 +7539,19 @@
                 const url = `${s.embed_url ?? ""}`.toLowerCase();
 
                 if (isDirect && isBg) {
-                    // Direct Bulgarian audio sources (Vidon, Filemoon, Streamtape, OK.ru, etc.)
-                    // All have equal priority - the live health check dynamically determines the working player for this specific title
-                    if (name.includes("voe") || url.includes("voe.sx")) {
-                        return 4; // VOE is placed after others as VOE.sx is mostly 404
+                    if (name.includes("vidon") || url.includes("vidon.to")) {
+                        return 0;
                     }
-                    return 0;
+                    if (name.includes("streamtape") || url.includes("streamtape.com")) {
+                        return 1;
+                    }
+                    if (name.includes("filemoon") || url.includes("filemoon") || url.includes("bysesukior")) {
+                        return 2;
+                    }
+                    if (name.includes("voe") || url.includes("voe.sx")) {
+                        return 8;
+                    }
+                    return 3;
                 }
                 const isSub = s.group === "sub" || name.includes("sub") || name.includes("суб") || name.includes("vidru");
                 if (isDirect && isSub) {
