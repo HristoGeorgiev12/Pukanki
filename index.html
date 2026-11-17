@@ -885,6 +885,561 @@
             box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
         }
 
+        /* Genre Wheel Trigger Buttons */
+        .genre-wheel-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.14), rgba(168, 85, 247, 0.18));
+            border: 1px solid rgba(234, 179, 8, 0.45);
+            color: #fde047;
+            padding: 9px 12px;
+            border-radius: 12px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .genre-wheel-btn:hover {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.26), rgba(168, 85, 247, 0.35));
+            border-color: #fde047;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .genre-wheel-btn .wheel-btn-icon {
+            font-size: 1.05rem;
+            display: inline-block;
+            transition: transform 0.45s ease;
+        }
+
+        .genre-wheel-btn:hover .wheel-btn-icon {
+            transform: rotate(180deg);
+        }
+
+        .genre-wheel-btn.has-active {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(234, 179, 8, 0.3));
+            border-color: #e879f9;
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(217, 70, 239, 0.35);
+        }
+
+        .genre-wheel-mini-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 8px;
+            color: #d8b4fe;
+            padding: 5px 12px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .genre-wheel-mini-link:hover {
+            background: rgba(168, 85, 247, 0.25);
+            border-color: #c084fc;
+            color: #ffffff;
+        }
+
+        /* Genres Radial Circle Modal (Test) */
+        .genres-circle-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(4, 7, 16, 0.86);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            animation: fadeIn 0.22s ease-out;
+        }
+
+        .genres-circle-dialog {
+            background: radial-gradient(circle at 50% 30%, #15132d 0%, #0c0e1a 70%, #060811 100%);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-radius: 26px;
+            width: 95vw;
+            max-width: 880px;
+            max-height: 94vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 50px rgba(168, 85, 247, 0.25);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .genres-circle-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            gap: 16px;
+        }
+
+        .genres-circle-header-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .genres-circle-header-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 8px rgba(234, 179, 8, 0.6));
+        }
+
+        .genres-circle-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .genres-circle-subtitle {
+            margin: 3px 0 0;
+            font-size: 0.80rem;
+            color: var(--text-muted);
+        }
+
+        .genres-circle-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .genres-circle-search-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .genres-circle-search-wrap .search-icon {
+            position: absolute;
+            left: 10px;
+            font-size: 0.85rem;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .genres-circle-search {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 20px;
+            padding: 7px 14px 7px 32px;
+            color: #ffffff;
+            font-size: 0.82rem;
+            outline: none;
+            width: 170px;
+            transition: all 0.2s ease;
+        }
+
+        .genres-circle-search:focus {
+            width: 220px;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25);
+        }
+
+        .genres-circle-close-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+
+        .genres-circle-close-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        .genres-circle-body {
+            padding: 16px 20px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+
+        /* Radial Stage */
+        .genres-radial-stage {
+            position: relative;
+            width: min(760px, 92vw);
+            height: min(760px, 92vw);
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .genres-orbit-ring {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .genres-orbit-ring-outer {
+            width: 90%;
+            height: 82%;
+            border: 1.5px dashed rgba(168, 85, 247, 0.22);
+            box-shadow: inset 0 0 30px rgba(168, 85, 247, 0.04);
+        }
+
+        .genres-orbit-ring-mid {
+            width: 62%;
+            height: 55%;
+            border: 1.5px dashed rgba(192, 132, 252, 0.20);
+            box-shadow: inset 0 0 25px rgba(192, 132, 252, 0.03);
+        }
+
+        .genres-orbit-ring-inner {
+            width: 40%;
+            height: 35%;
+            border: 1.5px dashed rgba(56, 189, 248, 0.22);
+            box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.04);
+        }
+
+        /* Central Hub */
+        .genres-radial-hub {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 134px;
+            height: 134px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #241442 0%, #0e1222 75%, #080914 100%);
+            border: 2px solid rgba(168, 85, 247, 0.65);
+            box-shadow: 0 0 32px rgba(168, 85, 247, 0.35), inset 0 0 22px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            text-align: center;
+            z-index: 10;
+            gap: 2px;
+            transition: all 0.25s ease;
+        }
+
+        .genres-radial-hub .hub-icon {
+            font-size: 1.45rem;
+            line-height: 1;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+        }
+
+        .genres-radial-hub .hub-status {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+
+        .genres-radial-hub .hub-counter {
+            font-size: 0.66rem;
+            color: #c084fc;
+            font-weight: 600;
+        }
+
+        .genres-radial-hub .hub-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 3px;
+        }
+
+        .hub-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 3px 8px;
+            font-size: 0.66rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hub-btn-apply {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+        }
+
+        .hub-btn-apply:hover {
+            transform: scale(1.06);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.6);
+        }
+
+        .hub-btn-clear {
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .hub-btn-clear:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        /* Orbit layer and genre nodes */
+        .genres-radial-orbit-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: auto;
+        }
+
+        .radial-genre-node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            max-width: 124px;
+            border-radius: 999px;
+            background: rgba(22, 28, 48, 0.90);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+            font-size: 0.72rem;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+            z-index: 5;
+        }
+
+        .radial-genre-node .node-label {
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .radial-genre-node:hover {
+            transform: translate(-50%, -50%) scale(1.18);
+            border-color: #c084fc;
+            color: #ffffff;
+            box-shadow: 0 0 18px rgba(168, 85, 247, 0.6);
+            z-index: 20;
+        }
+
+        .radial-genre-node:hover .node-label {
+            max-width: none;
+        }
+
+        .radial-genre-node.active {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            border-color: #e9d5ff;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 0 18px rgba(168, 85, 247, 0.75);
+            z-index: 8;
+        }
+
+        .radial-genre-node.excluded {
+            background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
+            border-color: #fecaca;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 0 18px rgba(239, 68, 68, 0.75);
+            z-index: 8;
+        }
+
+        .radial-genre-node.is-dimmed {
+            opacity: 0.22;
+            transform: translate(-50%, -50%) scale(0.85);
+            pointer-events: none;
+        }
+
+        .radial-genre-node.is-highlighted {
+            transform: translate(-50%, -50%) scale(1.22);
+            border-color: #fde047;
+            box-shadow: 0 0 22px rgba(253, 224, 71, 0.8);
+            z-index: 25;
+        }
+
+        .radial-node-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            font-size: 0.62rem;
+            font-weight: 900;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Footer */
+        .genres-circle-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            gap: 12px;
+        }
+
+        .genres-circle-legend {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+        }
+
+        .legend-neutral {
+            background: #64748b;
+        }
+
+        .legend-active {
+            background: #a855f7;
+            box-shadow: 0 0 6px rgba(168, 85, 247, 0.6);
+        }
+
+        .legend-excluded {
+            background: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+        }
+
+        .genres-circle-footer-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .circle-btn {
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .circle-btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+        }
+
+        .circle-btn-secondary:hover {
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        .circle-btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border: 1px solid #c084fc;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+        }
+
+        .circle-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.6);
+        }
+
+        @media (max-width: 640px) {
+            .genres-circle-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 14px 16px;
+            }
+            .genres-circle-header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .genres-circle-search {
+                width: 150px;
+            }
+            .genres-radial-stage {
+                width: 330px;
+                height: 330px;
+            }
+            .genres-radial-hub {
+                width: 110px;
+                height: 110px;
+                padding: 4px;
+            }
+            .genres-radial-hub .hub-icon {
+                font-size: 1.1rem;
+            }
+            .genres-radial-hub .hub-status {
+                font-size: 0.66rem;
+                max-width: 95px;
+            }
+            .genres-radial-hub .hub-counter {
+                font-size: 0.58rem;
+            }
+            .hub-btn {
+                padding: 2px 6px;
+                font-size: 0.60rem;
+            }
+            .radial-genre-node {
+                padding: 3px 7px;
+                font-size: 0.65rem;
+            }
+            .genres-circle-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
         /* 2. Primary Filters Row */
         .filters-row {
             display: flex;
@@ -4388,6 +4943,12 @@
                         <span id="genreToggleBadge" class="genre-active-badge" style="display: none;">0</span>
                         <span id="genreToggleArrow" class="genre-toggle-arrow">▾</span>
                     </button>
+
+                    <button type="button" id="openGenresWheelBtn" class="genre-wheel-btn" title="Отвори интерактивното кръгово колело на жанровете (Тест)">
+                        <span class="wheel-btn-icon">🎡</span>
+                        <span>Жанров кръг</span>
+                        <span id="genreWheelBadge" class="genre-active-badge" style="display: none;">0</span>
+                    </button>
                 </div>
             </div>
 
@@ -4446,7 +5007,10 @@
                         <span><strong>2 клика</strong> = Изключи (<strong class="hint-minus">✕</strong>)</span>
                         <span><strong>3 клика</strong> = Нулирай</span>
                     </div>
-                    <button type="button" id="clearGenresOnlyBtn" class="clear-genres-btn" title="Изчисти всички параметри и филтри">Изчисти параметри</button>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button type="button" id="openGenresWheelCollapsibleBtn" class="genre-wheel-mini-link" title="Отвори интерактивното кръгово колело">🎡 Кръг на жанровете</button>
+                        <button type="button" id="clearGenresOnlyBtn" class="clear-genres-btn" title="Изчисти всички параметри и филтри">Изчисти параметри</button>
+                    </div>
                 </div>
                 <div id="genreBadgesBar" class="genre-badges-bar"></div>
             </div>
@@ -4630,6 +5194,62 @@
                 <button type="button" id="applyAndCloseFilterSettingsBtn" class="filter-settings-done-btn" title="Запази и затвори">
                     <span>Готово</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Genres Radial Circle Modal (Test) -->
+    <div id="genresCircleModal" class="genres-circle-backdrop" role="dialog" aria-modal="true" aria-labelledby="genresCircleModalTitle" style="display: none;">
+        <div class="genres-circle-dialog">
+            <div class="genres-circle-header">
+                <div class="genres-circle-header-info">
+                    <span class="genres-circle-header-icon">🎡</span>
+                    <div>
+                        <h2 id="genresCircleModalTitle" class="genres-circle-title">Кръгово колело на жанровете (Тест)</h2>
+                        <p class="genres-circle-subtitle">Кликнете на жанр за избор (<span style="color:#a855f7">✓ включен</span>), повторно за изключване (<span style="color:#ef4444">✕ изключен</span>) или изчистване.</p>
+                    </div>
+                </div>
+                <div class="genres-circle-header-actions">
+                    <div class="genres-circle-search-wrap">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="genreWheelSearchInput" class="genres-circle-search" placeholder="Търси в кръга..." autocomplete="off">
+                    </div>
+                    <button type="button" id="closeGenresCircleModalBtn" class="genres-circle-close-btn" aria-label="Затвори" title="Затвори">✕</button>
+                </div>
+            </div>
+
+            <div class="genres-circle-body">
+                <div class="genres-radial-stage" id="genresRadialStage">
+                    <div class="genres-orbit-ring genres-orbit-ring-outer"></div>
+                    <div class="genres-orbit-ring genres-orbit-ring-mid"></div>
+                    <div class="genres-orbit-ring genres-orbit-ring-inner"></div>
+
+                    <!-- Central Interactive Hub -->
+                    <div class="genres-radial-hub" id="genresRadialHub">
+                        <div class="hub-icon">🎭</div>
+                        <div class="hub-status" id="hubGenreStatusText">Всички жанрове</div>
+                        <div class="hub-counter" id="hubGenreCountBadge">0 избрани</div>
+                        <div class="hub-actions">
+                            <button type="button" id="hubApplyGenresBtn" class="hub-btn hub-btn-apply" title="Приложи избраните жанрове">✓ Приложи</button>
+                            <button type="button" id="hubClearGenresBtn" class="hub-btn hub-btn-clear" title="Изчисти избора">↺ Изчисти</button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic radial orbit nodes container -->
+                    <div class="genres-radial-orbit-layer" id="genresRadialOrbitLayer"></div>
+                </div>
+            </div>
+
+            <div class="genres-circle-footer">
+                <div class="genres-circle-legend">
+                    <span class="legend-item"><span class="legend-dot legend-neutral"></span> Неутрален</span>
+                    <span class="legend-item"><span class="legend-dot legend-active"></span> ✓ Включен</span>
+                    <span class="legend-item"><span class="legend-dot legend-excluded"></span> ✕ Изключен</span>
+                </div>
+                <div class="genres-circle-footer-buttons">
+                    <button type="button" id="footerClearGenresWheelBtn" class="circle-btn circle-btn-secondary">↺ Изчисти</button>
+                    <button type="button" id="footerApplyGenresWheelBtn" class="circle-btn circle-btn-primary">✓ Приложи филтрите</button>
+                </div>
             </div>
         </div>
     </div>
@@ -5861,6 +6481,19 @@
                     toggleGenresBtn.classList.remove("has-active");
                 }
             }
+
+            const genreWheelBadge = document.getElementById("genreWheelBadge");
+            const openGenresWheelBtn = document.getElementById("openGenresWheelBtn");
+            if (genreWheelBadge && openGenresWheelBtn) {
+                if (totalActiveGenres > 0) {
+                    genreWheelBadge.textContent = `${totalActiveGenres}`;
+                    genreWheelBadge.style.display = "inline-block";
+                    openGenresWheelBtn.classList.add("has-active");
+                } else {
+                    genreWheelBadge.style.display = "none";
+                    openGenresWheelBtn.classList.remove("has-active");
+                }
+            }
         }
 
         function populateFilterOptions(items) {
@@ -7028,6 +7661,218 @@
             if (modal) {
                 modal.style.display = "none";
             }
+        }
+
+        function openGenresCircleModal() {
+            const modal = document.getElementById("genresCircleModal");
+            if (!modal) {
+                return;
+            }
+            modal.style.display = "flex";
+            const searchInput = document.getElementById("genreWheelSearchInput");
+            if (searchInput) {
+                searchInput.value = "";
+            }
+            renderGenresCircleWheel();
+            updateGenresCircleHub();
+        }
+
+        function closeGenresCircleModal() {
+            const modal = document.getElementById("genresCircleModal");
+            if (modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function updateGenresCircleHub(hoveredGenre = null) {
+            const statusEl = document.getElementById("hubGenreStatusText");
+            const countEl = document.getElementById("hubGenreCountBadge");
+            const iconEl = document.querySelector(".genres-radial-hub .hub-icon");
+            if (!statusEl || !countEl) {
+                return;
+            }
+
+            if (hoveredGenre) {
+                if (iconEl && typeof getGenreEmoji === "function") {
+                    iconEl.textContent = getGenreEmoji(hoveredGenre);
+                }
+                const isSel = state.selectedGenres.has(hoveredGenre);
+                const isExc = state.excludedGenres.has(hoveredGenre);
+                let stateText = "Неутрален";
+                if (isSel) {
+                    stateText = "✓ Включен";
+                }
+                if (isExc) {
+                    stateText = "✕ Изключен";
+                }
+                statusEl.textContent = hoveredGenre;
+                countEl.textContent = stateText;
+                return;
+            }
+
+            if (iconEl) {
+                iconEl.textContent = "🎭";
+            }
+
+            const selCount = state.selectedGenres.size;
+            const excCount = state.excludedGenres.size;
+
+            if (selCount === 0 && excCount === 0) {
+                statusEl.textContent = "Всички жанрове";
+                countEl.textContent = "Няма активни филтри";
+                return;
+            }
+
+            const parts = [];
+            if (selCount > 0) {
+                parts.push(`${selCount} включени`);
+            }
+            if (excCount > 0) {
+                parts.push(`${excCount} изключени`);
+            }
+            statusEl.textContent = parts.join(", ");
+            countEl.textContent = `Общо: ${selCount + excCount} филтъра`;
+        }
+
+        function renderGenresCircleWheel(filterText = "") {
+            const orbitLayer = document.getElementById("genresRadialOrbitLayer");
+            if (!orbitLayer) {
+                return;
+            }
+
+            const fallbackGenres = ["Екшън", "Комедия", "Драма", "Фантастика", "Трилър", "Ужаси", "Анимация", "Семеен", "Приключенски", "Криминален", "Мистерия", "Романс", "Фентъзи", "Документален", "Исторически", "Военен", "Музика", "Уестърн"];
+            const all = (state.allGenres && state.allGenres.length > 0) ? state.allGenres : fallbackGenres;
+
+            const priorityList = [
+                "Екшън", "Комедия", "Драма", "Трилър", "Фантастика", "Научна-фантастика", "Ужаси", "Ужас",
+                "Романс", "Криминален", "Семеен", "Приключенски", "Приключение", "Анимация", "Фентъзи",
+                "Мистерия", "Документален", "Исторически", "Военен", "Музика", "Уестърн", "Биографичен"
+            ];
+
+            const prioritySet = new Set();
+            for (const p of priorityList) {
+                if (all.includes(p)) {
+                    prioritySet.add(p);
+                }
+            }
+
+            const innerGenres = [];
+            const midGenres = [];
+            const outerGenres = [];
+
+            for (const p of priorityList) {
+                if (!all.includes(p)) {
+                    continue;
+                }
+                if (innerGenres.length < 6) {
+                    innerGenres.push(p);
+                    continue;
+                }
+                if (midGenres.length < 14) {
+                    midGenres.push(p);
+                    continue;
+                }
+                outerGenres.push(p);
+            }
+
+            for (const g of all) {
+                if (innerGenres.includes(g) || midGenres.includes(g) || outerGenres.includes(g)) {
+                    continue;
+                }
+                outerGenres.push(g);
+            }
+
+            const normalizedFilter = (filterText || "").trim().toLowerCase();
+            let nodesHtml = "";
+            const nodeCoords = [];
+
+            // Ring 1 (Inner, Rx = 20%, Ry = 17.5%)
+            const innerCount = innerGenres.length;
+            for (let i = 0; i < innerCount; i++) {
+                const genre = innerGenres[i];
+                const angle = (2 * Math.PI * i / innerCount) - (Math.PI / 2);
+                nodeCoords.push({
+                    genre: genre,
+                    x: 50 + 20.0 * Math.cos(angle),
+                    y: 50 + 17.5 * Math.sin(angle)
+                });
+            }
+
+            // Ring 2 (Middle, Rx = 31%, Ry = 27.5%, staggered)
+            const midCount = midGenres.length;
+            const midOffset = innerCount > 0 ? (Math.PI / innerCount) : 0;
+            for (let i = 0; i < midCount; i++) {
+                const genre = midGenres[i];
+                const angle = (2 * Math.PI * i / midCount) - (Math.PI / 2) + midOffset;
+                nodeCoords.push({
+                    genre: genre,
+                    x: 50 + 31.0 * Math.cos(angle),
+                    y: 50 + 27.5 * Math.sin(angle)
+                });
+            }
+
+            // Ring 3 (Outer, staggered crown radius)
+            const outerCount = outerGenres.length;
+            const outerOffset = midCount > 0 ? (Math.PI / midCount) : 0;
+            for (let i = 0; i < outerCount; i++) {
+                const genre = outerGenres[i];
+                const angle = (2 * Math.PI * i / outerCount) - (Math.PI / 2) + outerOffset;
+                const rx = (i % 2 === 0) ? 48.0 : 42.5;
+                const ry = (i % 2 === 0) ? 44.0 : 39.0;
+                nodeCoords.push({
+                    genre: genre,
+                    x: 50 + rx * Math.cos(angle),
+                    y: 50 + ry * Math.sin(angle)
+                });
+            }
+
+            for (const item of nodeCoords) {
+                nodesHtml = `${nodesHtml}${createRadialGenreNodeHtml(item.genre, item.x, item.y, normalizedFilter)}`;
+            }
+
+            orbitLayer.innerHTML = nodesHtml;
+            updateGenresCircleHub();
+        }
+
+        function createRadialGenreNodeHtml(genre, x, y, filterText) {
+            const isSel = state.selectedGenres.has(genre);
+            const isExc = state.excludedGenres.has(genre);
+            const emoji = typeof getGenreEmoji === "function" ? getGenreEmoji(genre) : "🎬";
+            const safeGenre = escapeHtml(genre);
+
+            const classes = ["radial-genre-node"];
+            let badge = "";
+
+            if (isSel) {
+                classes.push("active");
+                badge = `<span class="radial-node-badge">✓</span>`;
+            }
+            if (isExc) {
+                classes.push("excluded");
+                badge = `<span class="radial-node-badge">✕</span>`;
+            }
+
+            if (filterText) {
+                if (genre.toLowerCase().includes(filterText)) {
+                    classes.push("is-highlighted");
+                }
+                if (!genre.toLowerCase().includes(filterText)) {
+                    classes.push("is-dimmed");
+                }
+            }
+
+            return `<button type="button" class="${classes.join(" ")}" data-radial-genre="${safeGenre}" style="left: ${x.toFixed(2)}%; top: ${y.toFixed(2)}%;" title="${safeGenre} (Кликнете за избор)">
+                <span>${emoji}</span>
+                <span class="node-label">${safeGenre}</span>
+                ${badge}
+            </button>`;
+        }
+
+        function syncAndRefreshGenreWheel() {
+            const searchInput = document.getElementById("genreWheelSearchInput");
+            const q = searchInput ? searchInput.value : "";
+            renderGenresCircleWheel(q);
+            renderGenreBadges();
         }
 
         function renderFilterSettingsModalLists() {
@@ -9772,6 +10617,130 @@
             });
         }
 
+        const openGenresWheelBtn = document.getElementById("openGenresWheelBtn");
+        if (openGenresWheelBtn) {
+            openGenresWheelBtn.addEventListener("click", openGenresCircleModal);
+        }
+
+        const openGenresWheelCollapsibleBtn = document.getElementById("openGenresWheelCollapsibleBtn");
+        if (openGenresWheelCollapsibleBtn) {
+            openGenresWheelCollapsibleBtn.addEventListener("click", openGenresCircleModal);
+        }
+
+        const closeGenresCircleModalBtn = document.getElementById("closeGenresCircleModalBtn");
+        if (closeGenresCircleModalBtn) {
+            closeGenresCircleModalBtn.addEventListener("click", closeGenresCircleModal);
+        }
+
+        const footerApplyGenresWheelBtn = document.getElementById("footerApplyGenresWheelBtn");
+        if (footerApplyGenresWheelBtn) {
+            footerApplyGenresWheelBtn.addEventListener("click", () => {
+                applyFilters();
+                closeGenresCircleModal();
+            });
+        }
+
+        const hubApplyGenresBtn = document.getElementById("hubApplyGenresBtn");
+        if (hubApplyGenresBtn) {
+            hubApplyGenresBtn.addEventListener("click", () => {
+                applyFilters();
+                closeGenresCircleModal();
+            });
+        }
+
+        const footerClearGenresWheelBtn = document.getElementById("footerClearGenresWheelBtn");
+        if (footerClearGenresWheelBtn) {
+            footerClearGenresWheelBtn.addEventListener("click", () => {
+                state.selectedGenres.clear();
+                state.excludedGenres.clear();
+                syncAndRefreshGenreWheel();
+                applyFilters();
+            });
+        }
+
+        const hubClearGenresBtn = document.getElementById("hubClearGenresBtn");
+        if (hubClearGenresBtn) {
+            hubClearGenresBtn.addEventListener("click", () => {
+                state.selectedGenres.clear();
+                state.excludedGenres.clear();
+                syncAndRefreshGenreWheel();
+                applyFilters();
+            });
+        }
+
+        const genreWheelSearchInput = document.getElementById("genreWheelSearchInput");
+        if (genreWheelSearchInput) {
+            genreWheelSearchInput.addEventListener("input", (e) => {
+                renderGenresCircleWheel(e.target.value);
+            });
+        }
+
+        const genresCircleModal = document.getElementById("genresCircleModal");
+        if (genresCircleModal) {
+            genresCircleModal.addEventListener("click", (e) => {
+                if (e.target === genresCircleModal) {
+                    closeGenresCircleModal();
+                }
+            });
+        }
+
+        const genresRadialOrbitLayer = document.getElementById("genresRadialOrbitLayer");
+        if (genresRadialOrbitLayer) {
+            genresRadialOrbitLayer.addEventListener("click", (e) => {
+                const btn = e.target.closest("[data-radial-genre]");
+                if (!btn) {
+                    return;
+                }
+                const genre = btn.dataset.radialGenre;
+                if (state.selectedGenres.has(genre)) {
+                    state.selectedGenres.delete(genre);
+                    state.excludedGenres.add(genre);
+                    syncAndRefreshGenreWheel();
+                    return;
+                }
+                if (state.excludedGenres.has(genre)) {
+                    state.excludedGenres.delete(genre);
+                    syncAndRefreshGenreWheel();
+                    return;
+                }
+                state.selectedGenres.add(genre);
+                syncAndRefreshGenreWheel();
+            });
+
+            genresRadialOrbitLayer.addEventListener("contextmenu", (e) => {
+                const btn = e.target.closest("[data-radial-genre]");
+                if (!btn) {
+                    return;
+                }
+                e.preventDefault();
+                const genre = btn.dataset.radialGenre;
+                state.selectedGenres.delete(genre);
+                if (state.excludedGenres.has(genre)) {
+                    state.excludedGenres.delete(genre);
+                    syncAndRefreshGenreWheel();
+                    return;
+                }
+                state.excludedGenres.add(genre);
+                syncAndRefreshGenreWheel();
+            });
+
+            genresRadialOrbitLayer.addEventListener("mouseover", (e) => {
+                const btn = e.target.closest("[data-radial-genre]");
+                if (!btn) {
+                    return;
+                }
+                updateGenresCircleHub(btn.dataset.radialGenre);
+            });
+
+            genresRadialOrbitLayer.addEventListener("mouseout", (e) => {
+                const btn = e.target.closest("[data-radial-genre]");
+                if (!btn) {
+                    return;
+                }
+                updateGenresCircleHub(null);
+            });
+        }
+
         loadMoreBtn.addEventListener("click", () => {
             state.visibleCount += PAGE_BATCH_SIZE;
             renderMoviesGrid();
@@ -10541,6 +11510,13 @@
                     event.preventDefault();
                     event.stopPropagation();
                     exitPlayerFullscreen(box);
+                    return;
+                }
+                const genresCircleModal = document.getElementById("genresCircleModal");
+                if (genresCircleModal && genresCircleModal.style.display !== "none") {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    closeGenresCircleModal();
                     return;
                 }
                 if (movieModal.classList.contains("open") || (intermediateScreen && intermediateScreen.classList.contains("open"))) {
