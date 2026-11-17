@@ -159,16 +159,104 @@
 
 
         .filters-panel {
-            background: var(--bg-panel);
-            padding: 12px 14px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            margin-bottom: 18px;
+            background: linear-gradient(165deg, rgba(20, 24, 40, 0.85) 0%, rgba(13, 16, 28, 0.94) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 14px;
+            position: relative;
         }
 
+        .filters-panel::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 8%;
+            right: 8%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.75), rgba(236, 72, 153, 0.75), transparent);
+            pointer-events: none;
+        }
+
+        /* 1. Quick Presets Bar */
+        .quick-presets-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .quick-presets-label {
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .quick-presets-scroll {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            padding: 2px 0;
+            flex: 1;
+        }
+
+        .quick-presets-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .quick-preset-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            color: var(--text-muted);
+            padding: 6px 13px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .quick-preset-chip:hover {
+            background: rgba(124, 58, 237, 0.14);
+            border-color: rgba(168, 85, 247, 0.5);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .quick-preset-chip.active {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-color: #c084fc;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+            font-weight: 700;
+        }
+
+        .quick-preset-chip .preset-icon {
+            font-size: 0.88rem;
+        }
+
+        /* 2. Primary Filters Row */
         .filters-row {
             display: flex;
             align-items: center;
@@ -184,7 +272,86 @@
 
         .filters-row-primary .search-input-wrapper {
             flex: 1;
-            min-width: 240px;
+            min-width: 260px;
+            position: relative;
+        }
+
+        .search-lens-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+            z-index: 2;
+        }
+
+        .search-input-wrapper:focus-within .search-lens-icon {
+            color: #c084fc;
+        }
+
+        .search-input-wrapper .input-control {
+            padding-left: 42px;
+            padding-right: 120px;
+            background: rgba(15, 18, 32, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            height: 44px;
+            font-size: 0.92rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .search-input-wrapper .input-control:focus {
+            background: rgba(17, 21, 38, 0.95);
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-clear-btn {
+            position: absolute;
+            right: 88px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-muted);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            z-index: 2;
+        }
+
+        .search-clear-btn:hover {
+            background: rgba(239, 68, 68, 0.35);
+            color: #fff;
+        }
+
+        .search-field-hint {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #64748b;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 3px 6px;
+            pointer-events: none;
+            letter-spacing: 0.03em;
+            z-index: 2;
         }
 
         .filters-actions-group {
@@ -192,185 +359,440 @@
             align-items: center;
             gap: 10px;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
 
-        .filters-row-secondary {
-            display: grid;
-            grid-template-columns: 1.3fr 1fr 1fr 1fr;
-            gap: 12px;
-        }
-
-        .audio-sub-filter-select {
+        /* Segmented Audio Switch */
+        .audio-segmented-switch {
             display: inline-flex;
             align-items: center;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 0.88rem;
-            font-weight: 600;
+            background: rgba(15, 18, 32, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 12px;
+            padding: 3px;
+            gap: 3px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+        }
+
+        .audio-switch-pill {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 13px;
+            border-radius: 9px;
+            font-size: 0.82rem;
+            font-weight: 700;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s;
-            outline: none;
-            color-scheme: dark;
+            transition: all 0.2s ease;
+            user-select: none;
         }
 
-        .audio-sub-filter-select:hover {
-            border-color: rgba(16, 185, 129, 0.6);
+        .audio-switch-pill:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .audio-sub-filter-select.has-value {
-            border-color: #10b981;
-            color: #6ee7b7;
-            background: rgba(16, 185, 129, 0.15);
-        }
-
-        .audio-sub-filter-select option {
-            background-color: #161928;
-            color: #f3f4f6;
+        .audio-switch-pill.active {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
         }
 
         .genre-toggle-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 11px 16px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            color: #d8b4fe;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             user-select: none;
+            height: 42px;
         }
 
         .genre-toggle-btn:hover {
-            border-color: rgba(124, 58, 237, 0.5);
-            color: #fff;
+            background: rgba(124, 58, 237, 0.22);
+            border-color: #c084fc;
+            color: #ffffff;
+            transform: translateY(-1px);
         }
 
         .genre-toggle-btn.has-active {
-            border-color: var(--accent);
-            color: #c4b5fd;
-            background: rgba(124, 58, 237, 0.15);
-        }
-
-        .reset-filters-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 11px 16px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-            user-select: none;
-        }
-
-        .reset-filters-btn:hover {
-            border-color: rgba(239, 68, 68, 0.6);
-            color: #fca5a5;
-            background: rgba(239, 68, 68, 0.12);
-        }
-
-        .reset-filters-btn.active-filters {
-            border-color: rgba(251, 191, 36, 0.65);
-            color: var(--gold);
-            background: rgba(251, 191, 36, 0.1);
-        }
-
-        .episodes-filter-select {
-            display: inline-flex;
-            align-items: center;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-            outline: none;
-        }
-
-        .episodes-filter-select:hover {
-            border-color: rgba(168, 85, 247, 0.6);
-        }
-
-        .episodes-filter-select.has-value {
-            border-color: #a855f7;
-            color: #d8b4fe;
-            background: rgba(168, 85, 247, 0.15);
-        }
-
-        select, .episodes-filter-select {
-            color-scheme: dark;
-        }
-
-        .episodes-filter-select option,
-        select option {
-            background-color: #161928;
-            color: #f3f4f6;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.32), rgba(236, 72, 153, 0.28));
+            border-color: #e879f9;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(217, 70, 239, 0.3);
         }
 
         .genre-active-badge {
-            background: var(--accent);
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
             color: #fff;
             font-size: 0.72rem;
             font-weight: 800;
             padding: 2px 7px;
             border-radius: 999px;
             line-height: 1.2;
+            box-shadow: 0 2px 6px rgba(244, 63, 94, 0.4);
         }
 
         .genre-toggle-arrow {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            transition: transform 0.2s ease;
+            font-size: 0.75rem;
+            color: #a78bfa;
+            transition: transform 0.25s ease;
         }
 
+        .genre-toggle-btn.is-open .genre-toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        .reset-filters-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            user-select: none;
+            height: 42px;
+        }
+
+        .reset-filters-btn:hover {
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        .reset-filters-btn.active-filters {
+            border-color: rgba(251, 191, 36, 0.65);
+            color: #fef08a;
+            background: rgba(251, 191, 36, 0.14);
+            box-shadow: 0 2px 10px rgba(251, 191, 36, 0.25);
+            font-weight: 700;
+        }
+
+        /* 3. Secondary Filters Row: Capsules */
+        .filters-row-secondary {
+            display: grid;
+            grid-template-columns: 1.4fr 1.1fr 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .select-capsule {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(15, 18, 32, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 12px;
+            padding: 0 12px;
+            height: 42px;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .select-capsule:hover {
+            border-color: rgba(168, 85, 247, 0.45);
+            background: rgba(20, 25, 44, 0.85);
+        }
+
+        .select-capsule:focus-within,
+        .select-capsule.has-active {
+            border-color: #a855f7;
+            background: rgba(124, 58, 237, 0.14);
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .capsule-icon {
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+
+        .capsule-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .capsule-select {
+            flex: 1;
+            min-width: 0;
+            background: transparent !important;
+            border: none !important;
+            color: var(--text-main);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 8px 22px 8px 4px;
+            outline: none !important;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 4px center !important;
+            color-scheme: dark;
+        }
+
+        .capsule-select option {
+            background-color: #161928;
+            color: #f3f4f6;
+        }
+
+        .episodes-select-capsule {
+            display: inline-flex;
+            height: 42px;
+        }
+
+        .year-capsule-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .year-range-sep {
+            color: #64748b;
+            font-weight: 700;
+            user-select: none;
+            padding: 0 2px;
+        }
+
+        /* 4. Active Filters Strip */
+        .active-filters-strip {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(124, 58, 237, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            border-radius: 12px;
+        }
+
+        .active-filters-label {
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: #c4b5fd;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-right: 4px;
+            flex-shrink: 0;
+        }
+
+        .active-filters-tags-list {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .active-filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(124, 58, 237, 0.22);
+            border: 1px solid rgba(192, 132, 252, 0.45);
+            color: #ede9fe;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .active-filter-tag:hover {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: #ef4444;
+            color: #fca5a5;
+            transform: scale(0.97);
+        }
+
+        .active-filter-tag .tag-close-icon {
+            font-size: 0.72rem;
+            opacity: 0.75;
+        }
+
+        .clear-all-tags-btn {
+            background: transparent;
+            border: none;
+            color: #f87171;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.15s;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .clear-all-tags-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+        }
+
+        /* 5. Genres Collapsible Grid */
         .genres-collapsible {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            transition: all 0.2s ease;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(10, 13, 24, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            transition: all 0.25s ease;
         }
 
         .genres-collapsible.collapsed {
             display: none;
         }
 
-        .year-range-group {
+        .genre-header-row {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .genre-hint {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .genre-hint .hint-plus {
+            color: #34d399;
+        }
+
+        .genre-hint .hint-minus {
+            color: #f87171;
+        }
+
+        .clear-genres-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .clear-genres-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border-color: #ef4444;
+        }
+
+        .genre-badges-bar {
+            display: flex;
+            flex-wrap: wrap;
             gap: 8px;
         }
 
-        .year-range-sep {
+        .genre-filter-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(22, 27, 44, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: var(--text-muted);
-            font-weight: 700;
+            padding: 6px 13px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
             user-select: none;
+            transition: all 0.18s ease;
+        }
+
+        .genre-filter-badge .badge-emoji {
+            font-size: 0.92rem;
+        }
+
+        .genre-filter-badge:hover {
+            border-color: rgba(168, 85, 247, 0.5);
+            color: #ffffff;
+            background: rgba(124, 58, 237, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .genre-filter-badge.active {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-color: #c084fc;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+        }
+
+        .genre-filter-badge.active .badge-status-icon {
+            color: #a7f3d0;
+            font-weight: 800;
+        }
+
+        .genre-filter-badge.excluded {
+            background: rgba(220, 38, 38, 0.22);
+            border-color: #ef4444;
+            color: #fca5a5;
+            font-weight: 700;
+            text-decoration: line-through;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+        }
+
+        .genre-filter-badge.excluded .badge-status-icon {
+            color: #f87171;
+            font-weight: 800;
         }
 
         @media (max-width: 900px) {
+            .filters-panel {
+                padding: 14px 14px;
+                gap: 12px;
+            }
             .filters-row-primary {
                 flex-direction: column;
                 align-items: stretch;
             }
             .filters-actions-group {
-                justify-content: flex-end;
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+            }
+            .audio-segmented-switch {
+                flex: 1;
+                justify-content: center;
+            }
+            .audio-switch-pill {
+                flex: 1;
+                text-align: center;
             }
             .filters-row-secondary {
                 grid-template-columns: 1fr 1fr;
@@ -436,24 +858,52 @@
                 font-size: 0.84rem;
             }
 
+            .filters-panel {
+                padding: 12px 10px;
+                border-radius: 14px;
+            }
+
             .filters-actions-group {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
+                display: flex;
+                flex-direction: column;
                 gap: 8px;
                 width: 100%;
             }
 
-            .filters-actions-group button,
-            .filters-actions-group select {
+            .audio-segmented-switch {
                 width: 100%;
-                justify-content: center;
-                text-align: center;
-                font-size: 0.82rem;
-                padding: 9px 8px;
+            }
+
+            .audio-switch-pill {
+                flex: 1;
+                padding: 7px 6px;
+                font-size: 0.78rem;
             }
 
             .filters-row-secondary {
                 grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .select-capsule {
+                height: 40px;
+            }
+
+            .search-input-wrapper .input-control {
+                height: 40px;
+                padding-right: 85px;
+            }
+
+            .search-field-hint {
+                display: none;
+            }
+
+            .search-clear-btn {
+                right: 10px;
+            }
+
+            .genre-hint {
+                font-size: 0.72rem;
                 gap: 8px;
             }
 
@@ -3122,65 +3572,148 @@
             </button>
         </nav>
 
-        <section class="filters-panel">
+        <section class="filters-panel" id="filtersPanel">
+            <!-- 1. Quick Discovery Presets Carousel -->
+            <div class="quick-presets-bar" id="quickPresetsBar" role="toolbar" aria-label="Бързи филтри">
+                <span class="quick-presets-label">⚡ Бързи:</span>
+                <div class="quick-presets-scroll">
+                    <button type="button" class="quick-preset-chip" data-preset="top-rated" title="Филми с рейтинг над 7.5">
+                        <span class="preset-icon">🌟</span>
+                        <span>Топ Рейтинг</span>
+                    </button>
+                    <button type="button" class="quick-preset-chip" data-preset="new-releases" title="Заглавия от 2024 до 2026 година">
+                        <span class="preset-icon">🔥</span>
+                        <span>Нови 2024–2026</span>
+                    </button>
+                    <button type="button" class="quick-preset-chip" data-preset="bg-audio" title="Филтрирай само заглавия с български дублаж">
+                        <span class="preset-icon">🇧🇬</span>
+                        <span>Само БГ Аудио</span>
+                    </button>
+                    <button type="button" class="quick-preset-chip" data-preset="subtitles" title="Филтрирай заглавия с български субтитри">
+                        <span class="preset-icon">💬</span>
+                        <span>БГ Субтитри</span>
+                    </button>
+                    <button type="button" class="quick-preset-chip" data-preset="family" title="Анимация, Семейни и Комедия">
+                        <span class="preset-icon">🍿</span>
+                        <span>Семейни &amp; Анимация</span>
+                    </button>
+                    <button type="button" class="quick-preset-chip" data-preset="short-movies" title="Филми под 90 минути">
+                        <span class="preset-icon">⚡</span>
+                        <span>Кратки (&lt; 90 мин)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. Primary Row: Search & Audio Pill Switcher & Action Buttons -->
             <div class="filters-row filters-row-primary">
                 <div class="search-input-wrapper">
-                    <input type="search" id="searchInput" class="input-control" placeholder="Търси по заглавие (натисни # или @ за полета)..." autocomplete="off">
+                    <span class="search-lens-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </span>
+                    <input type="search" id="searchInput" class="input-control" placeholder="Търси филм, сериал, актьор (натисни # за жанр, @ за актьор)..." autocomplete="off">
+                    <button type="button" id="searchClearBtn" class="search-clear-btn" title="Изчисти търсенето" style="display: none;">✕</button>
+                    <span class="search-field-hint" title="Специални префикси: # за жанр, @ за актьор, $ за студио">#жанр @актьор</span>
                     <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
                 </div>
+
                 <div class="filters-actions-group">
-                    <select id="audioSubFilterSelect" class="audio-sub-filter-select" aria-label="Превод / Аудио">
+                    <!-- Segmented Audio Pill Switcher -->
+                    <div class="audio-segmented-switch" id="audioSegmentedSwitch" role="group" aria-label="Филтър по аудио">
+                        <button type="button" class="audio-switch-pill active" data-val="">Всички</button>
+                        <button type="button" class="audio-switch-pill" data-val="bg-audio">🇧🇬 БГ Аудио</button>
+                        <button type="button" class="audio-switch-pill" data-val="sub">💬 БГ Субс</button>
+                    </div>
+
+                    <!-- Native select kept for full programmatic compatibility -->
+                    <select id="audioSubFilterSelect" class="audio-sub-filter-select" aria-label="Превод / Аудио" style="display: none;">
                         <option value="">Всички</option>
                         <option value="bg-audio">БГ Аудио</option>
                         <option value="sub">БГ Субс</option>
                     </select>
-                    <select id="episodesFilterSelect" class="episodes-filter-select" aria-label="Филтър по брой епизоди">
-                        <option value="">⚡ Брой епизоди (всички)</option>
-                        <option value="1-6">⚡ До 6 еп. (Минисериал)</option>
-                        <option value="1-8">⚡ До 8 еп. (Минисериал)</option>
-                        <option value="1-10">⚡ До 10 еп. (Кратък сериал)</option>
-                        <option value="11-20">🌿 11 – 20 еп. (Стандартен)</option>
-                        <option value="21+">📚 21+ еп. (Дълъг сериал)</option>
-                    </select>
+
+                    <div class="select-capsule episodes-select-capsule" id="episodesSelectCapsule">
+                        <span class="capsule-icon">⚡</span>
+                        <select id="episodesFilterSelect" class="episodes-filter-select capsule-select" aria-label="Филтър по брой епизоди">
+                            <option value="">Брой епизоди (всички)</option>
+                            <option value="1-6">До 6 еп. (Минисериал)</option>
+                            <option value="1-8">До 8 еп. (Минисериал)</option>
+                            <option value="1-10">До 10 еп. (Кратък сериал)</option>
+                            <option value="11-20">11 – 20 еп. (Стандартен)</option>
+                            <option value="21+">21+ еп. (Дълъг сериал)</option>
+                        </select>
+                    </div>
+
                     <button type="button" id="toggleGenresBtn" class="genre-toggle-btn" title="Покажи или скрий значките за жанрове">
-                        🎭 Жанрове <span id="genreToggleBadge" class="genre-active-badge" style="display: none;">0</span> <span id="genreToggleArrow" class="genre-toggle-arrow">▾</span>
+                        <span>🎭 Жанрове</span>
+                        <span id="genreToggleBadge" class="genre-active-badge" style="display: none;">0</span>
+                        <span id="genreToggleArrow" class="genre-toggle-arrow">▾</span>
                     </button>
+
                     <button type="button" id="resetFiltersBtn" class="reset-filters-btn" title="Изчисти всички активни филтри">
-                        ↺ Нулирай
+                        <span>↺ Нулирай</span>
                     </button>
                 </div>
             </div>
 
+            <!-- 3. Secondary Row: Sleek Dropdown Capsules -->
             <div class="filters-row filters-row-secondary">
-                <div class="year-range-group">
-                    <select id="yearFromSelect" class="select-control" aria-label="От година">
-                        <option value="">От година</option>
+                <div class="select-capsule year-capsule-group">
+                    <span class="capsule-icon">📅</span>
+                    <span class="capsule-label">Година:</span>
+                    <select id="yearFromSelect" class="select-control capsule-select" aria-label="От година">
+                        <option value="">От</option>
                     </select>
                     <span class="year-range-sep">—</span>
-                    <select id="yearToSelect" class="select-control" aria-label="До година">
-                        <option value="">До година</option>
+                    <select id="yearToSelect" class="select-control capsule-select" aria-label="До година">
+                        <option value="">До</option>
                     </select>
                 </div>
-                <select id="durationSelect" class="select-control" aria-label="Времетраене">
-                    <option value="">⏱ Времетраене</option>
-                    <option value="0-90">Кратки (&lt; 90 мин)</option>
-                    <option value="90-120">Стандартни (90 – 120 мин)</option>
-                    <option value="120-150">Дълги (120 – 150 мин)</option>
-                    <option value="150+">Епични (&gt; 150 мин)</option>
-                </select>
-                <select id="playerSelect" class="select-control" aria-label="Филтър по плеър">
-                    <option value="">Всички плеъри</option>
-                </select>
-                <select id="sourceSelect" class="select-control" aria-label="Филтър по източник">
-                    <option value="">Всички източници</option>
-                </select>
+
+                <div class="select-capsule" id="durationCapsule">
+                    <span class="capsule-icon">⏱️</span>
+                    <select id="durationSelect" class="select-control capsule-select" aria-label="Времетраене">
+                        <option value="">Времетраене</option>
+                        <option value="0-90">Кратки (&lt; 90 мин)</option>
+                        <option value="90-120">Стандартни (90 – 120 мин)</option>
+                        <option value="120-150">Дълги (120 – 150 мин)</option>
+                        <option value="150+">Епични (&gt; 150 мин)</option>
+                    </select>
+                </div>
+
+                <div class="select-capsule" id="playerCapsule">
+                    <span class="capsule-icon">📺</span>
+                    <select id="playerSelect" class="select-control capsule-select" aria-label="Филтър по плеър">
+                        <option value="">Всички плеъри</option>
+                    </select>
+                </div>
+
+                <div class="select-capsule" id="sourceCapsule">
+                    <span class="capsule-icon">🌐</span>
+                    <select id="sourceSelect" class="select-control capsule-select" aria-label="Филтър по източник">
+                        <option value="">Всички сайтове</option>
+                    </select>
+                </div>
             </div>
 
-            <div id="genresCollapsible" class="genres-collapsible">
-                <div class="genre-hint">
-                    <span>💡 <strong>1 клик</strong> = Включи жанр (<strong>+</strong>)</span>
-                    <span><strong>2 клика (или десен бутон)</strong> = Изключи нежелан жанр (<strong>✕</strong>)</span>
-                    <span><strong>3 клика</strong> = Нулирай</span>
+            <!-- 4. Active Filters Dismissible Tags Strip -->
+            <div id="activeFiltersStrip" class="active-filters-strip" style="display: none;">
+                <span class="active-filters-label">Приложени:</span>
+                <div id="activeFiltersTagsList" class="active-filters-tags-list"></div>
+                <button type="button" id="clearAllTagsBtn" class="clear-all-tags-btn" title="Премахни всички филтри">✕ Изчисти всички</button>
+            </div>
+
+            <!-- 5. Redesigned Genres Collapsible Grid -->
+            <div id="genresCollapsible" class="genres-collapsible collapsed">
+                <div class="genre-header-row">
+                    <div class="genre-hint">
+                        <span>💡 <strong>1 клик</strong> = Включи (<strong class="hint-plus">+</strong>)</span>
+                        <span><strong>2 клика</strong> = Изключи (<strong class="hint-minus">✕</strong>)</span>
+                        <span><strong>3 клика</strong> = Нулирай</span>
+                    </div>
+                    <button type="button" id="clearGenresOnlyBtn" class="clear-genres-btn" title="Нулирай само избраните жанрове">Изчисти жанровете</button>
                 </div>
                 <div id="genreBadgesBar" class="genre-badges-bar"></div>
             </div>
@@ -4128,14 +4661,14 @@
             const curVal = durationSelect.value;
             if (state.typeFilter === "tv") {
                 durationSelect.innerHTML = `
-                    <option value="">⏱ Формат на сериала</option>
+                    <option value="">Формат на сериала</option>
                     <option value="tv-mini">⚡ Минисериали (1 сезон)</option>
                     <option value="tv-short">🌿 Кратки (1 – 2 сезона)</option>
                     <option value="tv-long">📚 Дълги саги (3+ сезона)</option>
                 `;
             } else {
                 durationSelect.innerHTML = `
-                    <option value="">⏱ Времетраене</option>
+                    <option value="">Времетраене</option>
                     <option value="0-90">Кратки (&lt; 90 мин)</option>
                     <option value="90-120">Стандартни (90 – 120 мин)</option>
                     <option value="120-150">Дълги (120 – 150 мин)</option>
@@ -4376,10 +4909,47 @@
             countWatchlist.textContent = `${watchlistCount}`;
         }
 
+        const GENRE_EMOJI_MAP = {
+            "екшън": "💥",
+            "приключение": "🧗",
+            "приключенски": "🧗",
+            "анимация": "🎨",
+            "комедия": "🤣",
+            "криминален": "🔪",
+            "крими": "🔪",
+            "документален": "📜",
+            "драма": "🎭",
+            "семеен": "🧸",
+            "фентъзи": "🧙",
+            "исторически": "🏛️",
+            "ужаси": "👻",
+            "музикален": "🎵",
+            "мюзикъл": "🎵",
+            "мистерия": "🔮",
+            "романтичен": "💖",
+            "романс": "💖",
+            "фантастика": "🚀",
+            "научна фантастика": "🚀",
+            "трилър": "🕵️",
+            "военен": "⚔️",
+            "уестърн": "🤠",
+            "биографичен": "👤",
+            "спортен": "⚽",
+            "европейски": "🇪🇺",
+            "тийн": "🎒",
+            "късометражен": "⏱️",
+            "тв филм": "📺"
+        };
+
+        function getGenreEmoji(genreName) {
+            const lower = `${genreName}`.trim().toLowerCase();
+            return GENRE_EMOJI_MAP[lower] || "🎬";
+        }
+
         function renderGenreBadges() {
             const isAllNeutral = state.selectedGenres.size === 0 && state.excludedGenres.size === 0;
             const allActiveClass = isAllNeutral ? "active" : "";
-            let badgesHtml = `<button type="button" class="genre-filter-badge ${allActiveClass}" data-genre="__ALL__">Всички</button>`;
+            let badgesHtml = `<button type="button" class="genre-filter-badge ${allActiveClass}" data-genre="__ALL__"><span class="badge-emoji">🌟</span> Всички</button>`;
 
             let availableGenres = null;
             if (!isAllNeutral) {
@@ -4399,22 +4969,23 @@
                 const isSelected = state.selectedGenres.has(genre);
                 const isExcluded = state.excludedGenres.has(genre);
                 const safeGenre = escapeHtml(genre);
+                const emoji = getGenreEmoji(genre);
 
                 if (!isSelected && !isExcluded && availableGenres && !availableGenres.has(genre)) {
                     continue;
                 }
 
                 if (isSelected) {
-                    badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge active" data-genre="${safeGenre}">+ ${safeGenre}</button>`;
+                    badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge active" data-genre="${safeGenre}"><span class="badge-status-icon">✓</span> <span class="badge-emoji">${emoji}</span> ${safeGenre}</button>`;
                     continue;
                 }
 
                 if (isExcluded) {
-                    badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge excluded" data-genre="${safeGenre}">✕ ${safeGenre}</button>`;
+                    badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge excluded" data-genre="${safeGenre}"><span class="badge-status-icon">✕</span> <span class="badge-emoji">${emoji}</span> ${safeGenre}</button>`;
                     continue;
                 }
 
-                badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge" data-genre="${safeGenre}">${safeGenre}</button>`;
+                badgesHtml = `${badgesHtml}<button type="button" class="genre-filter-badge" data-genre="${safeGenre}"><span class="badge-emoji">${emoji}</span> ${safeGenre}</button>`;
             }
 
             genreBadgesBar.innerHTML = badgesHtml;
@@ -4442,7 +5013,10 @@
                 const genres = Array.isArray(item.genres) ? item.genres : [];
                 for (const genre of genres) {
                     if (genre && !isAudioOrSubtitleLabel(genre)) {
-                        genreSet.add(genre);
+                        const cleanG = `${genre}`.trim();
+                        if (cleanG) {
+                            genreSet.add(cleanG);
+                        }
                     }
                 }
                 if (item.year) {
@@ -4469,8 +5043,8 @@
             const curSource = sourceSelect.value;
 
             const sortedYears = Array.from(yearSet).sort((a, b) => Number(b) - Number(a));
-            let yearFromHtml = `<option value="">От година</option>`;
-            let yearToHtml = `<option value="">До година</option>`;
+            let yearFromHtml = `<option value="">От</option>`;
+            let yearToHtml = `<option value="">До</option>`;
             for (const year of sortedYears) {
                 yearFromHtml = `${yearFromHtml}<option value="${year}">От ${year}</option>`;
                 yearToHtml = `${yearToHtml}<option value="${year}">До ${year}</option>`;
@@ -4979,7 +5553,13 @@
         }
 
         function matchesSelectedGenres(item) {
-            const itemGenres = Array.isArray(item.genres) ? item.genres : [];
+            const rawGenres = Array.isArray(item.genres) ? item.genres : [];
+            const itemGenres = [];
+            for (const g of rawGenres) {
+                if (typeof g === "string") {
+                    itemGenres.push(g.trim());
+                }
+            }
 
             for (const excluded of state.excludedGenres) {
                 if (itemGenres.includes(excluded)) {
@@ -5142,6 +5722,281 @@
                 return true;
             }
             return false;
+        }
+
+        function updateCapsuleActiveStates() {
+            const yearGroup = document.querySelector(".year-capsule-group");
+            if (yearGroup) {
+                const hasYear = Boolean(yearFromSelect && yearFromSelect.value) || Boolean(yearToSelect && yearToSelect.value);
+                yearGroup.classList.toggle("has-active", hasYear);
+            }
+            const durCap = document.getElementById("durationCapsule");
+            if (durCap) {
+                durCap.classList.toggle("has-active", Boolean(durationSelect && durationSelect.value));
+            }
+            const plyCap = document.getElementById("playerCapsule");
+            if (plyCap) {
+                plyCap.classList.toggle("has-active", Boolean(playerSelect && playerSelect.value));
+            }
+            const srcCap = document.getElementById("sourceCapsule");
+            if (srcCap) {
+                srcCap.classList.toggle("has-active", Boolean(sourceSelect && sourceSelect.value));
+            }
+            const epCap = document.getElementById("episodesSelectCapsule");
+            if (epCap) {
+                epCap.classList.toggle("has-active", Boolean(episodesFilterSelect && episodesFilterSelect.value));
+            }
+        }
+
+        function updateQuickPresetsState() {
+            const chips = document.querySelectorAll(".quick-preset-chip");
+            for (const chip of chips) {
+                const preset = chip.dataset.preset;
+                let isActive = false;
+                if (preset === "top-rated") {
+                    isActive = Boolean(sortSelect && sortSelect.value === "rating_desc");
+                } else if (preset === "new-releases") {
+                    isActive = Boolean(yearFromSelect && yearFromSelect.value === "2024");
+                } else if (preset === "bg-audio") {
+                    isActive = state.audioSubFilter === "bg-audio";
+                } else if (preset === "subtitles") {
+                    isActive = state.audioSubFilter === "sub";
+                } else if (preset === "family") {
+                    isActive = state.selectedGenres.has("Анимация") || state.selectedGenres.has("Семеен");
+                } else if (preset === "short-movies") {
+                    isActive = Boolean(durationSelect && durationSelect.value === "0-90");
+                }
+                chip.classList.toggle("active", isActive);
+            }
+
+            const audioPills = document.querySelectorAll(".audio-switch-pill");
+            for (const pill of audioPills) {
+                const v = pill.dataset.val ?? "";
+                pill.classList.toggle("active", (state.audioSubFilter || "") === v);
+            }
+
+            const searchClearBtn = document.getElementById("searchClearBtn");
+            if (searchClearBtn) {
+                searchClearBtn.style.display = searchInput && searchInput.value.trim().length > 0 ? "flex" : "none";
+            }
+        }
+
+        function updateActiveFiltersBar() {
+            const strip = document.getElementById("activeFiltersStrip");
+            const tagsList = document.getElementById("activeFiltersTagsList");
+            if (!strip || !tagsList) {
+                return;
+            }
+
+            const tags = [];
+
+            if (state.audioSubFilter === "bg-audio") {
+                tags.push({ label: "🇧🇬 БГ Аудио", type: "audio" });
+            } else if (state.audioSubFilter === "sub") {
+                tags.push({ label: "💬 БГ Субтитри", type: "audio" });
+            }
+
+            if (yearFromSelect && yearFromSelect.value) {
+                tags.push({ label: `📅 От ${yearFromSelect.value} г.`, type: "yearFrom" });
+            }
+            if (yearToSelect && yearToSelect.value) {
+                tags.push({ label: `📅 До ${yearToSelect.value} г.`, type: "yearTo" });
+            }
+            if (durationSelect && durationSelect.value) {
+                const selTxt = durationSelect.options[durationSelect.selectedIndex]?.text || "Времетраене";
+                tags.push({ label: `⏱️ ${selTxt}`, type: "duration" });
+            }
+            if (playerSelect && playerSelect.value) {
+                tags.push({ label: `📺 ${playerSelect.value}`, type: "player" });
+            }
+            if (sourceSelect && sourceSelect.value) {
+                tags.push({ label: `🌐 ${sourceSelect.value}`, type: "source" });
+            }
+            if (episodesFilterSelect && episodesFilterSelect.value) {
+                const epTxt = episodesFilterSelect.options[episodesFilterSelect.selectedIndex]?.text || "Епизоди";
+                tags.push({ label: `⚡ ${epTxt}`, type: "episodes" });
+            }
+            if (sortSelect && sortSelect.value !== "default") {
+                const sortTxt = sortSelect.options[sortSelect.selectedIndex]?.text || "Сортиране";
+                tags.push({ label: `⇅ ${sortTxt}`, type: "sort" });
+            }
+            for (const g of state.selectedGenres) {
+                tags.push({ label: `✓ ${g}`, type: "genre-add", value: g });
+            }
+            for (const g of state.excludedGenres) {
+                tags.push({ label: `✕ ${g}`, type: "genre-del", value: g });
+            }
+            if (searchInput && searchInput.value.trim().length > 0) {
+                tags.push({ label: `🔍 „${searchInput.value.trim()}“`, type: "search" });
+            }
+
+            if (tags.length === 0) {
+                strip.style.display = "none";
+                tagsList.innerHTML = "";
+                return;
+            }
+
+            strip.style.display = "flex";
+            let html = "";
+            for (let i = 0; i < tags.length; i++) {
+                const t = tags[i];
+                html = `${html}
+                    <button type="button" class="active-filter-tag" data-tag-type="${t.type}" ${t.value ? `data-tag-val="${escapeHtml(t.value)}"` : ""}>
+                        <span>${escapeHtml(t.label)}</span>
+                        <span class="tag-close-icon">✕</span>
+                    </button>
+                `;
+            }
+            tagsList.innerHTML = html;
+        }
+
+        function initFilterRedesignInteractions() {
+            const presetsBar = document.getElementById("quickPresetsBar");
+            if (presetsBar) {
+                presetsBar.addEventListener("click", (event) => {
+                    const chip = event.target.closest(".quick-preset-chip");
+                    if (!chip) {
+                        return;
+                    }
+                    const preset = chip.dataset.preset;
+                    if (preset === "top-rated") {
+                        if (sortSelect) {
+                            sortSelect.value = sortSelect.value === "rating_desc" ? "default" : "rating_desc";
+                        }
+                    } else if (preset === "new-releases") {
+                        if (yearFromSelect) {
+                            yearFromSelect.value = yearFromSelect.value === "2024" ? "" : "2024";
+                        }
+                    } else if (preset === "bg-audio") {
+                        state.audioSubFilter = state.audioSubFilter === "bg-audio" ? "" : "bg-audio";
+                        if (audioSubFilterSelect) {
+                            audioSubFilterSelect.value = state.audioSubFilter;
+                        }
+                    } else if (preset === "subtitles") {
+                        state.audioSubFilter = state.audioSubFilter === "sub" ? "" : "sub";
+                        if (audioSubFilterSelect) {
+                            audioSubFilterSelect.value = state.audioSubFilter;
+                        }
+                    } else if (preset === "family") {
+                        const hasAnim = state.selectedGenres.has("Анимация") || state.selectedGenres.has("Семеен");
+                        if (hasAnim) {
+                            state.selectedGenres.delete("Анимация");
+                            state.selectedGenres.delete("Семеен");
+                        } else {
+                            state.selectedGenres.add("Анимация");
+                            state.selectedGenres.add("Семеен");
+                        }
+                    } else if (preset === "short-movies") {
+                        if (durationSelect) {
+                            durationSelect.value = durationSelect.value === "0-90" ? "" : "0-90";
+                        }
+                    }
+                    applyFilters();
+                });
+            }
+
+            const audioSwitch = document.getElementById("audioSegmentedSwitch");
+            if (audioSwitch) {
+                audioSwitch.addEventListener("click", (event) => {
+                    const pill = event.target.closest(".audio-switch-pill");
+                    if (!pill) {
+                        return;
+                    }
+                    const val = pill.dataset.val ?? "";
+                    state.audioSubFilter = val;
+                    if (audioSubFilterSelect) {
+                        audioSubFilterSelect.value = val;
+                        audioSubFilterSelect.classList.toggle("has-value", Boolean(val));
+                    }
+                    applyFilters();
+                });
+            }
+
+            const searchClearBtn = document.getElementById("searchClearBtn");
+            if (searchClearBtn && searchInput) {
+                searchClearBtn.addEventListener("click", () => {
+                    searchInput.value = "";
+                    searchClearBtn.style.display = "none";
+                    searchInput.focus();
+                    applyFilters();
+                });
+                searchInput.addEventListener("input", () => {
+                    searchClearBtn.style.display = searchInput.value.trim().length > 0 ? "flex" : "none";
+                });
+            }
+
+            const clearGenresBtn = document.getElementById("clearGenresOnlyBtn");
+            if (clearGenresBtn) {
+                clearGenresBtn.addEventListener("click", () => {
+                    state.selectedGenres.clear();
+                    state.excludedGenres.clear();
+                    applyFilters();
+                });
+            }
+
+            const clearAllTagsBtn = document.getElementById("clearAllTagsBtn");
+            if (clearAllTagsBtn) {
+                clearAllTagsBtn.addEventListener("click", resetAllFilters);
+            }
+
+            const tagsList = document.getElementById("activeFiltersTagsList");
+            if (tagsList) {
+                tagsList.addEventListener("click", (event) => {
+                    const tag = event.target.closest(".active-filter-tag");
+                    if (!tag) {
+                        return;
+                    }
+                    const type = tag.dataset.tagType;
+                    const val = tag.dataset.tagVal;
+
+                    if (type === "audio") {
+                        state.audioSubFilter = "";
+                        if (audioSubFilterSelect) {
+                            audioSubFilterSelect.value = "";
+                            audioSubFilterSelect.classList.remove("has-value");
+                        }
+                    } else if (type === "yearFrom") {
+                        if (yearFromSelect) {
+                            yearFromSelect.value = "";
+                        }
+                    } else if (type === "yearTo") {
+                        if (yearToSelect) {
+                            yearToSelect.value = "";
+                        }
+                    } else if (type === "duration") {
+                        if (durationSelect) {
+                            durationSelect.value = "";
+                        }
+                    } else if (type === "player") {
+                        if (playerSelect) {
+                            playerSelect.value = "";
+                        }
+                    } else if (type === "source") {
+                        if (sourceSelect) {
+                            sourceSelect.value = "";
+                        }
+                    } else if (type === "episodes") {
+                        state.episodesFilter = "";
+                        if (episodesFilterSelect) {
+                            episodesFilterSelect.value = "";
+                            episodesFilterSelect.classList.remove("has-value");
+                        }
+                    } else if (type === "sort") {
+                        if (sortSelect) {
+                            sortSelect.value = "default";
+                        }
+                    } else if (type === "genre-add" && val) {
+                        state.selectedGenres.delete(val);
+                    } else if (type === "genre-del" && val) {
+                        state.excludedGenres.delete(val);
+                    } else if (type === "search") {
+                        if (searchInput) {
+                            searchInput.value = "";
+                        }
+                    }
+                    applyFilters();
+                });
+            }
         }
 
         function clearFilterCulprits() {
@@ -5358,6 +6213,9 @@
             state.filtered = sortMoviesList(result, sortMode);
             state.visibleCount = PAGE_BATCH_SIZE;
             updateZeroResultFilterDiagnostics(query, yearFrom, yearTo, selectedDuration, selectedPlayer, selectedSource);
+            updateCapsuleActiveStates();
+            updateQuickPresetsState();
+            updateActiveFiltersBar();
             renderMoviesGrid();
             saveFiltersToStorage();
         }
@@ -7102,6 +7960,7 @@
         }
 
         async function loadInitialData() {
+            initFilterRedesignInteractions();
             loadWatchlistFromStorage();
             loadFiltersFromStorage();
             updateDurationSelectOptions();
