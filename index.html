@@ -10968,7 +10968,42 @@
             const rawSrc = (currentTab && currentTab.dataset.embedUrl) || iframe.getAttribute("src") || iframe.src || "";
             if (isVidonUrl(rawSrc)) {
                 submitVidonDirectPlay(iframe, rawSrc);
+                setTimeout(() => {
+                    if (playBtn) {
+                        playBtn.innerHTML = "✓ Пуснато";
+                        setTimeout(() => {
+                            if (playBtn) {
+                                playBtn.innerHTML = "▶ Пусни плеъра";
+                                playBtn.classList.remove("is-active");
+                            }
+                        }, 2000);
+                    }
+                }, 600);
+            } else if (isYouTubeUrl(rawSrc)) {
+                try {
+                    if (iframe.contentWindow) {
+                        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                    }
+                } catch (e) {}
+                if (!rawSrc.includes("autoplay=1")) {
+                    const joinChar = rawSrc.includes("?") ? "&" : "?";
+                    iframe.src = `${rawSrc}${joinChar}autoplay=1`;
+                }
+                setTimeout(() => {
+                    if (playBtn) {
+                        playBtn.innerHTML = "✓ Пуснато";
+                        setTimeout(() => {
+                            if (playBtn) {
+                                playBtn.innerHTML = "▶ Пусни плеъра";
+                                playBtn.classList.remove("is-active");
+                            }
+                        }, 2000);
+                    }
+                }, 600);
             } else {
+                // External embed player (Streamtape, Filemoon, Uqload, etc.)
+                // Browser security strictly forbids external parents from force-playing cross-origin frames without user gesture directly in the frame.
+                // Do NOT reload iframe.src as that resets the player and cancels loading!
                 try {
                     if (iframe.contentWindow) {
                         iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
@@ -10978,28 +11013,26 @@
                     }
                 } catch (e) {}
 
-                if (isYouTubeUrl(rawSrc)) {
-                    if (!rawSrc.includes("autoplay=1")) {
-                        const joinChar = rawSrc.includes("?") ? "&" : "?";
-                        iframe.src = `${rawSrc}${joinChar}autoplay=1`;
-                    }
-                } else if (!rawSrc.includes("autoplay=1") && !rawSrc.includes("autoplay=true")) {
-                    const joinChar = rawSrc.includes("?") ? "&" : "?";
-                    iframe.src = `${rawSrc}${joinChar}autoplay=1&autoPlay=true`;
-                }
-            }
+                iframe.focus();
+                iframe.scrollIntoView({ behavior: "smooth", block: "center" });
 
-            setTimeout(() => {
+                const isTv = document.body.classList.contains("tv-mode");
+                const hintMsg = isTv
+                    ? "🎬 Натиснете бутона OK върху видеото, за да стартира!"
+                    : "🎬 Кликнете върху знака ▶ в средата на видеото, за да стартира!";
+
+                showToast(hintMsg);
+
                 if (playBtn) {
-                    playBtn.innerHTML = "✓ Пуснато";
+                    playBtn.innerHTML = isTv ? "👇 Натисни OK" : "👇 Кликни на видеото";
                     setTimeout(() => {
                         if (playBtn) {
                             playBtn.innerHTML = "▶ Пусни плеъра";
                             playBtn.classList.remove("is-active");
                         }
-                    }, 2000);
+                    }, 3000);
                 }
-            }, 600);
+            }
         }
 
         function handleToggleAdShield() {
