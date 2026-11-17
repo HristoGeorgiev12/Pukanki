@@ -6247,23 +6247,62 @@
             return u.includes("youtube.com") || u.includes("youtu.be");
         }
 
+        function isSandboxIncompatibleUrl(url) {
+            const u = `${url ?? ""}`.toLowerCase();
+            if (u.includes("streamtape.com") || u.includes("streamtape.to") || u.includes("streamtape.net") || u.includes("streamta.pe")) {
+                return true;
+            }
+            if (u.includes("uqload.com") || u.includes("uqload.vc") || u.includes("uqload.to")) {
+                return true;
+            }
+            if (u.includes("dood.") || u.includes("ds2play.") || u.includes("doodstream.")) {
+                return true;
+            }
+            return false;
+        }
+
         function configurePlayerIframe(iframe, url) {
             if (!iframe) {
                 return;
             }
+            const shieldBtn = document.getElementById("playerAdShieldBtn");
             if (isYouTubeUrl(url)) {
                 iframe.removeAttribute("sandbox");
                 iframe.referrerPolicy = "strict-origin-when-cross-origin";
+                if (shieldBtn) {
+                    shieldBtn.classList.remove("is-disabled");
+                    shieldBtn.innerHTML = "🛡️ YouTube (Чист)";
+                    shieldBtn.title = "YouTube плеърът не изисква анти-реклама.";
+                }
+                return;
+            }
+            if (isSandboxIncompatibleUrl(url)) {
+                iframe.removeAttribute("sandbox");
+                iframe.referrerPolicy = "no-referrer";
+                if (shieldBtn) {
+                    shieldBtn.classList.remove("is-disabled");
+                    shieldBtn.innerHTML = "⚡ Директен плеър";
+                    shieldBtn.title = "Този плеър изисква директен режим без sandbox за коректно зареждане на видеото.";
+                }
                 return;
             }
             iframe.referrerPolicy = "no-referrer";
-            const shieldBtn = document.getElementById("playerAdShieldBtn");
             const isShieldActive = !shieldBtn || !shieldBtn.classList.contains("is-disabled");
             if (isShieldActive) {
                 iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-presentation");
+                if (shieldBtn) {
+                    shieldBtn.classList.remove("is-disabled");
+                    shieldBtn.innerHTML = "🛡️ Анти-реклама";
+                    shieldBtn.title = "Блокира изскачащите реклами при клик.";
+                }
                 return;
             }
             iframe.removeAttribute("sandbox");
+            if (shieldBtn) {
+                shieldBtn.classList.add("is-disabled");
+                shieldBtn.innerHTML = "⚠️ Анти-реклама: Изкл";
+                shieldBtn.title = "Анти-рекламата е изключена. Кликни за включване на защитата.";
+            }
         }
 
         function hasBgSource(item) {
@@ -8668,7 +8707,7 @@
                             </span>
                             <div class="player-toolbar-actions">
                                 <button type="button" class="player-next-btn" id="playerNextBtn" title="Превключи към следващия наличен плеър">⏭️ Следващ плеър</button>
-                                <button type="button" class="player-adshield-btn" id="playerAdShieldBtn" title="Блокира изскачащите реклами при клик">🛡️ Анти-реклама</button>
+                                <button type="button" class="player-adshield-btn" id="playerAdShieldBtn" title="${isYouTubeUrl(firstEmbedUrl) ? 'YouTube плеърът не изисква анти-реклама.' : (isSandboxIncompatibleUrl(firstEmbedUrl) ? 'Този плеър изисква директен режим без sandbox за коректно зареждане на видеото.' : 'Блокира изскачащите реклами при клик')}">${isYouTubeUrl(firstEmbedUrl) ? '🛡️ YouTube (Чист)' : (isSandboxIncompatibleUrl(firstEmbedUrl) ? '⚡ Директен плеър' : '🛡️ Анти-реклама')}</button>
                                 <button type="button" class="player-play-btn" id="playerPlayBtn" title="Пусни видеото директно без изскачащи реклами">▶ Пусни плеъра</button>
                                 <button type="button" class="theater-fullscreen-btn" id="theaterFullscreenBtn" title="Цял екран на плеъра">⛶ Цял екран</button>
                             </div>
@@ -8677,7 +8716,7 @@
                         <div class="player-frame-box" id="mainPlayerFrameBox">
                             <div class="theater-exit-hotspot" id="theaterExitHotspot" title="Покажи бутона за свиване"></div>
                             <button type="button" class="exit-theater-btn" id="exitTheaterBtn" title="Свий плеъра (Изход от цял екран)">↙ Свий плеъра</button>
-                            <iframe id="modalPlayerIframe" name="modalPlayerIframe" src="${firstEmbedUrl}" ${isYouTubeUrl(firstEmbedUrl) ? 'referrerpolicy="strict-origin-when-cross-origin"' : 'sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" referrerpolicy="no-referrer"'} allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
+                            <iframe id="modalPlayerIframe" name="modalPlayerIframe" src="${firstEmbedUrl}" ${isYouTubeUrl(firstEmbedUrl) ? 'referrerpolicy="strict-origin-when-cross-origin"' : (isSandboxIncompatibleUrl(firstEmbedUrl) ? 'referrerpolicy="no-referrer"' : 'sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" referrerpolicy="no-referrer"')} allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; accelerometer; gyroscope" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" playsinline="true" webkit-playsinline="true"></iframe>
                         </div>
                     ` : ""}
                 </div>
@@ -10976,6 +11015,10 @@
                 shieldBtn.classList.remove("is-disabled");
                 shieldBtn.innerHTML = "🛡️ YouTube (Чист)";
                 shieldBtn.title = "YouTube плеърът не изисква анти-реклама.";
+                return;
+            }
+            if (isSandboxIncompatibleUrl(rawSrc)) {
+                showToast("Този плеър изисква директен режим без sandbox, за да не блокира видеото.");
                 return;
             }
             const hasSandbox = iframe.hasAttribute("sandbox");
