@@ -744,18 +744,18 @@
             min-width: 42px;
             max-width: 86px;
             width: max-content;
-            padding: 3px 4px;
+            padding: 3px 5px;
             border-radius: 9px;
-            background: rgba(22, 28, 48, 0.94);
+            background: var(--letter-bg, rgba(22, 28, 48, 0.94));
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            color: #e2e8f0;
+            border: 1px solid var(--letter-border, rgba(255, 255, 255, 0.16));
+            color: #f1f5f9;
             font-size: 0.60rem;
             font-weight: 700;
             line-height: 1.12;
             cursor: pointer;
             user-select: none;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45), 0 0 12px var(--letter-glow, transparent);
             transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
             z-index: 5;
             text-align: center;
@@ -778,10 +778,10 @@
 
         .radial-genre-node:hover {
             transform: translate(-50%, -50%) scale(1.22);
-            border-color: #c084fc;
+            border-color: #ffffff;
             color: #ffffff;
-            box-shadow: 0 0 18px rgba(168, 85, 247, 0.6);
-            z-index: 20;
+            box-shadow: 0 0 20px var(--letter-border, rgba(168, 85, 247, 0.7));
+            z-index: 25;
         }
 
         .radial-genre-node:hover .node-label {
@@ -790,8 +790,8 @@
         }
 
         .radial-genre-node.active {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            border-color: #e9d5ff;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important;
+            border-color: #e9d5ff !important;
             color: #ffffff;
             font-weight: 700;
             box-shadow: 0 0 18px rgba(168, 85, 247, 0.75);
@@ -799,8 +799,8 @@
         }
 
         .radial-genre-node.excluded {
-            background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
-            border-color: #fecaca;
+            background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%) !important;
+            border-color: #fecaca !important;
             color: #ffffff;
             font-weight: 700;
             box-shadow: 0 0 18px rgba(239, 68, 68, 0.75);
@@ -6975,12 +6975,35 @@
             updateGenresCircleHub();
         }
 
+        function getGenreLetterPalette(char) {
+            const letterPalettes = {
+                "А": { bg: "rgba(14, 116, 144, 0.45)", border: "rgba(56, 189, 248, 0.55)", glow: "rgba(56, 189, 248, 0.25)" },
+                "Б": { bg: "rgba(30, 58, 138, 0.48)", border: "rgba(96, 165, 250, 0.55)", glow: "rgba(96, 165, 250, 0.25)" },
+                "В": { bg: "rgba(19, 78, 74, 0.50)", border: "rgba(45, 212, 191, 0.55)", glow: "rgba(45, 212, 191, 0.25)" },
+                "Д": { bg: "rgba(88, 28, 135, 0.48)", border: "rgba(192, 132, 252, 0.55)", glow: "rgba(192, 132, 252, 0.25)" },
+                "Е": { bg: "rgba(180, 83, 9, 0.48)", border: "rgba(251, 191, 36, 0.55)", glow: "rgba(251, 191, 36, 0.25)" },
+                "И": { bg: "rgba(77, 124, 15, 0.48)", border: "rgba(163, 230, 53, 0.55)", glow: "rgba(163, 230, 53, 0.25)" },
+                "К": { bg: "rgba(190, 24, 93, 0.48)", border: "rgba(244, 114, 182, 0.55)", glow: "rgba(244, 114, 182, 0.25)" },
+                "М": { bg: "rgba(147, 51, 234, 0.48)", border: "rgba(216, 180, 254, 0.55)", glow: "rgba(216, 180, 254, 0.25)" },
+                "Н": { bg: "rgba(3, 105, 161, 0.50)", border: "rgba(56, 189, 248, 0.60)", glow: "rgba(56, 189, 248, 0.30)" },
+                "П": { bg: "rgba(21, 128, 61, 0.48)", border: "rgba(74, 222, 128, 0.55)", glow: "rgba(74, 222, 128, 0.25)" },
+                "Р": { bg: "rgba(159, 18, 57, 0.48)", border: "rgba(251, 113, 133, 0.55)", glow: "rgba(251, 113, 133, 0.25)" },
+                "С": { bg: "rgba(29, 78, 216, 0.48)", border: "rgba(96, 165, 250, 0.55)", glow: "rgba(96, 165, 250, 0.25)" },
+                "Т": { bg: "rgba(194, 65, 12, 0.48)", border: "rgba(251, 146, 60, 0.55)", glow: "rgba(251, 146, 60, 0.25)" },
+                "У": { bg: "rgba(127, 29, 29, 0.50)", border: "rgba(248, 113, 113, 0.55)", glow: "rgba(248, 113, 113, 0.25)" },
+                "Ф": { bg: "rgba(109, 40, 217, 0.50)", border: "rgba(167, 139, 250, 0.60)", glow: "rgba(167, 139, 250, 0.25)" }
+            };
+            return letterPalettes[char] || { bg: "rgba(22, 28, 48, 0.94)", border: "rgba(255, 255, 255, 0.16)", glow: "transparent" };
+        }
+
         function createRadialGenreNodeHtml(genre, x, y, filterText) {
             const isSel = state.selectedGenres.has(genre);
             const isExc = state.excludedGenres.has(genre);
             const emoji = typeof getGenreEmoji === "function" ? getGenreEmoji(genre) : "🎬";
             const safeGenre = escapeHtml(genre);
             const labelHtml = safeGenre.includes(" ") ? safeGenre.replace(" ", "<br>") : safeGenre;
+            const firstChar = (genre || "").trim().charAt(0).toUpperCase();
+            const palette = getGenreLetterPalette(firstChar);
 
             const classes = ["radial-genre-node"];
             let badge = "";
@@ -7003,7 +7026,9 @@
                 }
             }
 
-            return `<button type="button" class="${classes.join(" ")}" data-radial-genre="${safeGenre}" style="left: ${x.toFixed(2)}%; top: ${y.toFixed(2)}%;" title="${safeGenre} (Кликнете за избор)">
+            const style = `left: ${x.toFixed(2)}%; top: ${y.toFixed(2)}%; --letter-bg: ${palette.bg}; --letter-border: ${palette.border}; --letter-glow: ${palette.glow};`;
+
+            return `<button type="button" class="${classes.join(" ")}" data-radial-genre="${safeGenre}" data-genre-letter="${firstChar}" style="${style}" title="${safeGenre} (Кликнете за избор)">
                 <span class="node-emoji">${emoji}</span>
                 <span class="node-label">${labelHtml}</span>
                 ${badge}
