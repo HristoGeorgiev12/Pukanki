@@ -901,6 +901,17 @@
             pointer-events: none;
         }
 
+        .radial-genre-node.is-disabled {
+            opacity: 0.20 !important;
+            filter: grayscale(1) contrast(0.7) !important;
+            pointer-events: none !important;
+            cursor: not-allowed !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            background: rgba(30, 41, 59, 0.25) !important;
+            box-shadow: none !important;
+            transform: translate(-50%, -50%) scale(0.85) !important;
+        }
+
         .radial-genre-node.is-highlighted {
             transform: translate(-50%, -50%) scale(1.22);
             border-color: #fde047;
@@ -1142,6 +1153,13 @@
 
             .radial-genre-node .node-label br {
                 display: none !important;
+            }
+
+            .radial-genre-node.is-disabled {
+                transform: none !important;
+                opacity: 0.22 !important;
+                background: rgba(15, 23, 42, 0.45) !important;
+                border-color: rgba(255, 255, 255, 0.04) !important;
             }
 
             /* Clean inline badge for selected/excluded */
@@ -5065,10 +5083,10 @@
         }
 
         const MASTER_GENRE_WHEEL_LIST = Object.freeze([
-            "Азиатски", "Анимация", "Биографичен", "Български", "Военен", "Документален", "Драма", "Европейски",
-            "Екшън", "Еротичен", "Индийски", "Исторически", "Комедия", "Криминален", "Мистерия",
-            "Музикален", "Научна фантастика", "Приключенски", "Риалити", "Романтичен", "Руски", "Семеен",
-            "Скандинавски", "Спортен", "Телевизионен филм", "Трилър", "Уестърн", "Ужаси", "Фентъзи"
+            "Анимация", "Военен", "Документален", "Драма", "Екшън", "Исторически",
+            "Комедия", "Криминален", "Мистерия", "Музикален", "Научна фантастика",
+            "Приключенски", "Романтичен", "Семеен", "Телевизионен филм", "Трилър",
+            "Уестърн", "Ужаси", "Фентъзи"
         ]);
 
         const state = {
@@ -6247,7 +6265,8 @@
             "европейски": "🇪🇺",
             "тийн": "🎒",
             "късометражен": "⏱️",
-            "тв филм": "📺"
+            "тв филм": "📺",
+            "телевизионен филм": "📺"
         };
 
         function getGenreEmoji(genreName) {
@@ -6326,19 +6345,11 @@
         }
 
         function populateFilterOptions(items) {
-            const genreSet = new Set(MASTER_GENRE_WHEEL_LIST);
             const yearSet = new Set();
             const playerCounts = new Map();
             const sourceCounts = new Map();
 
             for (const item of items) {
-                const genres = Array.isArray(item.genres) ? item.genres : [];
-                for (const genre of genres) {
-                    const cleanG = getCanonicalGenre(genre);
-                    if (cleanG) {
-                        genreSet.add(cleanG);
-                    }
-                }
                 if (item.year) {
                     yearSet.add(item.year);
                 }
@@ -6354,7 +6365,7 @@
                 }
             }
 
-            state.allGenres = Array.from(genreSet).sort((a, b) => a.localeCompare(b, "bg"));
+            state.allGenres = [...MASTER_GENRE_WHEEL_LIST];
             renderGenreBadges();
 
             const curYearFrom = yearFromSelect.value;
@@ -7163,9 +7174,13 @@
                 let stateText = "Неутрален";
                 if (isSel) {
                     stateText = "✓ Включен";
-                }
-                if (isExc) {
+                } else if (isExc) {
                     stateText = "✕ Изключен";
+                } else {
+                    const nodeBtn = document.querySelector(`.radial-genre-node[data-radial-genre="${hoveredGenre}"]`);
+                    if (nodeBtn && nodeBtn.classList.contains("is-disabled")) {
+                        stateText = "0 налични филма";
+                    }
                 }
                 statusEl.textContent = hoveredGenre;
                 countEl.textContent = stateText;
@@ -7244,6 +7259,79 @@
             }
         }
 
+        function getGenreAvailabilityMap() {
+            const counts = {};
+            for (let i = 0; i < MASTER_GENRE_WHEEL_LIST.length; i++) {
+                counts[MASTER_GENRE_WHEEL_LIST[i]] = 0;
+            }
+
+            const matchingItems = [];
+            const allItems = Array.isArray(state.items) ? state.items : [];
+            for (let i = 0; i < allItems.length; i++) {
+                const item = allItems[i];
+                if (typeof matchesTypeTab === "function" && !matchesTypeTab(item)) {
+                    continue;
+                }
+                if (!matchesSelectedGenres(item)) {
+                    continue;
+                }
+                matchingItems.push(item);
+            }
+
+            for (let i = 0; i < matchingItems.length; i++) {
+                const item = matchingItems[i];
+                const rawGenres = Array.isArray(item.genres) ? item.genres : [];
+                const seenInItem = new Set();
+                for (let j = 0; j < rawGenres.length; j++) {
+                    const canon = getCanonicalGenre(rawGenres[j]);
+                    if (canon && !seenInItem.has(canon)) {
+                        seenInItem.add(canon);
+                        if (counts[canon] !== undefined) {
+                            counts[canon]++;
+                        }
+                    }
+                }
+            }
+
+            return { totalMatching: matchingItems.length, counts };
+        }
+
+        function updateGenreWheelAvailability() {
+            const { totalMatching, counts } = getGenreAvailabilityMap();
+            const allNodes = document.querySelectorAll(".radial-genre-node");
+
+            for (let i = 0; i < allNodes.length; i++) {
+                const node = allNodes[i];
+                const genre = node.dataset.radialGenre;
+                if (!genre) {
+                    continue;
+                }
+
+                const isSel = state.selectedGenres.has(genre);
+                const isExc = state.excludedGenres.has(genre);
+                const count = counts[genre] ?? 0;
+
+                if (isSel || isExc) {
+                    node.classList.remove("is-disabled");
+                    node.disabled = false;
+                    node.style.pointerEvents = "auto";
+                    continue;
+                }
+
+                if (count === 0) {
+                    node.classList.add("is-disabled");
+                    node.disabled = true;
+                    node.style.pointerEvents = "none";
+                    node.title = `${genre} (0 филма към текущия избор)`;
+                } else {
+                    node.classList.remove("is-disabled");
+                    node.disabled = false;
+                    node.style.pointerEvents = "auto";
+                    node.title = `${genre} (${count} филма • кликнете за избор)`;
+                }
+            }
+        }
+
         function renderGenresCircleWheel(filterText = "") {
             const orbitLayer = document.getElementById("genresRadialOrbitLayer");
             if (!orbitLayer) {
@@ -7256,18 +7344,18 @@
             const normalizedFilter = (filterText || "").trim().toLowerCase();
             let nodesHtml = "";
             const totalCount = uniqueCanonical.length;
-            const baseRadiusPercent = 43.0;
+            const baseRadiusPercent = 42.5;
 
             for (let i = 0; i < totalCount; i++) {
                 const genre = uniqueCanonical[i];
                 const angle = (2 * Math.PI * i / totalCount) - (Math.PI / 2);
-                const r = (i % 2 === 0) ? (baseRadiusPercent + 0.9) : (baseRadiusPercent - 0.9);
-                const x = 50 + r * Math.cos(angle);
-                const y = 50 + r * Math.sin(angle);
+                const x = 50 + baseRadiusPercent * Math.cos(angle);
+                const y = 50 + baseRadiusPercent * Math.sin(angle);
                 nodesHtml = `${nodesHtml}${createRadialGenreNodeHtml(genre, x, y, normalizedFilter)}`;
             }
 
             orbitLayer.innerHTML = nodesHtml;
+            updateGenreWheelAvailability();
             updateGenresCircleHub();
         }
 
@@ -9912,28 +10000,9 @@
                     }
                 }
                 updateSelectedGenreRows();
+                updateGenreWheelAvailability();
                 updateGenresCircleHub();
                 renderGenreBadges();
-            });
-        }
-
-        const genreWheelSearchInput = document.getElementById("genreWheelSearchInput");
-        if (genreWheelSearchInput) {
-            genreWheelSearchInput.addEventListener("input", (e) => {
-                const filterText = (e.target.value || "").trim().toLowerCase();
-                const allNodes = document.querySelectorAll(".radial-genre-node");
-                for (const node of allNodes) {
-                    const g = (node.dataset.radialGenre || "").toLowerCase();
-                    if (!filterText) {
-                        node.classList.remove("is-highlighted", "is-dimmed");
-                    } else if (g.includes(filterText)) {
-                        node.classList.add("is-highlighted");
-                        node.classList.remove("is-dimmed");
-                    } else {
-                        node.classList.add("is-dimmed");
-                        node.classList.remove("is-highlighted");
-                    }
-                }
             });
         }
 
@@ -9964,6 +10033,7 @@
                     updateRadialGenreNodeDom(nodeBtn, genre);
                 }
                 updateSelectedGenreRows();
+                updateGenreWheelAvailability();
                 updateGenresCircleHub(genre);
                 renderGenreBadges();
             });
@@ -9977,6 +10047,12 @@
                     return;
                 }
                 const genre = btn.dataset.radialGenre;
+                if (!genre) {
+                    return;
+                }
+                if (btn.classList.contains("is-disabled") && !state.selectedGenres.has(genre) && !state.excludedGenres.has(genre)) {
+                    return;
+                }
                 if (state.selectedGenres.has(genre)) {
                     state.selectedGenres.delete(genre);
                     state.excludedGenres.add(genre);
@@ -9987,6 +10063,7 @@
                 }
                 updateRadialGenreNodeDom(btn, genre);
                 updateSelectedGenreRows();
+                updateGenreWheelAvailability();
                 updateGenresCircleHub(genre);
                 renderGenreBadges();
             });
@@ -9998,6 +10075,12 @@
                 }
                 e.preventDefault();
                 const genre = btn.dataset.radialGenre;
+                if (!genre) {
+                    return;
+                }
+                if (btn.classList.contains("is-disabled") && !state.selectedGenres.has(genre) && !state.excludedGenres.has(genre)) {
+                    return;
+                }
                 state.selectedGenres.delete(genre);
                 if (state.excludedGenres.has(genre)) {
                     state.excludedGenres.delete(genre);
@@ -10006,6 +10089,7 @@
                 }
                 updateRadialGenreNodeDom(btn, genre);
                 updateSelectedGenreRows();
+                updateGenreWheelAvailability();
                 updateGenresCircleHub(genre);
                 renderGenreBadges();
             });
