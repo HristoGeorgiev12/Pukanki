@@ -27,11 +27,17 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.4'
+
+      - name: Accept Android Licenses
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Build APK with Gradle
         run: |
           cd android-tv
-          gradle assembleDebug --stacktrace
+          gradle assembleDebug --stacktrace --info
         env:
           ANDROID_HOME: /usr/local/lib/android/sdk
 
@@ -56,9 +62,9 @@ jobs:
           body: |
             ### 🍿 Пуканки TV App за Google TV & Android TV
             
-            - Оптимизирано за управление само със стрелките на дистанционното (D-Pad).
-            - Директен пълен екран без браузърни ленти.
-            - Зарежда автоматично актуалната версия на сайта.
+            - Оптимизирано за дистанционно (D-Pad навигация без курсор).
+            - Чист цял екран (Leanback).
+            - Автоматично обновяване от Vercel.
             
             **Директен линк за сваляне в Downloader:**
             `https://github.com/HristoGeorgiev12/Pukanki/releases/download/tv-v1.0.0/Pukanki-TV.apk`
