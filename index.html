@@ -643,8 +643,8 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 134px;
-            height: 134px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             background: radial-gradient(circle at center, #241442 0%, #0e1222 75%, #080914 100%);
             border: 2px solid rgba(168, 85, 247, 0.65);
@@ -653,77 +653,34 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 6px;
+            padding: 8px;
             text-align: center;
             z-index: 10;
-            gap: 2px;
+            gap: 4px;
+            pointer-events: none;
             transition: all 0.25s ease;
         }
 
         .genres-radial-hub .hub-icon {
-            font-size: 1.45rem;
+            font-size: 1.55rem;
             line-height: 1;
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
         }
 
         .genres-radial-hub .hub-status {
-            font-size: 0.74rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 120px;
+            max-width: 108px;
         }
 
         .genres-radial-hub .hub-counter {
-            font-size: 0.66rem;
+            font-size: 0.68rem;
             color: #c084fc;
             font-weight: 600;
-        }
-
-        .genres-radial-hub .hub-actions {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 3px;
-        }
-
-        .hub-btn {
-            border: none;
-            border-radius: 999px;
-            padding: 3px 8px;
-            font-size: 0.66rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .hub-btn-apply {
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
-            color: #ffffff;
-            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
-        }
-
-        .hub-btn-apply:hover {
-            transform: scale(1.06);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.6);
-        }
-
-        .hub-btn-clear {
-            background: rgba(255, 255, 255, 0.08);
-            color: #cbd5e1;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .hub-btn-clear:hover {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: #ef4444;
-            color: #fca5a5;
         }
 
         /* Orbit layer and genre nodes */
@@ -4672,10 +4629,6 @@
                         <div class="hub-icon">🎭</div>
                         <div class="hub-status" id="hubGenreStatusText">Всички жанрове</div>
                         <div class="hub-counter" id="hubGenreCountBadge">0 избрани</div>
-                        <div class="hub-actions">
-                            <button type="button" id="hubApplyGenresBtn" class="hub-btn hub-btn-apply" title="Приложи избраните жанрове">✓ Приложи</button>
-                            <button type="button" id="hubClearGenresBtn" class="hub-btn hub-btn-clear" title="Изчисти избора">↺ Изчисти</button>
-                        </div>
                     </div>
 
                     <!-- Dynamic radial orbit nodes container -->
