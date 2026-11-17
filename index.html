@@ -4761,6 +4761,13 @@
             return false;
         }
 
+        const MASTER_GENRE_WHEEL_LIST = Object.freeze([
+            "Азиатски", "Анимация", "Биографичен", "Български", "Военен", "Документален", "Драма", "Европейски",
+            "Екшън", "Еротичен", "Индийски", "Исторически", "Комедия", "Криминален", "Мистерия",
+            "Музикален", "Научна фантастика", "Приключенски", "Риалити", "Романтичен", "Руски", "Семеен",
+            "Скандинавски", "Спортен", "Телевизионен филм", "Трилър", "Уестърн", "Ужаси", "Фентъзи"
+        ]);
+
         const state = {
             items: [],
             filtered: [],
@@ -4769,7 +4776,7 @@
             tmdbActiveChart: "all",
             audioSubFilter: "",
             episodesFilter: "",
-            allGenres: [],
+            allGenres: [...MASTER_GENRE_WHEEL_LIST],
             selectedGenres: new Set(),
             excludedGenres: new Set(),
             watchlist: new Set(),
@@ -6016,7 +6023,7 @@
         }
 
         function populateFilterOptions(items) {
-            const genreSet = new Set();
+            const genreSet = new Set(MASTER_GENRE_WHEEL_LIST);
             const yearSet = new Set();
             const playerCounts = new Map();
             const sourceCounts = new Map();
@@ -6892,24 +6899,7 @@
                 return;
             }
 
-            const fallbackGenres = [
-                "Азиатски", "Анимация", "Биографичен", "Български", "Военен", "Документален", "Драма", "Европейски",
-                "Екшън", "Еротичен", "Индийски", "Исторически", "Коледни", "Комедия", "Криминален", "Мистерия",
-                "Музикален", "Научна фантастика", "Приключенски", "Риалити", "Романтичен", "Руски", "Семеен",
-                "Скандинавски", "Спортен", "Телевизионен филм", "Тийн", "Трилър", "Турски", "Уестърн", "Ужаси", "Фентъзи"
-            ];
-            const rawGenres = (state.allGenres && state.allGenres.length > 0) ? state.allGenres : fallbackGenres;
-
-            const uniqueCanonical = [];
-            for (const g of rawGenres) {
-                const canon = typeof getCanonicalGenre === "function" ? getCanonicalGenre(g) : g;
-                if (canon && !uniqueCanonical.includes(canon)) {
-                    uniqueCanonical.push(canon);
-                }
-            }
-
-            uniqueCanonical.sort((a, b) => a.localeCompare(b, "bg"));
-
+            const uniqueCanonical = MASTER_GENRE_WHEEL_LIST;
             const normalizedFilter = (filterText || "").trim().toLowerCase();
             let nodesHtml = "";
             const totalCount = uniqueCanonical.length;
@@ -6926,6 +6916,34 @@
 
             orbitLayer.innerHTML = nodesHtml;
             updateGenresCircleHub();
+        }
+
+        function updateRadialGenreNodeDom(btn, genre) {
+            if (!btn) {
+                return;
+            }
+            const isSel = state.selectedGenres.has(genre);
+            const isExc = state.excludedGenres.has(genre);
+            btn.classList.toggle("active", isSel);
+            btn.classList.toggle("excluded", isExc);
+            let badge = btn.querySelector(".radial-node-badge");
+            if (isSel) {
+                if (!badge) {
+                    badge = document.createElement("span");
+                    badge.className = "radial-node-badge";
+                    btn.appendChild(badge);
+                }
+                badge.textContent = "✓";
+            } else if (isExc) {
+                if (!badge) {
+                    badge = document.createElement("span");
+                    badge.className = "radial-node-badge";
+                    btn.appendChild(badge);
+                }
+                badge.textContent = "✕";
+            } else if (badge) {
+                badge.remove();
+            }
         }
 
         function getGenreLetterPalette(char) {
@@ -9532,25 +9550,36 @@
             footerClearGenresWheelBtn.addEventListener("click", () => {
                 state.selectedGenres.clear();
                 state.excludedGenres.clear();
-                syncAndRefreshGenreWheel();
-                applyFilters();
-            });
-        }
-
-        const hubClearGenresBtn = document.getElementById("hubClearGenresBtn");
-        if (hubClearGenresBtn) {
-            hubClearGenresBtn.addEventListener("click", () => {
-                state.selectedGenres.clear();
-                state.excludedGenres.clear();
-                syncAndRefreshGenreWheel();
-                applyFilters();
+                const allNodes = document.querySelectorAll(".radial-genre-node");
+                for (const node of allNodes) {
+                    node.classList.remove("active", "excluded");
+                    const badge = node.querySelector(".radial-node-badge");
+                    if (badge) {
+                        badge.remove();
+                    }
+                }
+                updateGenresCircleHub();
+                renderGenreBadges();
             });
         }
 
         const genreWheelSearchInput = document.getElementById("genreWheelSearchInput");
         if (genreWheelSearchInput) {
             genreWheelSearchInput.addEventListener("input", (e) => {
-                renderGenresCircleWheel(e.target.value);
+                const filterText = (e.target.value || "").trim().toLowerCase();
+                const allNodes = document.querySelectorAll(".radial-genre-node");
+                for (const node of allNodes) {
+                    const g = (node.dataset.radialGenre || "").toLowerCase();
+                    if (!filterText) {
+                        node.classList.remove("is-highlighted", "is-dimmed");
+                    } else if (g.includes(filterText)) {
+                        node.classList.add("is-highlighted");
+                        node.classList.remove("is-dimmed");
+                    } else {
+                        node.classList.add("is-dimmed");
+                        node.classList.remove("is-highlighted");
+                    }
+                }
             });
         }
 
@@ -9574,16 +9603,14 @@
                 if (state.selectedGenres.has(genre)) {
                     state.selectedGenres.delete(genre);
                     state.excludedGenres.add(genre);
-                    syncAndRefreshGenreWheel();
-                    return;
-                }
-                if (state.excludedGenres.has(genre)) {
+                } else if (state.excludedGenres.has(genre)) {
                     state.excludedGenres.delete(genre);
-                    syncAndRefreshGenreWheel();
-                    return;
+                } else {
+                    state.selectedGenres.add(genre);
                 }
-                state.selectedGenres.add(genre);
-                syncAndRefreshGenreWheel();
+                updateRadialGenreNodeDom(btn, genre);
+                updateGenresCircleHub(genre);
+                renderGenreBadges();
             });
 
             genresRadialOrbitLayer.addEventListener("contextmenu", (e) => {
@@ -9596,11 +9623,12 @@
                 state.selectedGenres.delete(genre);
                 if (state.excludedGenres.has(genre)) {
                     state.excludedGenres.delete(genre);
-                    syncAndRefreshGenreWheel();
-                    return;
+                } else {
+                    state.excludedGenres.add(genre);
                 }
-                state.excludedGenres.add(genre);
-                syncAndRefreshGenreWheel();
+                updateRadialGenreNodeDom(btn, genre);
+                updateGenresCircleHub(genre);
+                renderGenreBadges();
             });
 
             genresRadialOrbitLayer.addEventListener("mouseover", (e) => {
