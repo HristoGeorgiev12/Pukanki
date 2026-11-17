@@ -4385,10 +4385,6 @@
                         <span id="genreToggleBadge" class="genre-active-badge" style="display: none;">0</span>
                         <span id="genreToggleArrow" class="genre-toggle-arrow">▾</span>
                     </button>
-
-                    <button type="button" id="resetFiltersBtn" class="reset-filters-btn" title="Изчисти всички активни филтри">
-                        <span>↺ Нулирай</span>
-                    </button>
                 </div>
             </div>
 
@@ -4447,7 +4443,7 @@
                         <span><strong>2 клика</strong> = Изключи (<strong class="hint-minus">✕</strong>)</span>
                         <span><strong>3 клика</strong> = Нулирай</span>
                     </div>
-                    <button type="button" id="clearGenresOnlyBtn" class="clear-genres-btn" title="Нулирай само избраните жанрове">Изчисти жанровете</button>
+                    <button type="button" id="clearGenresOnlyBtn" class="clear-genres-btn" title="Изчисти всички параметри и филтри">Изчисти параметри</button>
                 </div>
                 <div id="genreBadgesBar" class="genre-badges-bar"></div>
             </div>
@@ -5353,7 +5349,7 @@
             }
         }
 
-        function resetAllFilters() {
+        function resetAllFilters(skipConfirm = false) {
             const hasActiveFilters = state.typeFilter !== "all" ||
                 Boolean(state.audioSubFilter) ||
                 Boolean(state.episodesFilter) ||
@@ -5371,9 +5367,11 @@
                 return;
             }
 
-            const confirmed = window.confirm("Сигурен ли си, че искаш да нулираш всички избрани филтри?");
-            if (!confirmed) {
-                return;
+            if (!skipConfirm) {
+                const confirmed = window.confirm("Сигурен ли си, че искаш да нулираш всички избрани филтри?");
+                if (!confirmed) {
+                    return;
+                }
             }
 
             state.typeFilter = "all";
@@ -7536,15 +7534,15 @@
             const clearGenresBtn = document.getElementById("clearGenresOnlyBtn");
             if (clearGenresBtn) {
                 clearGenresBtn.addEventListener("click", () => {
-                    state.selectedGenres.clear();
-                    state.excludedGenres.clear();
-                    applyFilters();
+                    resetAllFilters(true);
                 });
             }
 
             const clearAllTagsBtn = document.getElementById("clearAllTagsBtn");
             if (clearAllTagsBtn) {
-                clearAllTagsBtn.addEventListener("click", resetAllFilters);
+                clearAllTagsBtn.addEventListener("click", () => {
+                    resetAllFilters(true);
+                });
             }
 
             const tagsList = document.getElementById("activeFiltersTagsList");
