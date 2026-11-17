@@ -5709,6 +5709,79 @@
             return false;
         }
 
+        const CANONICAL_GENRE_MAP = {
+            "ужас": "Ужаси",
+            "ужаси": "Ужаси",
+            "приключение": "Приключенски",
+            "приключенски": "Приключенски",
+            "екшън и приключение": "Приключенски",
+            "романс": "Романтичен",
+            "романтичен": "Романтичен",
+            "научна-фантастика": "Научна фантастика",
+            "фантастика": "Научна фантастика",
+            "научна-фантастика и фентъзи": "Научна фантастика",
+            "исторически": "Исторически",
+            "история": "Исторически",
+            "музика": "Музикален",
+            "музикален": "Музикален",
+            "мюзикъл": "Музикален",
+            "спортен": "Спортен",
+            "спортни": "Спортен",
+            "военен": "Военен",
+            "военен и политически": "Военен",
+            "семеен": "Семеен",
+            "детски": "Семеен",
+            "екшън": "Екшън",
+            "комедия": "Комедия",
+            "криминален": "Криминален",
+            "драма": "Драма",
+            "фентъзи": "Фентъзи",
+            "мистерия": "Мистерия",
+            "анимация": "Анимация",
+            "трилър": "Трилър",
+            "документален": "Документален",
+            "уестърн": "Уестърн",
+            "телевизионен филм": "Телевизионен филм",
+            "европейски": "Европейски",
+            "руски": "Руски",
+            "азиатски": "Азиатски",
+            "скандинавски": "Скандинавски",
+            "турски": "Турски",
+            "индийски": "Индийски",
+            "български": "Български",
+            "коледни": "Коледни",
+            "тийн": "Тийн",
+            "биографичен": "Биографичен",
+            "еротичен": "Еротичен",
+            "риалити": "Риалити"
+        };
+        const DISCARD_GENRES = new Set(["бг аудио", "бг субтитри", "сериал", "сериали", "сапун"]);
+
+        function getCanonicalGenre(genre) {
+            if (!genre || typeof genre !== "string") {
+                return "";
+            }
+            const gl = genre.trim().toLowerCase();
+            if (DISCARD_GENRES.has(gl)) {
+                return "";
+            }
+            return CANONICAL_GENRE_MAP[gl] || genre.trim();
+        }
+
+        function normalizeItemGenres(rawGenres) {
+            if (!Array.isArray(rawGenres)) {
+                return [];
+            }
+            const result = [];
+            for (const g of rawGenres) {
+                const canon = getCanonicalGenre(g);
+                if (canon && !result.includes(canon)) {
+                    result.push(canon);
+                }
+            }
+            return result;
+        }
+
         function normalizeItemsPayload(payload, defaultType, defaultOrigin = "ZenoPlay") {
             const rawList = Array.isArray(payload) ? payload : (payload && typeof payload === "object" ? [payload] : []);
             const normalized = [];
@@ -5721,7 +5794,8 @@
                 normalized.push({
                     ...entry,
                     type: resolvedType,
-                    origins: origins
+                    origins: origins,
+                    genres: normalizeItemGenres(entry.genres)
                 });
             }
             return normalized;
@@ -5994,11 +6068,9 @@
             for (const item of items) {
                 const genres = Array.isArray(item.genres) ? item.genres : [];
                 for (const genre of genres) {
-                    if (genre && !isAudioOrSubtitleLabel(genre)) {
-                        const cleanG = `${genre}`.trim();
-                        if (cleanG) {
-                            genreSet.add(cleanG);
-                        }
+                    const cleanG = getCanonicalGenre(genre);
+                    if (cleanG) {
+                        genreSet.add(cleanG);
                     }
                 }
                 if (item.year) {
@@ -6538,8 +6610,9 @@
             const rawGenres = Array.isArray(item.genres) ? item.genres : [];
             const itemGenres = [];
             for (const g of rawGenres) {
-                if (typeof g === "string") {
-                    itemGenres.push(g.trim());
+                const canon = getCanonicalGenre(g);
+                if (canon && !itemGenres.includes(canon)) {
+                    itemGenres.push(canon);
                 }
             }
 
@@ -7576,10 +7649,11 @@
                 const rawGenres = Array.isArray(item.genres) ? item.genres : [];
                 const displayGenres = [];
                 for (const genre of rawGenres) {
-                    if (isAudioOrSubtitleLabel(genre)) {
+                    const canon = getCanonicalGenre(genre);
+                    if (!canon || displayGenres.includes(canon)) {
                         continue;
                     }
-                    displayGenres.push(genre);
+                    displayGenres.push(canon);
                     if (displayGenres.length >= 3) {
                         break;
                     }
@@ -8902,8 +8976,9 @@
                     if (Array.isArray(fItem.genres)) {
                         const mGenres = Array.isArray(matched.genres) ? matched.genres : [];
                         for (const fg of fItem.genres) {
-                            if (!isAudioOrSubtitleLabel(fg) && !mGenres.includes(fg)) {
-                                mGenres.push(fg);
+                            const canon = getCanonicalGenre(fg);
+                            if (canon && !mGenres.includes(canon)) {
+                                mGenres.push(canon);
                             }
                         }
                         matched.genres = mGenres;
@@ -8934,19 +9009,13 @@
                             poster_url: fItem.poster_url,
                             backdrop_url: fItem.backdrop_url,
                             overview: fItem.overview,
-                            genres: Array.isArray(fItem.genres) && fItem.genres.length > 0 ? [...fItem.genres] : ["Сериал"],
+                            genres: normalizeItemGenres(fItem.genres),
                             origins: [sourceName],
                             is_bg_audio: true,
                             has_filmi2k_bg: sourceName === "Filmi2k",
                             seasons: [],
                             player_sources: []
                         };
-                        if (!seriesMatched.genres.includes("Сериал")) {
-                            seriesMatched.genres.push("Сериал");
-                        }
-                        if (!seriesMatched.genres.includes("БГ Аудио")) {
-                            seriesMatched.genres.push("БГ Аудио");
-                        }
                         combined.push(seriesMatched);
                         byTitleOnly.set(bTKey, seriesMatched);
                         if (bOKey) {
@@ -8964,11 +9033,6 @@
                     }
                     if (sourceName === "Filmi2k") {
                         seriesMatched.has_filmi2k_bg = true;
-                    }
-                    const mGenres = Array.isArray(seriesMatched.genres) ? seriesMatched.genres : [];
-                    if (!mGenres.includes("БГ Аудио")) {
-                        mGenres.push("БГ Аудио");
-                        seriesMatched.genres = mGenres;
                     }
 
                     if (!Array.isArray(seriesMatched.seasons)) {
@@ -9039,7 +9103,8 @@
                     is_subtitled: isSub,
                     has_filmi2k_bg: sourceName === "Filmi2k" && isBg,
                     player_sources: fSources,
-                    origins: [sourceName]
+                    origins: [sourceName],
+                    genres: normalizeItemGenres(fItem.genres)
                 });
             }
         }
