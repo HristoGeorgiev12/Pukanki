@@ -327,6 +327,7 @@
             flex-direction: column;
             gap: 14px;
             position: relative;
+            z-index: 120;
         }
 
         .filters-panel::before {
@@ -1230,12 +1231,15 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            position: relative;
+            z-index: 130;
         }
 
         .filters-row-primary .search-input-wrapper {
             flex: 1;
             min-width: 260px;
             position: relative;
+            z-index: 140;
         }
 
         .search-lens-icon {
@@ -1871,7 +1875,7 @@
                 padding: 12px 10px;
                 border-radius: 14px;
                 max-width: 100%;
-                overflow: hidden;
+                overflow: visible;
             }
 
             .filters-actions-group {
@@ -2130,7 +2134,7 @@
             border: 1px solid rgba(124, 58, 237, 0.45);
             border-radius: 11px;
             box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75), 0 0 16px rgba(124, 58, 237, 0.2);
-            z-index: 250;
+            z-index: 9999;
             max-height: min(460px, 68vh);
             overflow-y: auto;
             overflow-x: hidden;
