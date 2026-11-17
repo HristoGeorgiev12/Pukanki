@@ -187,6 +187,118 @@
             box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
         }
 
+        .type-tab-btn[data-type-filter="tmdb"] {
+            background: rgba(147, 51, 234, 0.08);
+            border-color: rgba(168, 85, 247, 0.35);
+            color: #d8b4fe;
+        }
+
+        .type-tab-btn[data-type-filter="tmdb"]:hover {
+            background: rgba(147, 51, 234, 0.2);
+            border-color: #c084fc;
+            color: #ffffff;
+        }
+
+        .type-tab-btn[data-type-filter="tmdb"].active {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border-color: #a78bfa;
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .tmdb-charts-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(90deg, rgba(30, 27, 75, 0.65) 0%, rgba(24, 24, 45, 0.75) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.35);
+            border-radius: 14px;
+            padding: 10px 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.5), 0 0 15px rgba(139, 92, 246, 0.15);
+            animation: fadeInDownTmdb 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInDownTmdb {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tmdb-charts-label {
+            font-size: 0.84rem;
+            font-weight: 800;
+            color: #c084fc;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .tmdb-charts-scroll {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 2px 0;
+            flex: 1;
+        }
+
+        .tmdb-chart-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .tmdb-chart-chip:hover {
+            background: rgba(139, 92, 246, 0.18);
+            border-color: rgba(168, 85, 247, 0.45);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .tmdb-chart-chip.active {
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border-color: #a78bfa;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .tmdb-chip-count {
+            background: rgba(0, 0, 0, 0.35);
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .tmdb-chart-chip.active .tmdb-chip-count {
+            background: rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+        }
+
         .tab-count {
             background: rgba(0, 0, 0, 0.28);
             padding: 2px 8px;
@@ -4242,7 +4354,7 @@
             </div>
             <div class="header-actions">
                 <button type="button" id="tvModeToggleBtn" class="tv-mode-toggle-btn" title="Превключи ТВ Режим (навигация само със стрелки като Netflix / Jellyfin)">📺 ТВ Режим</button>
-                <a href="https://pukanki.vercel.app" class="version-switch-btn" title="Към основната версия на Пуканки">← Основен Пуканки</a>
+                <a href="classic.html" class="version-switch-btn" title="Към основната версия на Пуканки">← Основен Пуканки</a>
                 <select id="sortSelect" class="select-control" aria-label="Сортиране">
                     <option value="default">По ред на добавяне</option>
                     <option value="rating_desc">Рейтинг (най-висок)</option>
@@ -4266,7 +4378,7 @@
                 📺 Сериали <span class="tab-count" id="countTv">0</span>
             </button>
             <button type="button" class="type-tab-btn" data-type-filter="tmdb">
-                🌐 TMDB Популярни <span class="tab-count" id="countTmdb">0</span>
+                🌐 TMDB Класации <span class="tab-count" id="countTmdb">0</span>
             </button>
             <button type="button" class="type-tab-btn" data-type-filter="watchlist">
                 🔖 За по-късно <span class="tab-count" id="countWatchlist">0</span>
@@ -4275,6 +4387,47 @@
                 🔍 Търсене &amp; Филтри
             </button>
         </nav>
+
+        <div class="tmdb-charts-bar" id="tmdbChartsBar" style="display: none;" role="toolbar" aria-label="TMDB Класации">
+            <span class="tmdb-charts-label">🏆 Класация:</span>
+            <div class="tmdb-charts-scroll" id="tmdbChartsScroll">
+                <button type="button" class="tmdb-chart-chip active" data-tmdb-chart="all">
+                    <span class="chart-icon">🌐</span>
+                    <span>Всички</span>
+                    <span class="tmdb-chip-count" id="tmdbCountAll">0</span>
+                </button>
+                <button type="button" class="tmdb-chart-chip" data-tmdb-chart="trending_day">
+                    <span class="chart-icon">🔥</span>
+                    <span>Трендинг Днес</span>
+                    <span class="tmdb-chip-count" id="tmdbCountTrending">0</span>
+                </button>
+                <button type="button" class="tmdb-chart-chip" data-tmdb-chart="popular">
+                    <span class="chart-icon">⚡</span>
+                    <span>Популярни</span>
+                    <span class="tmdb-chip-count" id="tmdbCountPopular">0</span>
+                </button>
+                <button type="button" class="tmdb-chart-chip" data-tmdb-chart="now_playing">
+                    <span class="chart-icon">🍿</span>
+                    <span>По кината</span>
+                    <span class="tmdb-chip-count" id="tmdbCountNowPlaying">0</span>
+                </button>
+                <button type="button" class="tmdb-chart-chip" data-tmdb-chart="top_rated">
+                    <span class="chart-icon">🌟</span>
+                    <span>Топ Рейтинг</span>
+                    <span class="tmdb-chip-count" id="tmdbCountTopRated">0</span>
+                </button>
+                <button type="button" class="tmdb-chart-chip" data-tmdb-chart="upcoming">
+                    <span class="chart-icon">⏳</span>
+                    <span>Предстоящи</span>
+                    <span class="tmdb-chip-count" id="tmdbCountUpcoming">0</span>
+                </button>
+                <button type="button" class="tmdb-chart-chip" data-tmdb-chart="on_the_air">
+                    <span class="chart-icon">📺</span>
+                    <span>Актуални сериали</span>
+                    <span class="tmdb-chip-count" id="tmdbCountOnAir">0</span>
+                </button>
+            </div>
+        </div>
 
         <section class="filters-panel" id="filtersPanel">
             <!-- 1. Quick Discovery Presets Carousel & Actions -->
@@ -4657,6 +4810,7 @@
             filtered: [],
             visibleCount: PAGE_BATCH_SIZE,
             typeFilter: "all",
+            tmdbActiveChart: "all",
             audioSubFilter: "",
             episodesFilter: "",
             allGenres: [],
@@ -5285,6 +5439,7 @@
             }
 
             state.typeFilter = "all";
+            state.tmdbActiveChart = "all";
             state.audioSubFilter = "";
             state.episodesFilter = "";
             state.selectedGenres.clear();
@@ -5295,6 +5450,14 @@
                 const allBtns = typeTabsBar.querySelectorAll(".type-tab-btn");
                 for (const b of allBtns) {
                     b.classList.toggle("active", b.dataset.typeFilter === "all");
+                }
+            }
+            const tmdbChartsBar = document.getElementById("tmdbChartsBar");
+            if (tmdbChartsBar) {
+                tmdbChartsBar.style.display = "none";
+                const allChips = tmdbChartsBar.querySelectorAll(".tmdb-chart-chip");
+                for (const c of allChips) {
+                    c.classList.toggle("active", (c.dataset.tmdbChart || "all") === "all");
                 }
             }
             if (audioSubFilterSelect) {
@@ -5546,6 +5709,79 @@
             return false;
         }
 
+        const CANONICAL_GENRE_MAP = {
+            "ужас": "Ужаси",
+            "ужаси": "Ужаси",
+            "приключение": "Приключенски",
+            "приключенски": "Приключенски",
+            "екшън и приключение": "Приключенски",
+            "романс": "Романтичен",
+            "романтичен": "Романтичен",
+            "научна-фантастика": "Научна фантастика",
+            "фантастика": "Научна фантастика",
+            "научна-фантастика и фентъзи": "Научна фантастика",
+            "исторически": "Исторически",
+            "история": "Исторически",
+            "музика": "Музикален",
+            "музикален": "Музикален",
+            "мюзикъл": "Музикален",
+            "спортен": "Спортен",
+            "спортни": "Спортен",
+            "военен": "Военен",
+            "военен и политически": "Военен",
+            "семеен": "Семеен",
+            "детски": "Семеен",
+            "екшън": "Екшън",
+            "комедия": "Комедия",
+            "криминален": "Криминален",
+            "драма": "Драма",
+            "фентъзи": "Фентъзи",
+            "мистерия": "Мистерия",
+            "анимация": "Анимация",
+            "трилър": "Трилър",
+            "документален": "Документален",
+            "уестърн": "Уестърн",
+            "телевизионен филм": "Телевизионен филм",
+            "европейски": "Европейски",
+            "руски": "Руски",
+            "азиатски": "Азиатски",
+            "скандинавски": "Скандинавски",
+            "турски": "Турски",
+            "индийски": "Индийски",
+            "български": "Български",
+            "коледни": "Коледни",
+            "тийн": "Тийн",
+            "биографичен": "Биографичен",
+            "еротичен": "Еротичен",
+            "риалити": "Риалити"
+        };
+        const DISCARD_GENRES = new Set(["бг аудио", "бг субтитри", "сериал", "сериали", "сапун"]);
+
+        function getCanonicalGenre(genre) {
+            if (!genre || typeof genre !== "string") {
+                return "";
+            }
+            const gl = genre.trim().toLowerCase();
+            if (DISCARD_GENRES.has(gl)) {
+                return "";
+            }
+            return CANONICAL_GENRE_MAP[gl] || genre.trim();
+        }
+
+        function normalizeItemGenres(rawGenres) {
+            if (!Array.isArray(rawGenres)) {
+                return [];
+            }
+            const result = [];
+            for (const g of rawGenres) {
+                const canon = getCanonicalGenre(g);
+                if (canon && !result.includes(canon)) {
+                    result.push(canon);
+                }
+            }
+            return result;
+        }
+
         function normalizeItemsPayload(payload, defaultType, defaultOrigin = "ZenoPlay") {
             const rawList = Array.isArray(payload) ? payload : (payload && typeof payload === "object" ? [payload] : []);
             const normalized = [];
@@ -5558,7 +5794,8 @@
                 normalized.push({
                     ...entry,
                     type: resolvedType,
-                    origins: origins
+                    origins: origins,
+                    genres: normalizeItemGenres(entry.genres)
                 });
             }
             return normalized;
@@ -5637,6 +5874,12 @@
             let uniqueCount = 0;
             let watchlistCount = 0;
             let tmdbCatalogCount = 0;
+            let tmdbTrendingCount = 0;
+            let tmdbPopularCount = 0;
+            let tmdbNowPlayingCount = 0;
+            let tmdbTopRatedCount = 0;
+            let tmdbUpcomingCount = 0;
+            let tmdbOnAirCount = 0;
             const uniqueBySite = new Map();
 
             for (const item of state.items) {
@@ -5648,6 +5891,25 @@
                 }
                 if (item.isFromTmdbCatalog || item.tmdbMatched) {
                     tmdbCatalogCount++;
+                    const charts = Array.isArray(item.tmdbCharts) ? item.tmdbCharts : [];
+                    if (charts.includes("trending_day")) {
+                        tmdbTrendingCount++;
+                    }
+                    if (charts.includes("popular")) {
+                        tmdbPopularCount++;
+                    }
+                    if (charts.includes("now_playing")) {
+                        tmdbNowPlayingCount++;
+                    }
+                    if (charts.includes("top_rated")) {
+                        tmdbTopRatedCount++;
+                    }
+                    if (charts.includes("upcoming")) {
+                        tmdbUpcomingCount++;
+                    }
+                    if (charts.includes("on_the_air")) {
+                        tmdbOnAirCount++;
+                    }
                 }
                 if (item.is_subtitled === true || (Array.isArray(item.genres) && item.genres.includes("БГ Субтитри"))) {
                     subCount++;
@@ -5674,6 +5936,20 @@
                 countBgAudio.textContent = `${bgAudioCount}`;
             }
             countWatchlist.textContent = `${watchlistCount}`;
+
+            const setChipCount = (id, count) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = `${count}`;
+                }
+            };
+            setChipCount("tmdbCountAll", tmdbCatalogCount);
+            setChipCount("tmdbCountTrending", tmdbTrendingCount);
+            setChipCount("tmdbCountPopular", tmdbPopularCount);
+            setChipCount("tmdbCountNowPlaying", tmdbNowPlayingCount);
+            setChipCount("tmdbCountTopRated", tmdbTopRatedCount);
+            setChipCount("tmdbCountUpcoming", tmdbUpcomingCount);
+            setChipCount("tmdbCountOnAir", tmdbOnAirCount);
         }
 
         const GENRE_EMOJI_MAP = {
@@ -5792,11 +6068,9 @@
             for (const item of items) {
                 const genres = Array.isArray(item.genres) ? item.genres : [];
                 for (const genre of genres) {
-                    if (genre && !isAudioOrSubtitleLabel(genre)) {
-                        const cleanG = `${genre}`.trim();
-                        if (cleanG) {
-                            genreSet.add(cleanG);
-                        }
+                    const cleanG = getCanonicalGenre(genre);
+                    if (cleanG) {
+                        genreSet.add(cleanG);
                     }
                 }
                 if (item.year) {
@@ -6336,8 +6610,9 @@
             const rawGenres = Array.isArray(item.genres) ? item.genres : [];
             const itemGenres = [];
             for (const g of rawGenres) {
-                if (typeof g === "string") {
-                    itemGenres.push(g.trim());
+                const canon = getCanonicalGenre(g);
+                if (canon && !itemGenres.includes(canon)) {
+                    itemGenres.push(canon);
                 }
             }
 
@@ -6364,7 +6639,14 @@
                 return item.type === "tv";
             }
             if (state.typeFilter === "tmdb") {
-                return Boolean(item.isFromTmdbCatalog || item.tmdbMatched);
+                const isTmdb = Boolean(item.isFromTmdbCatalog || item.tmdbMatched);
+                if (!isTmdb) {
+                    return false;
+                }
+                if (state.tmdbActiveChart && state.tmdbActiveChart !== "all") {
+                    return Boolean(Array.isArray(item.tmdbCharts) && item.tmdbCharts.includes(state.tmdbActiveChart));
+                }
+                return true;
             }
             if (state.typeFilter === "watchlist") {
                 return isInWatchlist(item);
@@ -6569,6 +6851,10 @@
                 for (const b of allBtns) {
                     b.classList.toggle("active", (b.dataset.typeFilter || "") === val);
                 }
+            }
+            const tmdbChartsBar = document.getElementById("tmdbChartsBar");
+            if (tmdbChartsBar) {
+                tmdbChartsBar.style.display = val === "tmdb" ? "flex" : "none";
             }
             updateEpisodesFilterVisibility();
         }
@@ -7363,10 +7649,11 @@
                 const rawGenres = Array.isArray(item.genres) ? item.genres : [];
                 const displayGenres = [];
                 for (const genre of rawGenres) {
-                    if (isAudioOrSubtitleLabel(genre)) {
+                    const canon = getCanonicalGenre(genre);
+                    if (!canon || displayGenres.includes(canon)) {
                         continue;
                     }
-                    displayGenres.push(genre);
+                    displayGenres.push(canon);
                     if (displayGenres.length >= 3) {
                         break;
                     }
@@ -8689,8 +8976,9 @@
                     if (Array.isArray(fItem.genres)) {
                         const mGenres = Array.isArray(matched.genres) ? matched.genres : [];
                         for (const fg of fItem.genres) {
-                            if (!isAudioOrSubtitleLabel(fg) && !mGenres.includes(fg)) {
-                                mGenres.push(fg);
+                            const canon = getCanonicalGenre(fg);
+                            if (canon && !mGenres.includes(canon)) {
+                                mGenres.push(canon);
                             }
                         }
                         matched.genres = mGenres;
@@ -8721,19 +9009,13 @@
                             poster_url: fItem.poster_url,
                             backdrop_url: fItem.backdrop_url,
                             overview: fItem.overview,
-                            genres: Array.isArray(fItem.genres) && fItem.genres.length > 0 ? [...fItem.genres] : ["Сериал"],
+                            genres: normalizeItemGenres(fItem.genres),
                             origins: [sourceName],
                             is_bg_audio: true,
                             has_filmi2k_bg: sourceName === "Filmi2k",
                             seasons: [],
                             player_sources: []
                         };
-                        if (!seriesMatched.genres.includes("Сериал")) {
-                            seriesMatched.genres.push("Сериал");
-                        }
-                        if (!seriesMatched.genres.includes("БГ Аудио")) {
-                            seriesMatched.genres.push("БГ Аудио");
-                        }
                         combined.push(seriesMatched);
                         byTitleOnly.set(bTKey, seriesMatched);
                         if (bOKey) {
@@ -8751,11 +9033,6 @@
                     }
                     if (sourceName === "Filmi2k") {
                         seriesMatched.has_filmi2k_bg = true;
-                    }
-                    const mGenres = Array.isArray(seriesMatched.genres) ? seriesMatched.genres : [];
-                    if (!mGenres.includes("БГ Аудио")) {
-                        mGenres.push("БГ Аудио");
-                        seriesMatched.genres = mGenres;
                     }
 
                     if (!Array.isArray(seriesMatched.seasons)) {
@@ -8826,7 +9103,8 @@
                     is_subtitled: isSub,
                     has_filmi2k_bg: sourceName === "Filmi2k" && isBg,
                     player_sources: fSources,
-                    origins: [sourceName]
+                    origins: [sourceName],
+                    genres: normalizeItemGenres(fItem.genres)
                 });
             }
         }
@@ -8946,22 +9224,32 @@
 
         async function loadTmdbGlobalCatalogAndMatch(combined) {
             try {
-                const endpoints = [
-                    `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`,
-                    `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`,
-                    `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`,
-                    `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`,
-                    `https://api.themoviedb.org/3/tv/popular?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`,
-                    `https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`
+                const chartRequests = [
+                    { chart: "trending_day", url: `https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "movie" },
+                    { chart: "trending_day", url: `https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`, defaultType: "movie" },
+                    { chart: "popular", url: `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "movie" },
+                    { chart: "popular", url: `https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`, defaultType: "movie" },
+                    { chart: "popular", url: `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "movie" },
+                    { chart: "popular", url: `https://api.themoviedb.org/3/tv/popular?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "tv" },
+                    { chart: "now_playing", url: `https://api.themoviedb.org/3/movie/now_playing?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "movie" },
+                    { chart: "now_playing", url: `https://api.themoviedb.org/3/movie/now_playing?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`, defaultType: "movie" },
+                    { chart: "top_rated", url: `https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "movie" },
+                    { chart: "top_rated", url: `https://api.themoviedb.org/3/movie/top_rated?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`, defaultType: "movie" },
+                    { chart: "top_rated", url: `https://api.themoviedb.org/3/tv/top_rated?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "tv" },
+                    { chart: "upcoming", url: `https://api.themoviedb.org/3/movie/upcoming?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "movie" },
+                    { chart: "upcoming", url: `https://api.themoviedb.org/3/movie/upcoming?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`, defaultType: "movie" },
+                    { chart: "on_the_air", url: `https://api.themoviedb.org/3/tv/on_the_air?api_key=${TMDB_API_KEY}&language=bg-BG&page=1`, defaultType: "tv" },
+                    { chart: "on_the_air", url: `https://api.themoviedb.org/3/tv/on_the_air?api_key=${TMDB_API_KEY}&language=bg-BG&page=2`, defaultType: "tv" }
                 ];
 
                 const responses = await Promise.all(
-                    endpoints.map(u => fetch(u).then(r => (r.ok ? r.json() : null)).catch(() => null))
+                    chartRequests.map(req => fetch(req.url).then(r => (r.ok ? r.json() : null)).catch(() => null))
                 );
 
                 const byTmdb = new Map();
                 const byTitle = new Map();
                 const byOrig = new Map();
+                const itemByUniqueKey = new Map();
 
                 for (const item of combined) {
                     if (item.tmdb_id) {
@@ -8977,14 +9265,13 @@
                     }
                 }
 
-                const seenTmdbIds = new Set();
-
                 for (let eIdx = 0; eIdx < responses.length; eIdx++) {
                     const data = responses[eIdx];
+                    const req = chartRequests[eIdx];
                     if (!data || !Array.isArray(data.results)) {
                         continue;
                     }
-                    const defaultMediaType = endpoints[eIdx].includes("/tv/") ? "tv" : "movie";
+                    const defaultMediaType = req.defaultType;
 
                     for (const raw of data.results) {
                         if (!raw || !raw.id) {
@@ -8995,10 +9282,19 @@
                             continue;
                         }
                         const uniqueKey = `${mType}_${raw.id}`;
-                        if (seenTmdbIds.has(uniqueKey)) {
+
+                        if (itemByUniqueKey.has(uniqueKey)) {
+                            const existing = itemByUniqueKey.get(uniqueKey);
+                            if (existing) {
+                                if (!Array.isArray(existing.tmdbCharts)) {
+                                    existing.tmdbCharts = [];
+                                }
+                                if (!existing.tmdbCharts.includes(req.chart)) {
+                                    existing.tmdbCharts.push(req.chart);
+                                }
+                            }
                             continue;
                         }
-                        seenTmdbIds.add(uniqueKey);
 
                         const rTitle = raw.title || raw.name || "";
                         const rOrig = raw.original_title || raw.original_name || "";
@@ -9010,6 +9306,12 @@
                         if (matched) {
                             matched.isFromTmdbCatalog = true;
                             matched.tmdbMatched = true;
+                            if (!Array.isArray(matched.tmdbCharts)) {
+                                matched.tmdbCharts = [];
+                            }
+                            if (!matched.tmdbCharts.includes(req.chart)) {
+                                matched.tmdbCharts.push(req.chart);
+                            }
                             if (!matched.tmdb_id) {
                                 matched.tmdb_id = raw.id;
                             }
@@ -9025,12 +9327,14 @@
                             if (raw.overview && !matched.overview) {
                                 matched.overview = raw.overview;
                             }
+                            itemByUniqueKey.set(uniqueKey, matched);
                         } else {
                             const tmdbObj = createTmdbItemObject({ ...raw, media_type: mType });
                             tmdbObj.isFromTmdbCatalog = true;
                             tmdbObj.isTmdbUnmatched = true;
                             tmdbObj.origins = ["TMDB"];
                             tmdbObj.player_sources = [];
+                            tmdbObj.tmdbCharts = [req.chart];
                             if (Array.isArray(raw.genre_ids)) {
                                 const mappedGenres = [];
                                 for (const gid of raw.genre_ids) {
@@ -9040,6 +9344,7 @@
                                 }
                                 tmdbObj.genres = mappedGenres;
                             }
+                            itemByUniqueKey.set(uniqueKey, tmdbObj);
                             combined.push(tmdbObj);
                         }
                     }
@@ -9083,11 +9388,32 @@
             }
             btn.classList.add("active");
             state.typeFilter = btn.dataset.typeFilter;
+            const tmdbChartsBar = document.getElementById("tmdbChartsBar");
+            if (tmdbChartsBar) {
+                tmdbChartsBar.style.display = state.typeFilter === "tmdb" ? "flex" : "none";
+            }
             updateDurationSelectOptions();
             updateEpisodesFilterVisibility();
             updateTabCounts();
             applyFilters();
         });
+
+        const tmdbChartsBar = document.getElementById("tmdbChartsBar");
+        if (tmdbChartsBar) {
+            tmdbChartsBar.addEventListener("click", (event) => {
+                const chip = event.target.closest(".tmdb-chart-chip");
+                if (!chip) {
+                    return;
+                }
+                const chartKey = chip.dataset.tmdbChart || "all";
+                state.tmdbActiveChart = chartKey;
+                const allChips = tmdbChartsBar.querySelectorAll(".tmdb-chart-chip");
+                for (const c of allChips) {
+                    c.classList.toggle("active", (c.dataset.tmdbChart || "all") === chartKey);
+                }
+                applyFilters();
+            });
+        }
 
         searchInput.addEventListener("input", () => {
             const val = searchInput.value;
