@@ -35,8 +35,8 @@ jobs:
         run: |
           export PATH="$PWD/gradle-8.4/bin:$PATH"
           cd android-tv
-          gradle assembleDebug --stacktrace --info > ../gradle_build.log 2>&1 || {
-            tail -n 80 ../gradle_build.log
+          gradle assembleDebug --stacktrace --no-daemon > ../gradle_build.log 2>&1 || {
+            tail -n 120 ../gradle_build.log
             exit 1
           }
         env:
