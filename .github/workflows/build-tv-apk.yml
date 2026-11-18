@@ -65,8 +65,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: tv-v2.0.0
-          name: Pukanki TV v2.0.0 Native ExoPlayer APK
+          tag_name: tv-v2.0.1
+          name: Pukanki TV v2.0.1 Native ExoPlayer APK (Ad-Free Fix)
           body: |
             ### 🍿 Пуканки TV v2.0.0 (Нативно Android TV приложение + ExoPlayer)
             

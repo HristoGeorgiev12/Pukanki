@@ -33,6 +33,7 @@ import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.ui.PlayerView;
 
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +43,7 @@ import java.util.regex.Pattern;
 
 public class PlayerActivity extends AppCompatActivity {
     private static final long SEEK_STEP_MS = 15000L;
-    private static final long SNIFF_TIMEOUT_MS = 11000L;
+    private static final long SNIFF_TIMEOUT_MS = 12000L;
     private static final String DESKTOP_UA =
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
 
@@ -60,6 +61,8 @@ public class PlayerActivity extends AppCompatActivity {
     private int currentIndex = 0;
 
     private volatile boolean streamCaptured = false;
+    private volatile String currentEmbedHost = "";
+    private volatile String currentEmbedUrl = "";
     private boolean isWebFallbackMode = false;
     private int attemptToken = 0;
 
@@ -114,6 +117,24 @@ public class PlayerActivity extends AppCompatActivity {
         loadSource(currentIndex);
     }
 
+    private String getRootDomain(String host) {
+        if (host == null) return "";
+        String h = host.toLowerCase(Locale.ROOT);
+        String[] parts = h.split("\\.");
+        if (parts.length >= 2) {
+            return parts[parts.length - 2] + "." + parts[parts.length - 1];
+        }
+        return h;
+    }
+
+    private boolean isStreamtapeEmbed() {
+        return currentEmbedHost.contains("streamtape") || currentEmbedHost.contains("streamta.pe");
+    }
+
+    private WebResourceResponse emptyBlockedResponse() {
+        return new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream(new byte[0]));
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private void setupSnifferWebView() {
         WebSettings ws = snifferWebView.getSettings();
@@ -136,30 +157,30 @@ public class PlayerActivity extends AppCompatActivity {
             @Nullable
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                if (!streamCaptured && !isWebFallbackMode && request != null && request.getUrl() != null) {
-                    String reqUrl = request.getUrl().toString();
-                    if (isLikelyVideoStream(reqUrl)) {
+                if (request == null || request.getUrl() == null) {
+                    return super.shouldInterceptRequest(view, request);
+                }
+                String reqUrl = request.getUrl().toString();
+                String reqHost = request.getUrl().getHost();
+                String lowHost = reqHost != null ? reqHost.toLowerCase(Locale.ROOT) : "";
+
+                // STRICT AD BLOCKER: For Streamtape, block ALL third-party ad networks/scripts/videos completely!
+                if (isStreamtapeEmbed()) {
+                    boolean allowed = lowHost.contains("streamtape") || lowHost.contains("streamta.pe")
+                        || lowHost.contains("tapecontent") || lowHost.contains("cloudflare")
+                        || lowHost.contains("plyr");
+                    if (!allowed) {
+                        return emptyBlockedResponse();
+                    }
+                } else if (isAdDomain(reqUrl)) {
+                    return emptyBlockedResponse();
+                }
+
+                if (!streamCaptured && !isWebFallbackMode) {
+                    if (isStrictMovieStream(reqUrl, lowHost)) {
                         streamCaptured = true;
                         final int token = attemptToken;
-                        final Map<String, String> headers = new HashMap<>();
-                        Map<String, String> reqHeaders = request.getRequestHeaders();
-                        if (reqHeaders != null) {
-                            for (Map.Entry<String, String> e : reqHeaders.entrySet()) {
-                                if (e.getKey() != null && e.getValue() != null) {
-                                    String k = e.getKey();
-                                    if (k.equalsIgnoreCase("Referer") || k.equalsIgnoreCase("Origin") || k.equalsIgnoreCase("User-Agent")) {
-                                        headers.put(k, e.getValue());
-                                    }
-                                }
-                            }
-                        }
-                        if (!headers.containsKey("User-Agent")) {
-                            headers.put("User-Agent", DESKTOP_UA);
-                        }
-                        String cookie = CookieManager.getInstance().getCookie(reqUrl);
-                        if (cookie != null && !cookie.isEmpty()) {
-                            headers.put("Cookie", cookie);
-                        }
+                        final Map<String, String> headers = buildHeaders(request.getRequestHeaders(), reqUrl);
                         handler.post(() -> {
                             if (token == attemptToken && !isFinishing()) {
                                 startExoPlayer(reqUrl, headers);
@@ -171,16 +192,95 @@ public class PlayerActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (streamCaptured || isWebFallbackMode) return;
+                final int token = attemptToken;
+                // Extract Streamtape robotlink / ideoolink directly via DOM JS (ZERO ad clicks!)
+                handler.postDelayed(() -> {
+                    if (token == attemptToken && !streamCaptured && !isWebFallbackMode) {
+                        extractStreamFromDom(token);
+                    }
+                }, 450);
+            }
+
+            @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && request != null && request.isForMainFrame()) {
                     Uri uri = request.getUrl();
-                    if (uri != null && isAdDomain(uri.toString())) {
-                        return true;
+                    if (uri != null) {
+                        String host = uri.getHost() != null ? uri.getHost().toLowerCase(Locale.ROOT) : "";
+                        String embedRoot = getRootDomain(currentEmbedHost);
+                        // Block ANY top-level redirect away from the video embed host!
+                        if (!embedRoot.isEmpty() && !host.contains(embedRoot) && !host.contains("tapecontent")) {
+                            return true;
+                        }
                     }
                 }
                 return false;
             }
         });
+    }
+
+    private void extractStreamFromDom(final int token) {
+        if (snifferWebView == null || streamCaptured) return;
+        String js = "(function(){"
+            + "try{"
+            + "  var el = document.getElementById('robotlink') || document.getElementById('ideoolink');"
+            + "  if (el && el.textContent && el.textContent.indexOf('get_video') !== -1) {"
+            + "    var u = el.textContent.trim();"
+            + "    if (u.indexOf('//') === 0) u = 'https:' + u;"
+            + "    else if (u.indexOf('/') === 0) u = 'https:/' + u;"
+            + "    if (u.indexOf('stream=1') === -1) u += '&stream=1';"
+            + "    return u;"
+            + "  }"
+            + "}catch(e){}"
+            + "return '';"
+            + "})()";
+
+        snifferWebView.evaluateJavascript(js, value -> {
+            if (token != attemptToken || streamCaptured || isFinishing() || value == null) return;
+            String clean = value.trim();
+            if (clean.startsWith("\"") && clean.endsWith("\"") && clean.length() >= 2) {
+                clean = clean.substring(1, clean.length() - 1).replace("\\/", "/");
+            }
+            if (clean.startsWith("https://") && (clean.contains("streamtape.com/get_video") || clean.contains("streamta.pe/get_video"))) {
+                streamCaptured = true;
+                Map<String, String> headers = new HashMap<>();
+                headers.put("User-Agent", DESKTOP_UA);
+                headers.put("Referer", currentEmbedUrl);
+                String cookie = CookieManager.getInstance().getCookie(clean);
+                if (cookie != null && !cookie.isEmpty()) {
+                    headers.put("Cookie", cookie);
+                }
+                startExoPlayer(clean, headers);
+            }
+        });
+    }
+
+    private Map<String, String> buildHeaders(@Nullable Map<String, String> reqHeaders, String reqUrl) {
+        Map<String, String> headers = new HashMap<>();
+        if (reqHeaders != null) {
+            for (Map.Entry<String, String> e : reqHeaders.entrySet()) {
+                if (e.getKey() != null && e.getValue() != null) {
+                    String k = e.getKey();
+                    if (k.equalsIgnoreCase("Referer") || k.equalsIgnoreCase("Origin") || k.equalsIgnoreCase("User-Agent")) {
+                        headers.put(k, e.getValue());
+                    }
+                }
+            }
+        }
+        if (!headers.containsKey("User-Agent")) {
+            headers.put("User-Agent", DESKTOP_UA);
+        }
+        if (!headers.containsKey("Referer") && currentEmbedUrl != null && !currentEmbedUrl.isEmpty()) {
+            headers.put("Referer", currentEmbedUrl);
+        }
+        String cookie = CookieManager.getInstance().getCookie(reqUrl);
+        if (cookie != null && !cookie.isEmpty()) {
+            headers.put("Cookie", cookie);
+        }
+        return headers;
     }
 
     private boolean isAdDomain(String url) {
@@ -189,26 +289,54 @@ public class PlayerActivity extends AppCompatActivity {
             || low.contains("popads") || low.contains("popcash") || low.contains("adsterra")
             || low.contains("exoclick") || low.contains("juicyads") || low.contains("trafficjunky")
             || low.contains("bet365") || low.contains("1xbet") || low.contains("propellerads")
-            || low.contains("onclickalgo") || low.contains("acscdn");
+            || low.contains("onclickalgo") || low.contains("acscdn") || low.contains("realsrv")
+            || low.contains("tsyndicate") || low.contains("stripchat") || low.contains("chaturbate")
+            || low.contains("bongacams") || low.contains("livejasmin") || low.contains("magsrv")
+            || low.contains("adspyglass") || low.contains("clickadu") || low.contains("hilltopads")
+            || low.contains("monetag") || low.contains("vast") || low.contains("ima3");
     }
 
-    private boolean isLikelyVideoStream(String url) {
+    private boolean isStrictMovieStream(String url, String lowHost) {
         if (url == null || url.length() < 12) return false;
         String low = url.toLowerCase(Locale.ROOT);
         if (isAdDomain(low)) return false;
         if (low.contains("analytics") || low.contains("pixel") || low.contains("tracker")
-            || low.contains("vast") || low.contains("ima3") || low.contains("favicon")
-            || low.endsWith(".js") || low.endsWith(".css") || low.endsWith(".png")
-            || low.endsWith(".jpg") || low.endsWith(".jpeg") || low.endsWith(".webp")
-            || low.endsWith(".svg") || low.endsWith(".woff2") || low.endsWith(".vtt")) {
+            || low.contains("favicon") || low.endsWith(".js") || low.endsWith(".css")
+            || low.endsWith(".png") || low.endsWith(".jpg") || low.endsWith(".jpeg")
+            || low.endsWith(".webp") || low.endsWith(".svg") || low.endsWith(".woff2")
+            || low.endsWith(".vtt") || low.contains("/ads/") || low.contains("preroll")
+            || low.contains("banner") || low.contains("promo")) {
             return false;
         }
-        // Known direct video patterns across Streamtape, VOE, Vidon, OK.ru, Filemoon, Uqload, Vsembed
-        if (low.contains("streamtape.com/get_video") || low.contains("tapecontent.net")) return true;
-        if (low.contains(".m3u8")) return true;
-        if (low.contains("master.txt") && (low.contains("voe") || low.contains("cdn") || low.contains("hls"))) return true;
-        if (low.contains(".mp4") && !low.contains(".mp4.jpg") && !low.contains("thumb") && !low.contains("preview")) return true;
-        if ((low.contains("okcdn.ru") || low.contains("mycdn.me")) && (low.contains("ct=0") || low.contains("type=") || low.contains("/video"))) return true;
+
+        // 1. Streamtape: ONLY official get_video or tapecontent stream! NEVER third-party .mp4!
+        if (isStreamtapeEmbed()) {
+            return low.contains("streamtape.com/get_video")
+                || low.contains("streamta.pe/get_video")
+                || lowHost.contains("tapecontent");
+        }
+
+        // 2. OK.ru: ONLY official okcdn / mycdn streams
+        if (currentEmbedHost.contains("ok.ru")) {
+            return (lowHost.contains("okcdn.ru") || lowHost.contains("mycdn.me"))
+                && (low.contains("ct=0") || low.contains(".m3u8") || low.contains("/video"));
+        }
+
+        // 3. HLS (.m3u8) streams across VOE, Vidon, Filemoon, Byse, Dropload, Vsembed
+        if (low.contains(".m3u8")) {
+            return true;
+        }
+        if (low.contains("master.txt") && (low.contains("hls") || low.contains("voe") || low.contains("cdn"))) {
+            return true;
+        }
+
+        // 4. Direct .mp4 ONLY if hosted on the SAME root domain as the embed player (e.g. Uqload/Vidon), NEVER random ad domains!
+        if (low.contains(".mp4") && !low.contains("thumb") && !low.contains("preview")) {
+            String embedRoot = getRootDomain(currentEmbedHost);
+            if (!embedRoot.isEmpty() && lowHost.contains(embedRoot)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -223,40 +351,50 @@ public class PlayerActivity extends AppCompatActivity {
         isWebFallbackMode = false;
 
         MovieItem.PlayerSource src = sources.get(currentIndex);
+        currentEmbedUrl = src.url != null ? src.url : "";
+        Uri parsed = Uri.parse(currentEmbedUrl);
+        currentEmbedHost = parsed.getHost() != null ? parsed.getHost().toLowerCase(Locale.ROOT) : "";
+
         exoPlayerView.setVisibility(View.GONE);
         snifferWebView.setVisibility(View.INVISIBLE);
         playerTopHud.setVisibility(View.GONE);
         loadingOverlay.setVisibility(View.VISIBLE);
         loadingStatusText.setText("Зареждане: " + src.name + " (" + (currentIndex + 1) + "/" + sources.size() + ")");
-        loadingSubText.setText("Прихващане на директен видео поток за ExoPlayer...");
+        loadingSubText.setText("Сигурно извличане на чист видео поток (без реклами)...");
         loadingNextBtn.setVisibility(sources.size() > 1 ? View.VISIBLE : View.GONE);
 
-        String embedUrl = src.url;
-        if (embedUrl.toLowerCase(Locale.ROOT).contains("vidon.to/")) {
-            loadVidonInSniffer(embedUrl);
+        if (currentEmbedUrl.toLowerCase(Locale.ROOT).contains("vidon.to/")) {
+            loadVidonInSniffer(currentEmbedUrl);
         } else {
             Map<String, String> initHeaders = new HashMap<>();
-            initHeaders.put("Referer", embedUrl);
-            snifferWebView.loadUrl(embedUrl, initHeaders);
+            initHeaders.put("Referer", currentEmbedUrl);
+            snifferWebView.loadUrl(currentEmbedUrl, initHeaders);
         }
 
-        // Auto-tap center of hidden WebView at 1.4s and 3.2s to trigger click-to-play hosts (Streamtape, Filemoon, VOE)
-        handler.postDelayed(() -> {
-            if (token == attemptToken && !streamCaptured && !isWebFallbackMode) {
-                tapWebViewCenter();
-            }
-        }, 1400);
+        // Only auto-tap NON-Streamtape hosts (Streamtape is extracted cleanly via DOM #robotlink without clicking ads!)
+        if (!isStreamtapeEmbed()) {
+            handler.postDelayed(() -> {
+                if (token == attemptToken && !streamCaptured && !isWebFallbackMode) {
+                    tapWebViewCenter();
+                }
+            }, 1800);
+        } else {
+            // Second DOM check retry at 1.8s just in case page JS finished slightly slower
+            handler.postDelayed(() -> {
+                if (token == attemptToken && !streamCaptured && !isWebFallbackMode) {
+                    extractStreamFromDom(token);
+                }
+            }, 1800);
+        }
 
-        handler.postDelayed(() -> {
-            if (token == attemptToken && !streamCaptured && !isWebFallbackMode) {
-                tapWebViewCenter();
-            }
-        }, 3200);
-
-        // If no direct stream was captured after timeout, switch smoothly to Web Fallback mode
         handler.postDelayed(() -> {
             if (token == attemptToken && !streamCaptured && !isWebFallbackMode && !isFinishing()) {
-                enterWebFallbackMode();
+                if (sources.size() > 1) {
+                    Toast.makeText(this, src.name + " не отговаря, пробвам следващия плеър...", Toast.LENGTH_SHORT).show();
+                    switchToNextSource();
+                } else {
+                    enterWebFallbackMode();
+                }
             }
         }, SNIFF_TIMEOUT_MS);
     }
@@ -278,7 +416,6 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void startExoPlayer(String streamUrl, Map<String, String> headers) {
-        // Stop sniffer WebView immediately to save TV RAM/CPU and kill any background scripts
         snifferWebView.stopLoading();
         snifferWebView.loadUrl("about:blank");
         snifferWebView.setVisibility(View.GONE);
@@ -309,8 +446,12 @@ public class PlayerActivity extends AppCompatActivity {
         exoPlayer.addListener(new Player.Listener() {
             @Override
             public void onPlayerError(PlaybackException error) {
-                Toast.makeText(PlayerActivity.this, "Потокът отказа (" + src.name + "), пробвам резервен режим...", Toast.LENGTH_SHORT).show();
-                enterWebFallbackMode();
+                Toast.makeText(PlayerActivity.this, "Плеърът (" + src.name + ") отказа — опитай следващ.", Toast.LENGTH_SHORT).show();
+                if (sources.size() > 1) {
+                    switchToNextSource();
+                } else {
+                    enterWebFallbackMode();
+                }
             }
         });
 
@@ -336,9 +477,8 @@ public class PlayerActivity extends AppCompatActivity {
         if (currentWebUrl == null || currentWebUrl.equals("about:blank")) {
             snifferWebView.loadUrl(src.url);
         }
-        hudSourceInfo.setText("Уеб режим • " + src.name + " • OK=Докосни центъра | ▲=Следващ плеър");
+        hudSourceInfo.setText("Уеб режим • " + src.name + " • OK=Пусни/Пауза | ▲=Следващ плеър");
         showTopHudTemporarily();
-        Toast.makeText(this, "Уеб режим (" + src.name + ") — натисни OK за пускане/пауза", Toast.LENGTH_SHORT).show();
     }
 
     private void switchToNextSource() {
@@ -406,7 +546,6 @@ public class PlayerActivity extends AppCompatActivity {
                 return true;
             }
 
-            // If user is navigating the top HUD buttons, let Android handle Left/Right/OK on those buttons
             if (playerTopHud.getVisibility() == View.VISIBLE && (hudNextSourceBtn.hasFocus() || hudWebFallbackBtn.hasFocus())) {
                 if (code == KeyEvent.KEYCODE_DPAD_DOWN) {
                     playerTopHud.setVisibility(View.GONE);
@@ -416,19 +555,16 @@ public class PlayerActivity extends AppCompatActivity {
                 return super.dispatchKeyEvent(event);
             }
 
-            // If loading overlay is visible, let loadingNextBtn handle clicks
             if (loadingOverlay.getVisibility() == View.VISIBLE) {
                 return super.dispatchKeyEvent(event);
             }
 
-            // UP arrow opens top quick HUD (Next Player / Web Mode)
             if (code == KeyEvent.KEYCODE_DPAD_UP) {
                 playerTopHud.setVisibility(View.VISIBLE);
                 hudNextSourceBtn.requestFocus();
                 return true;
             }
 
-            // Native ExoPlayer Remote Control
             if (exoPlayer != null && !isWebFallbackMode) {
                 if (code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER || code == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || code == KeyEvent.KEYCODE_SPACE) {
                     if (exoPlayer.isPlaying()) {
