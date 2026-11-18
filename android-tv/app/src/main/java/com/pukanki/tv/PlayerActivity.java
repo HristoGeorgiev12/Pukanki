@@ -63,6 +63,7 @@ public class PlayerActivity extends AppCompatActivity {
     private volatile boolean streamCaptured = false;
     private volatile String currentEmbedHost = "";
     private volatile String currentEmbedUrl = "";
+    private volatile String currentVideoId = "";
     private boolean isWebFallbackMode = false;
     private int attemptToken = 0;
 
@@ -209,9 +210,18 @@ public class PlayerActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && request != null && request.isForMainFrame()) {
                     Uri uri = request.getUrl();
                     if (uri != null) {
+                        String urlStr = uri.toString();
                         String host = uri.getHost() != null ? uri.getHost().toLowerCase(Locale.ROOT) : "";
+                        String path = uri.getPath() != null ? uri.getPath() : "";
                         String embedRoot = getRootDomain(currentEmbedHost);
-                        // Block ANY top-level redirect away from the video embed host!
+
+                        // Allow legitimate mirror redirects (e.g. voe.sx/e/<id> -> mirror-domain/e/<id>)
+                        if (currentVideoId.length() >= 6 && path.contains(currentVideoId) && !isAdDomain(urlStr)) {
+                            currentEmbedHost = host;
+                            currentEmbedUrl = urlStr;
+                            return false;
+                        }
+                        // Block ANY other top-level redirect away from the video embed host!
                         if (!embedRoot.isEmpty() && !host.contains(embedRoot) && !host.contains("tapecontent")) {
                             return true;
                         }
@@ -354,6 +364,14 @@ public class PlayerActivity extends AppCompatActivity {
         currentEmbedUrl = src.url != null ? src.url : "";
         Uri parsed = Uri.parse(currentEmbedUrl);
         currentEmbedHost = parsed.getHost() != null ? parsed.getHost().toLowerCase(Locale.ROOT) : "";
+        currentVideoId = "";
+        List<String> segs = parsed.getPathSegments();
+        if (segs != null && !segs.isEmpty()) {
+            String last = segs.get(segs.size() - 1);
+            if (last != null) {
+                currentVideoId = last.replace(".html", "").trim();
+            }
+        }
 
         exoPlayerView.setVisibility(View.GONE);
         snifferWebView.setVisibility(View.INVISIBLE);
@@ -400,7 +418,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void loadVidonInSniffer(String embedUrl) {
-        Matcher m = Pattern.compile("vidon\\.to/(?:e|embed-)?([A-Za-z0-9]+)").matcher(embedUrl);
+        Matcher m = Pattern.compile("vidon\\.to/(?:e/|embed-)([A-Za-z0-9]+)").matcher(embedUrl);
         if (m.find()) {
             String code = m.group(1);
             String html = "<html><body style='background:#000' onload='document.forms[0].submit()'>"

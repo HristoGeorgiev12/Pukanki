@@ -26,8 +26,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final int PAGE_SIZE = 30;
 
-    private Button tabBgBtn, tabSubBtn, tabSeriesBtn, tabSearchBtn, searchGoBtn;
-    private LinearLayout searchRow;
+    private Button tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, searchGoBtn;
+    private LinearLayout searchRow, genreChipsContainer;
+    private View genreScrollRow;
     private EditText searchInput;
     private TextView statusText, emptyText;
     private ProgressBar mainProgress;
@@ -41,11 +42,17 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout detailSourcesContainer;
 
     private String currentTab = "bg";
+    private String currentGenre = "";
     private String currentQuery = "";
     private int currentPage = 1;
     private boolean hasMore = false;
     private boolean isLoading = false;
     private int totalCount = 0;
+
+    private static final String[] GENRES = new String[]{
+        "Всички", "Екшън", "Комедия", "Анимация", "Трилър", "Фантастика",
+        "Драма", "Ужаси", "Приключенски", "Фентъзи", "Криминален", "Семеен", "Романтичен"
+    };
 
     private MovieItem activeDetailItem = null;
     private View lastFocusedCardView = null;
@@ -66,7 +73,10 @@ public class MainActivity extends AppCompatActivity {
         tabBgBtn = findViewById(R.id.tabBgBtn);
         tabSubBtn = findViewById(R.id.tabSubBtn);
         tabSeriesBtn = findViewById(R.id.tabSeriesBtn);
+        tabGenreBtn = findViewById(R.id.tabGenreBtn);
         tabSearchBtn = findViewById(R.id.tabSearchBtn);
+        genreScrollRow = findViewById(R.id.genreScrollRow);
+        genreChipsContainer = findViewById(R.id.genreChipsContainer);
         searchRow = findViewById(R.id.searchRow);
         searchInput = findViewById(R.id.searchInput);
         searchGoBtn = findViewById(R.id.searchGoBtn);
@@ -84,6 +94,41 @@ public class MainActivity extends AppCompatActivity {
         detailPlayBtn = findViewById(R.id.detailPlayBtn);
         detailBackBtn = findViewById(R.id.detailBackBtn);
         detailSourcesContainer = findViewById(R.id.detailSourcesContainer);
+
+        buildGenreChips();
+    }
+
+    private void buildGenreChips() {
+        genreChipsContainer.removeAllViews();
+        float d = getResources().getDisplayMetrics().density;
+        int marginEnd = (int) (8 * d);
+        int heightPx = (int) (34 * d);
+        for (final String g : GENRES) {
+            Button chip = new Button(this);
+            chip.setText(g);
+            chip.setAllCaps(false);
+            chip.setTextColor(0xFFFFFFFF);
+            chip.setTextSize(12f);
+            chip.setBackgroundResource(R.drawable.bg_tab_selector);
+            chip.setPadding((int) (14 * d), 0, (int) (14 * d), 0);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, heightPx
+            );
+            lp.setMarginEnd(marginEnd);
+            chip.setLayoutParams(lp);
+            chip.setSelected("Всички".equals(g));
+            chip.setOnClickListener(v -> {
+                currentGenre = "Всички".equals(g) ? "" : g;
+                tabGenreBtn.setText(currentGenre.isEmpty() ? "🎭 Жанр" : "🎭 " + currentGenre);
+                for (int i = 0; i < genreChipsContainer.getChildCount(); i++) {
+                    View child = genreChipsContainer.getChildAt(i);
+                    child.setSelected(child == chip);
+                }
+                genreScrollRow.setVisibility(View.GONE);
+                loadPage(1, true);
+            });
+            genreChipsContainer.addView(chip);
+        }
     }
 
     private void setupRecycler() {
@@ -119,10 +164,23 @@ public class MainActivity extends AppCompatActivity {
         });
         tabSeriesBtn.setOnClickListener(v -> {
             searchRow.setVisibility(View.GONE);
+            genreScrollRow.setVisibility(View.GONE);
             currentQuery = "";
             selectTab("series");
         });
+        tabGenreBtn.setOnClickListener(v -> {
+            searchRow.setVisibility(View.GONE);
+            if (genreScrollRow.getVisibility() == View.VISIBLE) {
+                genreScrollRow.setVisibility(View.GONE);
+            } else {
+                genreScrollRow.setVisibility(View.VISIBLE);
+                if (genreChipsContainer.getChildCount() > 0) {
+                    genreChipsContainer.getChildAt(0).requestFocus();
+                }
+            }
+        });
         tabSearchBtn.setOnClickListener(v -> {
+            genreScrollRow.setVisibility(View.GONE);
             if (searchRow.getVisibility() == View.VISIBLE) {
                 searchRow.setVisibility(View.GONE);
             } else {
@@ -181,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
             statusText.setText("Зареждане...");
         }
 
-        CatalogApi.fetchPage(currentTab, currentQuery, page, PAGE_SIZE, new CatalogApi.Callback() {
+        CatalogApi.fetchPage(currentTab, currentGenre, currentQuery, page, PAGE_SIZE, new CatalogApi.Callback() {
             @Override
             public void onSuccess(CatalogApi.PageResult result) {
                 isLoading = false;
@@ -200,7 +258,8 @@ public class MainActivity extends AppCompatActivity {
                         moviesRecycler.post(() -> {
                             RecyclerView.ViewHolder first = moviesRecycler.findViewHolderForAdapterPosition(0);
                             if (first != null && detailOverlay.getVisibility() != View.VISIBLE
-                                && searchRow.getVisibility() != View.VISIBLE) {
+                                && searchRow.getVisibility() != View.VISIBLE
+                                && genreScrollRow.getVisibility() != View.VISIBLE) {
                                 first.itemView.requestFocus();
                             }
                         });
@@ -208,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия • v2.0");
+                statusText.setText(totalCount + " заглавия • v2.0.2");
             }
 
             @Override
@@ -299,6 +358,11 @@ public class MainActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (detailOverlay.getVisibility() == View.VISIBLE) {
                 closeDetails();
+                return true;
+            }
+            if (genreScrollRow.getVisibility() == View.VISIBLE) {
+                genreScrollRow.setVisibility(View.GONE);
+                tabGenreBtn.requestFocus();
                 return true;
             }
             if (searchRow.getVisibility() == View.VISIBLE) {

@@ -247,8 +247,14 @@ def main():
             rec.pop("d", None)
         result.append(rec)
 
-    # Sort catalog: BG audio high-rated & newer first
-    result.sort(key=lambda x: (x["bg"], x["y"] >= 2015, x["r"], x["y"]), reverse=True)
+    # Sort catalog: BG audio with multiple players & realistic high ratings (ignore fake 10.0 ratings) & newest first
+    def sort_key(x):
+        r = x["r"] if 0 < x["r"] < 9.6 else 6.5
+        multi_src = 1 if len(x["s"]) >= 2 else 0
+        recent = 1 if x["y"] >= 2018 else 0
+        return (x["bg"], recent, multi_src, round(r, 1), x["y"])
+
+    result.sort(key=sort_key, reverse=True)
 
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, separators=(",", ":"))
