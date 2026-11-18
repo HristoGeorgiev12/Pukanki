@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private MovieAdapter adapter;
 
     private FrameLayout detailOverlay;
+    private ViewGroup browseContainer;
     private ImageView detailBackdrop, detailPoster;
     private TextView detailTitle, detailMeta, detailOverview;
     private Button detailPlayBtn, detailBackBtn;
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         moviesRecycler = findViewById(R.id.moviesRecycler);
 
         detailOverlay = findViewById(R.id.detailOverlay);
+        browseContainer = findViewById(R.id.browseContainer);
         detailBackdrop = findViewById(R.id.detailBackdrop);
         detailPoster = findViewById(R.id.detailPoster);
         detailTitle = findViewById(R.id.detailTitle);
@@ -267,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия • v2.0.2");
+                statusText.setText(totalCount + " заглавия • v2.0.3");
             }
 
             @Override
@@ -307,32 +310,53 @@ public class MainActivity extends AppCompatActivity {
         detailSourcesContainer.removeAllViews();
         List<MovieItem.PlayerSource> sources = item.sources;
         int marginPx = (int) (8 * getResources().getDisplayMetrics().density);
+        Button prevBtn = null;
+        Button firstBtn = null;
         for (int i = 0; i < sources.size(); i++) {
             final int idx = i;
             MovieItem.PlayerSource src = sources.get(i);
             Button btn = new Button(this);
+            btn.setId(View.generateViewId());
             btn.setText(src.name);
             btn.setAllCaps(false);
             btn.setTextColor(0xFFFFFFFF);
             btn.setTextSize(13f);
             btn.setBackgroundResource(R.drawable.bg_btn_secondary);
             btn.setPadding(24, 8, 24, 8);
+            btn.setFocusable(true);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 (int) (38 * getResources().getDisplayMetrics().density)
             );
             lp.setMarginEnd(marginPx);
             btn.setLayoutParams(lp);
+            btn.setNextFocusUpId(R.id.detailPlayBtn);
+            if (prevBtn != null) {
+                btn.setNextFocusLeftId(prevBtn.getId());
+                prevBtn.setNextFocusRightId(btn.getId());
+            } else {
+                firstBtn = btn;
+            }
+            prevBtn = btn;
             btn.setOnClickListener(v -> launchPlayer(item, idx));
             detailSourcesContainer.addView(btn);
         }
+        if (firstBtn != null) {
+            detailPlayBtn.setNextFocusDownId(firstBtn.getId());
+            detailBackBtn.setNextFocusDownId(firstBtn.getId());
+        } else {
+            detailPlayBtn.setNextFocusDownId(View.NO_ID);
+            detailBackBtn.setNextFocusDownId(View.NO_ID);
+        }
 
+        browseContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         detailOverlay.setVisibility(View.VISIBLE);
         detailPlayBtn.post(() -> detailPlayBtn.requestFocus());
     }
 
     private void closeDetails() {
         detailOverlay.setVisibility(View.GONE);
+        browseContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         activeDetailItem = null;
         if (lastFocusedCardView != null) {
             lastFocusedCardView.requestFocus();

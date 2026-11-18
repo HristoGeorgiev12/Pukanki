@@ -65,8 +65,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: tv-v2.0.2
-          name: Pukanki TV v2.0.2 (VOE + Vidon + Genres)
+          tag_name: tv-v2.0.3
+          name: Pukanki TV v2.0.3 (VOE + Vidon + Genres + Focus Fix)
           body: |
             ### 🍿 Пуканки TV v2.0.0 (Нативно Android TV приложение + ExoPlayer)
             
