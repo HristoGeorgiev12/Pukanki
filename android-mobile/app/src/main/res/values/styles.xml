@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PukankiMobile" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">#0B0F19</item>
+        <item name="android:colorPrimary">#7C3AED</item>
+        <item name="android:colorPrimaryDark">#0B0F19</item>
+        <item name="android:colorAccent">#10B981</item>
+        <item name="android:statusBarColor">#0B0F19</item>
+        <item name="android:navigationBarColor">#0B0F19</item>
+    </style>
+</resources>
