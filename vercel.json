@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/catalog.js": {
+      "includeFiles": "data/tv_catalog.json"
+    }
+  }
+}
