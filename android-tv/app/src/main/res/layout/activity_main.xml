@@ -4,203 +4,217 @@
     android:layout_height="match_parent"
     android:background="#0B0F19">
 
-    <!-- Main Browse Screen -->
+    <!-- Main Browse Screen (Netflix-style Left Sidebar + Right Grid) -->
     <LinearLayout
         android:id="@+id/browseContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingTop="14dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="8dp">
+        android:orientation="horizontal">
 
-        <!-- Compact Header & Tabs -->
+        <!-- Persistent Left Navigation Sidebar -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp">
+            android:id="@+id/leftSidebar"
+            android:layout_width="176dp"
+            android:layout_height="match_parent"
+            android:background="#0F1629"
+            android:orientation="vertical"
+            android:paddingLeft="14dp"
+            android:paddingTop="18dp"
+            android:paddingRight="14dp"
+            android:paddingBottom="16dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="18dp"
-                android:text="🍿 Пуканки TV"
+                android:layout_marginBottom="18dp"
+                android:gravity="center_vertical"
+                android:text="🍿 Пуканки"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/tabBgBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_tab_selector"
+                android:gravity="start|center_vertical"
+                android:nextFocusRight="@id/moviesRecycler"
                 android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:text="🇧🇬 БГ Аудио"
+                android:paddingRight="12dp"
+                android:text="🇧🇬  БГ Аудио"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="13sp"
+                android:textSize="13.5sp"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/tabSubBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_tab_selector"
+                android:gravity="start|center_vertical"
+                android:nextFocusRight="@id/moviesRecycler"
                 android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:text="💬 Субтитри"
+                android:paddingRight="12dp"
+                android:text="💬  Субтитри"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="13sp"
+                android:textSize="13.5sp"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/tabSeriesBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_tab_selector"
+                android:gravity="start|center_vertical"
+                android:nextFocusRight="@id/moviesRecycler"
                 android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:text="📺 Сериали"
+                android:paddingRight="12dp"
+                android:text="📺  Сериали"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="13sp"
+                android:textSize="13.5sp"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/tabGenreBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_tab_selector"
+                android:gravity="start|center_vertical"
+                android:nextFocusRight="@id/moviesRecycler"
                 android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:text="⚙ Филтри"
+                android:paddingRight="12dp"
+                android:text="⚙  Филтри"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="13sp"
+                android:textSize="13.5sp"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/tabSearchBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
                 android:background="@drawable/bg_tab_selector"
+                android:gravity="start|center_vertical"
+                android:nextFocusRight="@id/moviesRecycler"
                 android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:text="🔍 Търси"
+                android:paddingRight="12dp"
+                android:text="🔍  Търси"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="13sp"
+                android:textSize="13.5sp"
                 android:textStyle="bold" />
 
             <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/statusText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:lineSpacingExtra="2dp"
                 android:text="Зареждане..."
                 android:textColor="#94A3B8"
-                android:textSize="12sp" />
+                android:textSize="11.5sp" />
         </LinearLayout>
 
-        <!-- Genre Filter Row (compact, collapsible) -->
-        <HorizontalScrollView
-            android:id="@+id/genreScrollRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:scrollbars="none"
-            android:visibility="gone">
+        <!-- Subtle Vertical Divider -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#1E293B" />
 
-            <LinearLayout
-                android:id="@+id/genreChipsContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
-
-        <!-- Search Row (hidden by default) -->
+        <!-- Right Content Column (Search + Movie Grid) -->
         <LinearLayout
-            android:id="@+id/searchRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="14dp"
+            android:paddingTop="12dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp">
 
-            <EditText
-                android:id="@+id/searchInput"
-                android:layout_width="0dp"
-                android:layout_height="42dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_btn_secondary"
-                android:hint="Въведи име на филм (напр. Принцът на Египет, Шрек)..."
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:singleLine="true"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#64748B"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/searchGoBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:background="@drawable/bg_btn_primary"
-                android:paddingLeft="18dp"
-                android:paddingRight="18dp"
-                android:text="Търси"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Movies Grid -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/moviesRecycler"
+            <!-- Search Row (hidden by default) -->
+            <LinearLayout
+                android:id="@+id/searchRow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="16dp" />
-
-            <ProgressBar
-                android:id="@+id/mainProgress"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:id="@+id/emptyText"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Няма намерени филми."
-                android:textColor="#94A3B8"
-                android:textSize="16sp"
-                android:visibility="gone" />
-        </FrameLayout>
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/searchInput"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_btn_secondary"
+                    android:hint="Въведи име на филм или сериал..."
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/searchGoBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:background="@drawable/bg_btn_primary"
+                    android:paddingLeft="18dp"
+                    android:paddingRight="18dp"
+                    android:text="Търси"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Movies Grid -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/moviesRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="16dp" />
+
+                <ProgressBar
+                    android:id="@+id/mainProgress"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:id="@+id/emptyText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Няма намерени филми."
+                    android:textColor="#94A3B8"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Native Movie Details Overlay -->

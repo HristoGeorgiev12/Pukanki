@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
         if (selectedDurationIdx > 0) activeCount++;
         if (selectedPlayerIdx > 0) activeCount++;
 
-        tabGenreBtn.setText(activeCount > 0 ? "⚙ Филтри (" + activeCount + ")" : "⚙ Филтри");
+        tabGenreBtn.setText(activeCount > 0 ? "⚙  Филтри (" + activeCount + ")" : "⚙  Филтри");
 
         filtersOverlay.setVisibility(View.GONE);
         browseContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
@@ -368,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupRecycler() {
-        GridLayoutManager glm = new GridLayoutManager(this, 6);
+        GridLayoutManager glm = new GridLayoutManager(this, 5);
         moviesRecycler.setLayoutManager(glm);
         moviesRecycler.setHasFixedSize(false);
         moviesRecycler.setItemAnimator(null);
@@ -494,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия • v2.0.5");
+                statusText.setText(totalCount + " заглавия\nv2.0.6");
             }
 
             @Override
