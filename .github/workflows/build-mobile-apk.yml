@@ -77,8 +77,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: mobile-v1.0.0
-          name: Pukanki Mobile v1.0.0 (Android Phone + Filters + Ad-Free Player)
+          tag_name: mobile-v1.0.1
+          name: Pukanki Mobile v1.0.1 (Zero-Ad VOE + 7 Sorts + All Website Filters)
           body: |
             ### 🍿 Пуканки Mobile v1.0.0 (Android приложение за телефон)
 

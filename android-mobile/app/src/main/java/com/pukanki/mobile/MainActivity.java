@@ -504,7 +504,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия • v1.0");
+                statusText.setText(totalCount + " заглавия • v1.0.1");
             }
 
             @Override
