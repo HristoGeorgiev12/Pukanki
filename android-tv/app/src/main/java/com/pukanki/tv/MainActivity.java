@@ -2,6 +2,7 @@ package com.pukanki.tv;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,9 +65,11 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private Button tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, searchGoBtn;
-    private LinearLayout searchRow;
+    private LinearLayout leftSidebar, searchRow;
     private EditText searchInput;
-    private TextView statusText, emptyText;
+    private TextView sidebarLogoText, statusText, emptyText;
+    private boolean isSidebarExpanded = true;
+    private int activeFilterCount = 0;
     private ProgressBar mainProgress;
     private RecyclerView moviesRecycler;
     private MovieAdapter adapter;
@@ -119,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void bindViews() {
         browseContainer = findViewById(R.id.browseContainer);
+        leftSidebar = findViewById(R.id.leftSidebar);
+        sidebarLogoText = findViewById(R.id.sidebarLogoText);
         tabBgBtn = findViewById(R.id.tabBgBtn);
         tabSubBtn = findViewById(R.id.tabSubBtn);
         tabSeriesBtn = findViewById(R.id.tabSeriesBtn);
@@ -335,7 +340,8 @@ public class MainActivity extends AppCompatActivity {
         if (selectedDurationIdx > 0) activeCount++;
         if (selectedPlayerIdx > 0) activeCount++;
 
-        tabGenreBtn.setText(activeCount > 0 ? "⚙  Филтри (" + activeCount + ")" : "⚙  Филтри");
+        activeFilterCount = activeCount;
+        updateSidebarVisuals();
 
         filtersOverlay.setVisibility(View.GONE);
         browseContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
@@ -387,7 +393,73 @@ public class MainActivity extends AppCompatActivity {
         moviesRecycler.setAdapter(adapter);
     }
 
+    private boolean isAnySidebarChildFocused() {
+        return tabBgBtn.hasFocus() || tabSubBtn.hasFocus() || tabSeriesBtn.hasFocus()
+            || tabGenreBtn.hasFocus() || tabSearchBtn.hasFocus();
+    }
+
+    private void setSidebarExpanded(boolean expanded) {
+        if (isSidebarExpanded == expanded) return;
+        isSidebarExpanded = expanded;
+        updateSidebarVisuals();
+    }
+
+    private void updateSidebarVisuals() {
+        float d = getResources().getDisplayMetrics().density;
+        ViewGroup.LayoutParams lp = leftSidebar.getLayoutParams();
+        lp.width = (int) ((isSidebarExpanded ? 176 : 66) * d);
+        leftSidebar.setLayoutParams(lp);
+
+        int padH = (int) ((isSidebarExpanded ? 14 : 8) * d);
+        leftSidebar.setPadding(padH, (int) (18 * d), padH, (int) (16 * d));
+
+        int btnPad = (int) ((isSidebarExpanded ? 14 : 0) * d);
+        int grav = isSidebarExpanded ? (Gravity.START | Gravity.CENTER_VERTICAL) : Gravity.CENTER;
+
+        Button[] navBtns = new Button[]{tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn};
+        for (Button b : navBtns) {
+            b.setGravity(grav);
+            b.setPadding(btnPad, 0, isSidebarExpanded ? (int) (10 * d) : 0, 0);
+        }
+
+        if (isSidebarExpanded) {
+            sidebarLogoText.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+            sidebarLogoText.setText("🍿 Пуканки");
+            tabBgBtn.setText("🇧🇬  БГ Аудио");
+            tabSubBtn.setText("💬  Субтитри");
+            tabSeriesBtn.setText("📺  Сериали");
+            tabGenreBtn.setText(activeFilterCount > 0 ? "⚙  Филтри (" + activeFilterCount + ")" : "⚙  Филтри");
+            tabSearchBtn.setText("🔍  Търси");
+            statusText.setVisibility(View.VISIBLE);
+        } else {
+            sidebarLogoText.setGravity(Gravity.CENTER);
+            sidebarLogoText.setText("🍿");
+            tabBgBtn.setText("🇧🇬");
+            tabSubBtn.setText("💬");
+            tabSeriesBtn.setText("📺");
+            tabGenreBtn.setText(activeFilterCount > 0 ? "⚙" + activeFilterCount : "⚙");
+            tabSearchBtn.setText("🔍");
+            statusText.setVisibility(View.GONE);
+        }
+    }
+
     private void setupListeners() {
+        View.OnFocusChangeListener sidebarFocusListener = (v, hasFocus) -> {
+            if (hasFocus) {
+                setSidebarExpanded(true);
+            } else {
+                leftSidebar.post(() -> {
+                    if (!isAnySidebarChildFocused()) {
+                        setSidebarExpanded(false);
+                    }
+                });
+            }
+        };
+        tabBgBtn.setOnFocusChangeListener(sidebarFocusListener);
+        tabSubBtn.setOnFocusChangeListener(sidebarFocusListener);
+        tabSeriesBtn.setOnFocusChangeListener(sidebarFocusListener);
+        tabGenreBtn.setOnFocusChangeListener(sidebarFocusListener);
+        tabSearchBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabBgBtn.setOnClickListener(v -> {
             searchRow.setVisibility(View.GONE);
             filters.query = "";
@@ -488,13 +560,14 @@ public class MainActivity extends AppCompatActivity {
                                 && searchRow.getVisibility() != View.VISIBLE
                                 && filtersOverlay.getVisibility() != View.VISIBLE) {
                                 first.itemView.requestFocus();
+                                setSidebarExpanded(false);
                             }
                         });
                     }
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия\nv2.0.6");
+                statusText.setText(totalCount + " заглавия\nv2.0.7");
             }
 
             @Override
