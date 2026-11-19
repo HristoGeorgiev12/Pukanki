@@ -34,7 +34,7 @@ public class CatalogApi {
         void onError(String message);
     }
 
-    public static void fetchPage(final String tab, final String genre, final String query, final int page, final int limit, final Callback cb) {
+    public static void fetchPage(final String tab, final String genre, final String excludeGenre, final String query, final int page, final int limit, final Callback cb) {
         executor.execute(() -> {
             HttpURLConnection conn = null;
             try {
@@ -44,6 +44,9 @@ public class CatalogApi {
                 sb.append("&limit=").append(limit);
                 if (genre != null && !genre.trim().isEmpty()) {
                     sb.append("&genre=").append(URLEncoder.encode(genre.trim(), "UTF-8"));
+                }
+                if (excludeGenre != null && !excludeGenre.trim().isEmpty()) {
+                    sb.append("&excludeGenre=").append(URLEncoder.encode(excludeGenre.trim(), "UTF-8"));
                 }
                 if (query != null && !query.trim().isEmpty()) {
                     sb.append("&q=").append(URLEncoder.encode(query.trim(), "UTF-8"));

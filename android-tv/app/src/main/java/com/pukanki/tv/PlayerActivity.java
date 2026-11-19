@@ -64,6 +64,7 @@ public class PlayerActivity extends AppCompatActivity {
     private volatile String currentEmbedHost = "";
     private volatile String currentEmbedUrl = "";
     private volatile String currentVideoId = "";
+    private volatile boolean isVoeSource = false;
     private boolean isWebFallbackMode = false;
     private int attemptToken = 0;
 
@@ -165,12 +166,27 @@ public class PlayerActivity extends AppCompatActivity {
                 String reqHost = request.getUrl().getHost();
                 String lowHost = reqHost != null ? reqHost.toLowerCase(Locale.ROOT) : "";
 
-                // STRICT AD BLOCKER: For Streamtape, block ALL third-party ad networks/scripts/videos completely!
+                // STRICT AD BLOCKER: For Streamtape and VOE, block ALL third-party ad networks/scripts/videos completely!
                 if (isStreamtapeEmbed()) {
                     boolean allowed = lowHost.contains("streamtape") || lowHost.contains("streamta.pe")
                         || lowHost.contains("tapecontent") || lowHost.contains("cloudflare")
                         || lowHost.contains("plyr");
                     if (!allowed) {
+                        return emptyBlockedResponse();
+                    }
+                } else if (isVoeSource) {
+                    if (isAdDomain(reqUrl)) {
+                        return emptyBlockedResponse();
+                    }
+                    String lowReq = reqUrl.toLowerCase(Locale.ROOT);
+                    String embedRoot = getRootDomain(currentEmbedHost);
+                    boolean isSameMirror = (!embedRoot.isEmpty() && lowHost.contains(embedRoot))
+                        || lowHost.contains("voe.");
+                    boolean isMirrorRedirect = currentVideoId.length() >= 6 && lowReq.contains(currentVideoId.toLowerCase(Locale.ROOT));
+                    boolean isCoreLib = lowHost.contains("cdnjs.cloudflare.com");
+                    boolean isMediaStream = lowReq.contains(".m3u8") || lowReq.contains("master.txt")
+                        || lowReq.contains(".ts") || lowReq.contains(".m4s") || lowReq.contains("/hls/");
+                    if (!isSameMirror && !isMirrorRedirect && !isCoreLib && !isMediaStream) {
                         return emptyBlockedResponse();
                     }
                 } else if (isAdDomain(reqUrl)) {
@@ -244,6 +260,21 @@ public class PlayerActivity extends AppCompatActivity {
             + "    if (u.indexOf('stream=1') === -1) u += '&stream=1';"
             + "    return u;"
             + "  }"
+            + "  if (typeof jwplayer === 'function') {"
+            + "    var p = jwplayer();"
+            + "    if (p) {"
+            + "      var item = p.getPlaylistItem ? p.getPlaylistItem() : null;"
+            + "      if (item && item.file && item.file.indexOf('http') === 0) return item.file;"
+            + "      if (item && item.sources && item.sources.length) {"
+            + "        for (var i = 0; i < item.sources.length; i++) {"
+            + "          if (item.sources[i].file && item.sources[i].file.indexOf('http') === 0) return item.sources[i].file;"
+            + "        }"
+            + "      }"
+            + "      if (p.play) p.play(true);"
+            + "    }"
+            + "  }"
+            + "  var v = document.querySelector('video');"
+            + "  if (v && v.src && v.src.indexOf('http') === 0 && v.src.indexOf('blob:') !== 0) return v.src;"
             + "}catch(e){}"
             + "return '';"
             + "})()";
@@ -254,16 +285,21 @@ public class PlayerActivity extends AppCompatActivity {
             if (clean.startsWith("\"") && clean.endsWith("\"") && clean.length() >= 2) {
                 clean = clean.substring(1, clean.length() - 1).replace("\\/", "/");
             }
-            if (clean.startsWith("https://") && (clean.contains("streamtape.com/get_video") || clean.contains("streamta.pe/get_video"))) {
-                streamCaptured = true;
-                Map<String, String> headers = new HashMap<>();
-                headers.put("User-Agent", DESKTOP_UA);
-                headers.put("Referer", currentEmbedUrl);
-                String cookie = CookieManager.getInstance().getCookie(clean);
-                if (cookie != null && !cookie.isEmpty()) {
-                    headers.put("Cookie", cookie);
+            if (clean.startsWith("https://") || clean.startsWith("http://")) {
+                Uri u = Uri.parse(clean);
+                String h = u.getHost() != null ? u.getHost().toLowerCase(Locale.ROOT) : "";
+                if (clean.contains("streamtape.com/get_video") || clean.contains("streamta.pe/get_video")
+                    || isStrictMovieStream(clean, h)) {
+                    streamCaptured = true;
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("User-Agent", DESKTOP_UA);
+                    headers.put("Referer", currentEmbedUrl);
+                    String cookie = CookieManager.getInstance().getCookie(clean);
+                    if (cookie != null && !cookie.isEmpty()) {
+                        headers.put("Cookie", cookie);
+                    }
+                    startExoPlayer(clean, headers);
                 }
-                startExoPlayer(clean, headers);
             }
         });
     }
@@ -303,7 +339,11 @@ public class PlayerActivity extends AppCompatActivity {
             || low.contains("tsyndicate") || low.contains("stripchat") || low.contains("chaturbate")
             || low.contains("bongacams") || low.contains("livejasmin") || low.contains("magsrv")
             || low.contains("adspyglass") || low.contains("clickadu") || low.contains("hilltopads")
-            || low.contains("monetag") || low.contains("vast") || low.contains("ima3");
+            || low.contains("monetag") || low.contains("vast") || low.contains("ima3")
+            || low.contains("imasdk") || low.contains("ads-twitter") || low.contains("adservice")
+            || low.contains("adsystem") || low.contains("vpaid") || low.contains("phruk")
+            || low.contains("trafficstars") || low.contains("ero-advertising")
+            || low.contains("popunder") || low.contains("commercial");
     }
 
     private boolean isStrictMovieStream(String url, String lowHost) {
@@ -364,6 +404,8 @@ public class PlayerActivity extends AppCompatActivity {
         currentEmbedUrl = src.url != null ? src.url : "";
         Uri parsed = Uri.parse(currentEmbedUrl);
         currentEmbedHost = parsed.getHost() != null ? parsed.getHost().toLowerCase(Locale.ROOT) : "";
+        isVoeSource = currentEmbedHost.contains("voe.")
+            || (src.name != null && src.name.toLowerCase(Locale.ROOT).contains("voe"));
         currentVideoId = "";
         List<String> segs = parsed.getPathSegments();
         if (segs != null && !segs.isEmpty()) {
@@ -389,20 +431,24 @@ public class PlayerActivity extends AppCompatActivity {
             snifferWebView.loadUrl(currentEmbedUrl, initHeaders);
         }
 
-        // Only auto-tap NON-Streamtape hosts (Streamtape is extracted cleanly via DOM #robotlink without clicking ads!)
-        if (!isStreamtapeEmbed()) {
+        // NEVER auto-tap Streamtape or VOE (clicking triggers invisible ad overlays!). Extract directly via DOM/JWPlayer JS.
+        if (!isStreamtapeEmbed() && !isVoeSource) {
             handler.postDelayed(() -> {
                 if (token == attemptToken && !streamCaptured && !isWebFallbackMode) {
                     tapWebViewCenter();
                 }
             }, 1800);
         } else {
-            // Second DOM check retry at 1.8s just in case page JS finished slightly slower
             handler.postDelayed(() -> {
                 if (token == attemptToken && !streamCaptured && !isWebFallbackMode) {
                     extractStreamFromDom(token);
                 }
             }, 1800);
+            handler.postDelayed(() -> {
+                if (token == attemptToken && !streamCaptured && !isWebFallbackMode) {
+                    extractStreamFromDom(token);
+                }
+            }, 3500);
         }
 
         handler.postDelayed(() -> {

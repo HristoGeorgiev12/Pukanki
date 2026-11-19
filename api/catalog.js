@@ -27,9 +27,17 @@ export default async function handler(req, res) {
         const all = loadCatalog();
         const tab = String(req.query.tab || "bg").toLowerCase(); // bg | sub | series | all
         const q = String(req.query.q || "").trim().toLowerCase();
-        const genre = String(req.query.genre || "").trim().toLowerCase();
+        const genreParam = String(req.query.genre || "").trim().toLowerCase();
+        const excludeGenreParam = String(req.query.excludeGenre || "").trim().toLowerCase();
         const page = Math.max(1, parseInt(req.query.page || "1", 10) || 1);
         const limit = Math.min(60, Math.max(6, parseInt(req.query.limit || "30", 10) || 30));
+
+        const includedGenres = genreParam
+            ? genreParam.split(",").map((g) => g.trim()).filter(Boolean)
+            : [];
+        const excludedGenres = excludeGenreParam
+            ? excludeGenreParam.split(",").map((g) => g.trim()).filter(Boolean)
+            : [];
 
         let filtered = all;
 
@@ -41,10 +49,20 @@ export default async function handler(req, res) {
             filtered = filtered.filter((m) => m.tp === "s");
         }
 
-        if (genre) {
-            filtered = filtered.filter(
-                (m) => Array.isArray(m.g) && m.g.some((g) => String(g).toLowerCase() === genre)
-            );
+        if (includedGenres.length > 0) {
+            filtered = filtered.filter((m) => {
+                if (!Array.isArray(m.g)) return false;
+                const itemGenres = m.g.map((g) => String(g).toLowerCase());
+                return includedGenres.every((inc) => itemGenres.includes(inc));
+            });
+        }
+
+        if (excludedGenres.length > 0) {
+            filtered = filtered.filter((m) => {
+                if (!Array.isArray(m.g)) return true;
+                const itemGenres = m.g.map((g) => String(g).toLowerCase());
+                return !excludedGenres.some((exc) => itemGenres.includes(exc));
+            });
         }
 
         if (q) {

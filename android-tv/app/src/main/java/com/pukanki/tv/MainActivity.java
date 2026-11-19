@@ -22,7 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PAGE_SIZE = 30;
@@ -45,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
     private String currentTab = "bg";
     private String currentGenre = "";
+    private String currentExcludeGenre = "";
     private String currentQuery = "";
+    private final Map<String, Integer> genreStates = new LinkedHashMap<>();
+    private final Map<String, Button> genreChips = new LinkedHashMap<>();
     private int currentPage = 1;
     private boolean hasMore = false;
     private boolean isLoading = false;
@@ -103,12 +109,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void buildGenreChips() {
         genreChipsContainer.removeAllViews();
+        genreStates.clear();
+        genreChips.clear();
         float d = getResources().getDisplayMetrics().density;
         int marginEnd = (int) (8 * d);
         int heightPx = (int) (34 * d);
+
         for (final String g : GENRES) {
             Button chip = new Button(this);
-            chip.setText(g);
+            final boolean isReset = "Всички".equals(g);
+            chip.setText(isReset ? "✕ Изчисти" : g);
             chip.setAllCaps(false);
             chip.setTextColor(0xFFFFFFFF);
             chip.setTextSize(12f);
@@ -119,19 +129,79 @@ public class MainActivity extends AppCompatActivity {
             );
             lp.setMarginEnd(marginEnd);
             chip.setLayoutParams(lp);
-            chip.setSelected("Всички".equals(g));
+            chip.setSelected(isReset);
+
+            if (!isReset) {
+                genreStates.put(g, 0);
+                genreChips.put(g, chip);
+            }
+
             chip.setOnClickListener(v -> {
-                currentGenre = "Всички".equals(g) ? "" : g;
-                tabGenreBtn.setText(currentGenre.isEmpty() ? "🎭 Жанр" : "🎭 " + currentGenre);
-                for (int i = 0; i < genreChipsContainer.getChildCount(); i++) {
-                    View child = genreChipsContainer.getChildAt(i);
-                    child.setSelected(child == chip);
+                if (isReset) {
+                    for (Map.Entry<String, Button> e : genreChips.entrySet()) {
+                        genreStates.put(e.getKey(), 0);
+                        updateGenreChipVisual(e.getValue(), e.getKey(), 0);
+                    }
+                    syncGenreFiltersAndReload();
+                } else {
+                    int cur = genreStates.containsKey(g) ? genreStates.get(g) : 0;
+                    int next = (cur + 1) % 3; // 0=neutral, 1=include, 2=exclude
+                    genreStates.put(g, next);
+                    updateGenreChipVisual(chip, g, next);
+                    syncGenreFiltersAndReload();
                 }
-                genreScrollRow.setVisibility(View.GONE);
-                loadPage(1, true);
             });
             genreChipsContainer.addView(chip);
         }
+    }
+
+    private void updateGenreChipVisual(Button chip, String genre, int state) {
+        if (state == 1) {
+            chip.setBackgroundResource(R.drawable.bg_tv_chip_include);
+            chip.setText("✓ " + genre);
+        } else if (state == 2) {
+            chip.setBackgroundResource(R.drawable.bg_tv_chip_exclude);
+            chip.setText("✕ " + genre);
+        } else {
+            chip.setBackgroundResource(R.drawable.bg_tab_selector);
+            chip.setSelected(false);
+            chip.setText(genre);
+        }
+    }
+
+    private void syncGenreFiltersAndReload() {
+        List<String> inc = new ArrayList<>();
+        List<String> exc = new ArrayList<>();
+        for (Map.Entry<String, Integer> e : genreStates.entrySet()) {
+            if (e.getValue() == 1) inc.add(e.getKey());
+            else if (e.getValue() == 2) exc.add(e.getKey());
+        }
+        currentGenre = joinCsv(inc);
+        currentExcludeGenre = joinCsv(exc);
+
+        if (inc.isEmpty() && exc.isEmpty()) {
+            tabGenreBtn.setText("🎭 Жанр");
+        } else if (inc.size() == 1 && exc.isEmpty()) {
+            tabGenreBtn.setText("🎭 ✓" + inc.get(0));
+        } else if (inc.isEmpty() && exc.size() == 1) {
+            tabGenreBtn.setText("🎭 ✕" + exc.get(0));
+        } else {
+            StringBuilder lbl = new StringBuilder("🎭 ");
+            if (!inc.isEmpty()) lbl.append("+").append(inc.size());
+            if (!inc.isEmpty() && !exc.isEmpty()) lbl.append(" / ");
+            if (!exc.isEmpty()) lbl.append("-").append(exc.size());
+            tabGenreBtn.setText(lbl.toString());
+        }
+        loadPage(1, true);
+    }
+
+    private String joinCsv(List<String> list) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) sb.append(",");
+            sb.append(list.get(i));
+        }
+        return sb.toString();
     }
 
     private void setupRecycler() {
@@ -242,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
             statusText.setText("Зареждане...");
         }
 
-        CatalogApi.fetchPage(currentTab, currentGenre, currentQuery, page, PAGE_SIZE, new CatalogApi.Callback() {
+        CatalogApi.fetchPage(currentTab, currentGenre, currentExcludeGenre, currentQuery, page, PAGE_SIZE, new CatalogApi.Callback() {
             @Override
             public void onSuccess(CatalogApi.PageResult result) {
                 isLoading = false;
@@ -270,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия • v2.0.3");
+                statusText.setText(totalCount + " заглавия • v2.0.4");
             }
 
             @Override
