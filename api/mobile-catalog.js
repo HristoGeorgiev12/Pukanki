@@ -108,6 +108,8 @@ export default async function handler(req, res) {
             filtered = [...filtered];
             if (sort === "newest") {
                 filtered.sort((a, b) => (b.y || 0) - (a.y || 0) || (b.r || 0) - (a.r || 0));
+            } else if (sort === "oldest") {
+                filtered.sort((a, b) => (a.y || 9999) - (b.y || 9999) || (b.r || 0) - (a.r || 0));
             } else if (sort === "rating") {
                 const eff = (r) => (r >= 9.7 ? 6.0 : r || 0);
                 filtered.sort((a, b) => eff(b.r) - eff(a.r) || (b.y || 0) - (a.y || 0));

@@ -82,7 +82,7 @@
                 android:background="@drawable/bg_tab_selector"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
-                android:text="🎭 Жанр"
+                android:text="⚙ Филтри"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="13sp"
@@ -329,4 +329,197 @@
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
+
+    <!-- Dedicated Full-Screen TV Filters & Sort Overlay -->
+    <LinearLayout
+        android:id="@+id/filtersOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F50B0F19"
+        android:orientation="vertical"
+        android:paddingLeft="32dp"
+        android:paddingTop="22dp"
+        android:paddingRight="32dp"
+        android:paddingBottom="18dp"
+        android:visibility="gone">
+
+        <!-- Overlay Header with Apply / Reset / Back -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="⚙ Филтри и сортиране"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/filtersApplyBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_btn_primary"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="✓ Приложи"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/filtersResetBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_btn_secondary"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="✕ Изчисти"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/filtersCloseBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_btn_secondary"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="← Назад"
+                android:textAllCaps="false"
+                android:textColor="#E2E8F0"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="16dp">
+
+                <!-- Sort -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="↕ Сортиране"
+                    android:textColor="#34D399"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/filterSortRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+
+                <!-- Genres -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="🎭 Жанрове   (1 клик = ✓ Включи зелено • 2 клика = ✕ Изключи червено • 3 клика = Изчисти)"
+                    android:textColor="#34D399"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/filterGenresWrap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:orientation="vertical" />
+
+                <!-- Year -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="📅 Година на издаване"
+                    android:textColor="#34D399"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/filterYearRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+
+                <!-- Duration -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="⏱ Времетраене"
+                    android:textColor="#34D399"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/filterDurationRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+
+                <!-- Player -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="▶ Конкретен плеър"
+                    android:textColor="#34D399"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/filterPlayerRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 </FrameLayout>

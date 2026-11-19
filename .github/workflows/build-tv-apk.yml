@@ -65,8 +65,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: tv-v2.0.4
-          name: Pukanki TV v2.0.4 (Zero-Ad VOE + Multi-Genre Include/Exclude)
+          tag_name: tv-v2.0.5
+          name: Pukanki TV v2.0.5 (Full Website Filters + Sort Panel + Zero-Ad VOE)
           body: |
             ### 🍿 Пуканки TV v2.0.0 (Нативно Android TV приложение + ExoPlayer)
             

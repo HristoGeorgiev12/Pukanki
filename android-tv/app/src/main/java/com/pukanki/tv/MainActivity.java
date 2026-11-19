@@ -25,42 +25,81 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PAGE_SIZE = 30;
 
+    private static final String[] GENRES = new String[]{
+        "Екшън", "Комедия", "Анимация", "Трилър", "Фантастика", "Драма", "Ужаси", "Приключенски",
+        "Фентъзи", "Криминален", "Семеен", "Романтичен", "Мистерия", "Военен", "Исторически", "Документален"
+    };
+
+    private static final String[] SORT_LABELS = new String[]{
+        "Препоръчани", "Най-нови", "Най-стари", "Рейтинг ↓", "А – Я", "Най-кратки", "Най-дълги"
+    };
+    private static final String[] SORT_VALUES = new String[]{
+        "default", "newest", "oldest", "rating", "title", "shortest", "longest"
+    };
+
+    private static final String[] YEAR_LABELS = new String[]{
+        "Всички", "2024–2025", "2020+", "2015+", "2010+", "2000–2015", "Класики (<2000)"
+    };
+    private static final int[] YEAR_FROM = new int[]{0, 2024, 2020, 2015, 2010, 2000, 0};
+    private static final int[] YEAR_TO   = new int[]{0, 2025, 0,    0,    0,    2015, 1999};
+
+    private static final String[] DURATION_LABELS = new String[]{
+        "Всички", "До 90 мин", "90 – 120 мин", "Над 120 мин"
+    };
+    private static final String[] DURATION_VALUES = new String[]{
+        "", "short", "medium", "long"
+    };
+
+    private static final String[] PLAYER_LABELS = new String[]{
+        "Всички", "VOE", "Vidon", "Streamtape", "OK.ru", "Filemoon"
+    };
+    private static final String[] PLAYER_VALUES = new String[]{
+        "", "voe", "vidon", "streamtape", "ok.ru", "filemoon"
+    };
+
     private Button tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, searchGoBtn;
-    private LinearLayout searchRow, genreChipsContainer;
-    private View genreScrollRow;
+    private LinearLayout searchRow;
     private EditText searchInput;
     private TextView statusText, emptyText;
     private ProgressBar mainProgress;
     private RecyclerView moviesRecycler;
     private MovieAdapter adapter;
 
-    private FrameLayout detailOverlay;
     private ViewGroup browseContainer;
+    private FrameLayout detailOverlay;
     private ImageView detailBackdrop, detailPoster;
     private TextView detailTitle, detailMeta, detailOverview;
     private Button detailPlayBtn, detailBackBtn;
     private LinearLayout detailSourcesContainer;
 
-    private String currentTab = "bg";
-    private String currentGenre = "";
-    private String currentExcludeGenre = "";
-    private String currentQuery = "";
-    private final Map<String, Integer> genreStates = new LinkedHashMap<>();
-    private final Map<String, Button> genreChips = new LinkedHashMap<>();
+    // Dedicated TV Filters & Sort Overlay
+    private LinearLayout filtersOverlay;
+    private Button filtersApplyBtn, filtersResetBtn, filtersCloseBtn;
+    private LinearLayout filterSortRow, filterGenresWrap, filterYearRow, filterDurationRow, filterPlayerRow;
+
+    private final List<Button> sortBtns = new ArrayList<>();
+    private final List<Button> yearBtns = new ArrayList<>();
+    private final List<Button> durationBtns = new ArrayList<>();
+    private final List<Button> playerBtns = new ArrayList<>();
+    private final Map<String, Integer> genreStates = new LinkedHashMap<>(); // 0=neutral, 1=include, 2=exclude
+    private final Map<String, Button> genreBtns = new LinkedHashMap<>();
+
+    private int selectedSortIdx = 0;
+    private int selectedYearIdx = 0;
+    private int selectedDurationIdx = 0;
+    private int selectedPlayerIdx = 0;
+
+    private final CatalogApi.FilterParams filters = new CatalogApi.FilterParams();
     private int currentPage = 1;
     private boolean hasMore = false;
     private boolean isLoading = false;
     private int totalCount = 0;
-
-    private static final String[] GENRES = new String[]{
-        "Всички", "Екшън", "Комедия", "Анимация", "Трилър", "Фантастика",
-        "Драма", "Ужаси", "Приключенски", "Фентъзи", "Криминален", "Семеен", "Романтичен"
-    };
 
     private MovieItem activeDetailItem = null;
     private View lastFocusedCardView = null;
@@ -72,19 +111,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         bindViews();
+        buildFiltersOverlay();
         setupRecycler();
         setupListeners();
         selectTab("bg");
     }
 
     private void bindViews() {
+        browseContainer = findViewById(R.id.browseContainer);
         tabBgBtn = findViewById(R.id.tabBgBtn);
         tabSubBtn = findViewById(R.id.tabSubBtn);
         tabSeriesBtn = findViewById(R.id.tabSeriesBtn);
         tabGenreBtn = findViewById(R.id.tabGenreBtn);
         tabSearchBtn = findViewById(R.id.tabSearchBtn);
-        genreScrollRow = findViewById(R.id.genreScrollRow);
-        genreChipsContainer = findViewById(R.id.genreChipsContainer);
         searchRow = findViewById(R.id.searchRow);
         searchInput = findViewById(R.id.searchInput);
         searchGoBtn = findViewById(R.id.searchGoBtn);
@@ -94,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
         moviesRecycler = findViewById(R.id.moviesRecycler);
 
         detailOverlay = findViewById(R.id.detailOverlay);
-        browseContainer = findViewById(R.id.browseContainer);
         detailBackdrop = findViewById(R.id.detailBackdrop);
         detailPoster = findViewById(R.id.detailPoster);
         detailTitle = findViewById(R.id.detailTitle);
@@ -104,54 +142,143 @@ public class MainActivity extends AppCompatActivity {
         detailBackBtn = findViewById(R.id.detailBackBtn);
         detailSourcesContainer = findViewById(R.id.detailSourcesContainer);
 
-        buildGenreChips();
+        filtersOverlay = findViewById(R.id.filtersOverlay);
+        filtersApplyBtn = findViewById(R.id.filtersApplyBtn);
+        filtersResetBtn = findViewById(R.id.filtersResetBtn);
+        filtersCloseBtn = findViewById(R.id.filtersCloseBtn);
+        filterSortRow = findViewById(R.id.filterSortRow);
+        filterGenresWrap = findViewById(R.id.filterGenresWrap);
+        filterYearRow = findViewById(R.id.filterYearRow);
+        filterDurationRow = findViewById(R.id.filterDurationRow);
+        filterPlayerRow = findViewById(R.id.filterPlayerRow);
     }
 
-    private void buildGenreChips() {
-        genreChipsContainer.removeAllViews();
-        genreStates.clear();
-        genreChips.clear();
+    private Button createTvChip(String text) {
         float d = getResources().getDisplayMetrics().density;
-        int marginEnd = (int) (8 * d);
-        int heightPx = (int) (34 * d);
+        Button b = new Button(this);
+        b.setId(View.generateViewId());
+        b.setText(text);
+        b.setAllCaps(false);
+        b.setTextColor(0xFFFFFFFF);
+        b.setTextSize(12.5f);
+        b.setBackgroundResource(R.drawable.bg_tab_selector);
+        b.setPadding((int) (14 * d), 0, (int) (14 * d), 0);
+        b.setFocusable(true);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT, (int) (36 * d)
+        );
+        lp.setMarginEnd((int) (8 * d));
+        b.setLayoutParams(lp);
+        return b;
+    }
 
-        for (final String g : GENRES) {
-            Button chip = new Button(this);
-            final boolean isReset = "Всички".equals(g);
-            chip.setText(isReset ? "✕ Изчисти" : g);
-            chip.setAllCaps(false);
-            chip.setTextColor(0xFFFFFFFF);
-            chip.setTextSize(12f);
-            chip.setBackgroundResource(R.drawable.bg_tab_selector);
-            chip.setPadding((int) (14 * d), 0, (int) (14 * d), 0);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, heightPx
-            );
-            lp.setMarginEnd(marginEnd);
-            chip.setLayoutParams(lp);
-            chip.setSelected(isReset);
-
-            if (!isReset) {
-                genreStates.put(g, 0);
-                genreChips.put(g, chip);
-            }
-
-            chip.setOnClickListener(v -> {
-                if (isReset) {
-                    for (Map.Entry<String, Button> e : genreChips.entrySet()) {
-                        genreStates.put(e.getKey(), 0);
-                        updateGenreChipVisual(e.getValue(), e.getKey(), 0);
-                    }
-                    syncGenreFiltersAndReload();
-                } else {
-                    int cur = genreStates.containsKey(g) ? genreStates.get(g) : 0;
-                    int next = (cur + 1) % 3; // 0=neutral, 1=include, 2=exclude
-                    genreStates.put(g, next);
-                    updateGenreChipVisual(chip, g, next);
-                    syncGenreFiltersAndReload();
-                }
+    private void buildFiltersOverlay() {
+        // 1. Sort chips
+        filterSortRow.removeAllViews();
+        sortBtns.clear();
+        for (int i = 0; i < SORT_LABELS.length; i++) {
+            final int idx = i;
+            Button b = createTvChip(SORT_LABELS[i]);
+            b.setSelected(idx == selectedSortIdx);
+            b.setOnClickListener(v -> {
+                selectedSortIdx = idx;
+                updateSingleSelectRow(sortBtns, selectedSortIdx);
             });
-            genreChipsContainer.addView(chip);
+            sortBtns.add(b);
+            filterSortRow.addView(b);
+        }
+
+        // 2. Genres grid (2 rows x 8 chips) with Include / Exclude 3-state toggle
+        filterGenresWrap.removeAllViews();
+        genreStates.clear();
+        genreBtns.clear();
+        float d = getResources().getDisplayMetrics().density;
+        int perRow = 8;
+        LinearLayout row = null;
+        for (int i = 0; i < GENRES.length; i++) {
+            final String g = GENRES[i];
+            genreStates.put(g, 0);
+            if (i % perRow == 0) {
+                row = new LinearLayout(this);
+                row.setOrientation(LinearLayout.HORIZONTAL);
+                LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                rlp.bottomMargin = (int) (8 * d);
+                row.setLayoutParams(rlp);
+                filterGenresWrap.addView(row);
+            }
+            Button b = new Button(this);
+            b.setId(View.generateViewId());
+            b.setText(g);
+            b.setAllCaps(false);
+            b.setTextColor(0xFFFFFFFF);
+            b.setTextSize(11.5f);
+            b.setBackgroundResource(R.drawable.bg_tab_selector);
+            b.setPadding((int) (6 * d), 0, (int) (6 * d), 0);
+            b.setFocusable(true);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, (int) (36 * d), 1f);
+            lp.setMarginEnd((int) (6 * d));
+            b.setLayoutParams(lp);
+            b.setOnClickListener(v -> {
+                int cur = genreStates.containsKey(g) ? genreStates.get(g) : 0;
+                int next = (cur + 1) % 3;
+                genreStates.put(g, next);
+                updateGenreChipVisual(b, g, next);
+            });
+            genreBtns.put(g, b);
+            row.addView(b);
+        }
+
+        // 3. Year preset chips
+        filterYearRow.removeAllViews();
+        yearBtns.clear();
+        for (int i = 0; i < YEAR_LABELS.length; i++) {
+            final int idx = i;
+            Button b = createTvChip(YEAR_LABELS[i]);
+            b.setSelected(idx == selectedYearIdx);
+            b.setOnClickListener(v -> {
+                selectedYearIdx = idx;
+                updateSingleSelectRow(yearBtns, selectedYearIdx);
+            });
+            yearBtns.add(b);
+            filterYearRow.addView(b);
+        }
+
+        // 4. Duration chips
+        filterDurationRow.removeAllViews();
+        durationBtns.clear();
+        for (int i = 0; i < DURATION_LABELS.length; i++) {
+            final int idx = i;
+            Button b = createTvChip(DURATION_LABELS[i]);
+            b.setSelected(idx == selectedDurationIdx);
+            b.setOnClickListener(v -> {
+                selectedDurationIdx = idx;
+                updateSingleSelectRow(durationBtns, selectedDurationIdx);
+            });
+            durationBtns.add(b);
+            filterDurationRow.addView(b);
+        }
+
+        // 5. Player chips
+        filterPlayerRow.removeAllViews();
+        playerBtns.clear();
+        for (int i = 0; i < PLAYER_LABELS.length; i++) {
+            final int idx = i;
+            Button b = createTvChip(PLAYER_LABELS[i]);
+            b.setSelected(idx == selectedPlayerIdx);
+            b.setOnClickListener(v -> {
+                selectedPlayerIdx = idx;
+                updateSingleSelectRow(playerBtns, selectedPlayerIdx);
+            });
+            playerBtns.add(b);
+            filterPlayerRow.addView(b);
+        }
+    }
+
+    private void updateSingleSelectRow(List<Button> btns, int selectedIdx) {
+        for (int i = 0; i < btns.size(); i++) {
+            btns.get(i).setSelected(i == selectedIdx);
         }
     }
 
@@ -169,30 +296,66 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void syncGenreFiltersAndReload() {
+    private void openFiltersOverlay() {
+        searchRow.setVisibility(View.GONE);
+        browseContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        filtersOverlay.setVisibility(View.VISIBLE);
+        if (!sortBtns.isEmpty()) {
+            sortBtns.get(selectedSortIdx).post(() -> sortBtns.get(selectedSortIdx).requestFocus());
+        } else {
+            filtersApplyBtn.post(() -> filtersApplyBtn.requestFocus());
+        }
+    }
+
+    private void closeFiltersOverlay() {
+        filtersOverlay.setVisibility(View.GONE);
+        browseContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        tabGenreBtn.post(() -> tabGenreBtn.requestFocus());
+    }
+
+    private void applyFiltersAndClose() {
+        filters.sort = SORT_VALUES[selectedSortIdx];
+        filters.yearFrom = YEAR_FROM[selectedYearIdx];
+        filters.yearTo = YEAR_TO[selectedYearIdx];
+        filters.duration = DURATION_VALUES[selectedDurationIdx];
+        filters.player = PLAYER_VALUES[selectedPlayerIdx];
+
         List<String> inc = new ArrayList<>();
         List<String> exc = new ArrayList<>();
         for (Map.Entry<String, Integer> e : genreStates.entrySet()) {
             if (e.getValue() == 1) inc.add(e.getKey());
             else if (e.getValue() == 2) exc.add(e.getKey());
         }
-        currentGenre = joinCsv(inc);
-        currentExcludeGenre = joinCsv(exc);
+        filters.genre = joinCsv(inc);
+        filters.excludeGenre = joinCsv(exc);
 
-        if (inc.isEmpty() && exc.isEmpty()) {
-            tabGenreBtn.setText("🎭 Жанр");
-        } else if (inc.size() == 1 && exc.isEmpty()) {
-            tabGenreBtn.setText("🎭 ✓" + inc.get(0));
-        } else if (inc.isEmpty() && exc.size() == 1) {
-            tabGenreBtn.setText("🎭 ✕" + exc.get(0));
-        } else {
-            StringBuilder lbl = new StringBuilder("🎭 ");
-            if (!inc.isEmpty()) lbl.append("+").append(inc.size());
-            if (!inc.isEmpty() && !exc.isEmpty()) lbl.append(" / ");
-            if (!exc.isEmpty()) lbl.append("-").append(exc.size());
-            tabGenreBtn.setText(lbl.toString());
-        }
+        int activeCount = inc.size() + exc.size();
+        if (selectedSortIdx > 0) activeCount++;
+        if (selectedYearIdx > 0) activeCount++;
+        if (selectedDurationIdx > 0) activeCount++;
+        if (selectedPlayerIdx > 0) activeCount++;
+
+        tabGenreBtn.setText(activeCount > 0 ? "⚙ Филтри (" + activeCount + ")" : "⚙ Филтри");
+
+        filtersOverlay.setVisibility(View.GONE);
+        browseContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         loadPage(1, true);
+    }
+
+    private void resetAllFilters() {
+        selectedSortIdx = 0;
+        selectedYearIdx = 0;
+        selectedDurationIdx = 0;
+        selectedPlayerIdx = 0;
+        updateSingleSelectRow(sortBtns, 0);
+        updateSingleSelectRow(yearBtns, 0);
+        updateSingleSelectRow(durationBtns, 0);
+        updateSingleSelectRow(playerBtns, 0);
+        for (Map.Entry<String, Button> e : genreBtns.entrySet()) {
+            genreStates.put(e.getKey(), 0);
+            updateGenreChipVisual(e.getValue(), e.getKey(), 0);
+        }
+        applyFiltersAndClose();
     }
 
     private String joinCsv(List<String> list) {
@@ -227,33 +390,21 @@ public class MainActivity extends AppCompatActivity {
     private void setupListeners() {
         tabBgBtn.setOnClickListener(v -> {
             searchRow.setVisibility(View.GONE);
-            currentQuery = "";
+            filters.query = "";
             selectTab("bg");
         });
         tabSubBtn.setOnClickListener(v -> {
             searchRow.setVisibility(View.GONE);
-            currentQuery = "";
+            filters.query = "";
             selectTab("sub");
         });
         tabSeriesBtn.setOnClickListener(v -> {
             searchRow.setVisibility(View.GONE);
-            genreScrollRow.setVisibility(View.GONE);
-            currentQuery = "";
+            filters.query = "";
             selectTab("series");
         });
-        tabGenreBtn.setOnClickListener(v -> {
-            searchRow.setVisibility(View.GONE);
-            if (genreScrollRow.getVisibility() == View.VISIBLE) {
-                genreScrollRow.setVisibility(View.GONE);
-            } else {
-                genreScrollRow.setVisibility(View.VISIBLE);
-                if (genreChipsContainer.getChildCount() > 0) {
-                    genreChipsContainer.getChildAt(0).requestFocus();
-                }
-            }
-        });
+        tabGenreBtn.setOnClickListener(v -> openFiltersOverlay());
         tabSearchBtn.setOnClickListener(v -> {
-            genreScrollRow.setVisibility(View.GONE);
             if (searchRow.getVisibility() == View.VISIBLE) {
                 searchRow.setVisibility(View.GONE);
             } else {
@@ -264,44 +415,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        filtersApplyBtn.setOnClickListener(v -> applyFiltersAndClose());
+        filtersResetBtn.setOnClickListener(v -> resetAllFilters());
+        filtersCloseBtn.setOnClickListener(v -> closeFiltersOverlay());
+
         searchGoBtn.setOnClickListener(v -> performSearch());
         searchInput.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE
-                || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 performSearch();
                 return true;
             }
             return false;
         });
 
-        detailBackBtn.setOnClickListener(v -> closeDetails());
         detailPlayBtn.setOnClickListener(v -> {
             if (activeDetailItem != null) {
                 launchPlayer(activeDetailItem, 0);
             }
         });
+        detailBackBtn.setOnClickListener(v -> closeDetails());
     }
 
     private void performSearch() {
-        currentQuery = searchInput.getText().toString().trim();
+        filters.query = searchInput.getText().toString().trim();
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (imm != null) imm.hideSoftInputFromWindow(searchInput.getWindowToken(), 0);
-        currentTab = "all";
+        filters.tab = "all";
         updateTabStyles();
         loadPage(1, true);
     }
 
     private void selectTab(String tab) {
-        currentTab = tab;
+        filters.tab = tab;
         updateTabStyles();
         loadPage(1, true);
     }
 
     private void updateTabStyles() {
-        tabBgBtn.setSelected("bg".equals(currentTab));
-        tabSubBtn.setSelected("sub".equals(currentTab));
-        tabSeriesBtn.setSelected("series".equals(currentTab));
-        tabSearchBtn.setSelected("all".equals(currentTab));
+        tabBgBtn.setSelected("bg".equals(filters.tab));
+        tabSubBtn.setSelected("sub".equals(filters.tab));
+        tabSeriesBtn.setSelected("series".equals(filters.tab));
+        tabSearchBtn.setSelected("all".equals(filters.tab));
     }
 
     private void loadPage(final int page, final boolean reset) {
@@ -312,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
             statusText.setText("Зареждане...");
         }
 
-        CatalogApi.fetchPage(currentTab, currentGenre, currentExcludeGenre, currentQuery, page, PAGE_SIZE, new CatalogApi.Callback() {
+        CatalogApi.fetchPage(filters, page, PAGE_SIZE, new CatalogApi.Callback() {
             @Override
             public void onSuccess(CatalogApi.PageResult result) {
                 isLoading = false;
@@ -332,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
                             RecyclerView.ViewHolder first = moviesRecycler.findViewHolderForAdapterPosition(0);
                             if (first != null && detailOverlay.getVisibility() != View.VISIBLE
                                 && searchRow.getVisibility() != View.VISIBLE
-                                && genreScrollRow.getVisibility() != View.VISIBLE) {
+                                && filtersOverlay.getVisibility() != View.VISIBLE) {
                                 first.itemView.requestFocus();
                             }
                         });
@@ -340,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия • v2.0.4");
+                statusText.setText(totalCount + " заглавия • v2.0.5");
             }
 
             @Override
@@ -359,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
 
         StringBuilder meta = new StringBuilder();
         if (item.year > 0) meta.append(item.year);
-        if (item.rating > 0) meta.append(meta.length() > 0 ? "  •  " : "").append(String.format("★ %.1f", item.rating));
+        if (item.rating > 0) meta.append(meta.length() > 0 ? "  •  " : "").append(String.format(Locale.US, "★ %.1f", item.rating));
         if (item.duration > 0) meta.append(meta.length() > 0 ? "  •  " : "").append(item.duration).append(" мин");
         meta.append(meta.length() > 0 ? "  •  " : "").append(item.isBgAudio ? "🇧🇬 БГ Аудио" : "💬 БГ Субтитри");
         if (!item.genres.isEmpty()) {
@@ -376,7 +530,6 @@ public class MainActivity extends AppCompatActivity {
         String bgUrl = (item.backdropUrl != null && !item.backdropUrl.isEmpty()) ? item.backdropUrl : item.posterUrl;
         Glide.with(this).load(bgUrl).centerCrop().into(detailBackdrop);
 
-        // Populate optional player buttons below Play button
         detailSourcesContainer.removeAllViews();
         List<MovieItem.PlayerSource> sources = item.sources;
         int marginPx = (int) (8 * getResources().getDisplayMetrics().density);
@@ -454,27 +607,17 @@ public class MainActivity extends AppCompatActivity {
                 closeDetails();
                 return true;
             }
-            if (genreScrollRow.getVisibility() == View.VISIBLE) {
-                genreScrollRow.setVisibility(View.GONE);
-                tabGenreBtn.requestFocus();
+            if (filtersOverlay.getVisibility() == View.VISIBLE) {
+                closeFiltersOverlay();
                 return true;
             }
             if (searchRow.getVisibility() == View.VISIBLE) {
                 searchRow.setVisibility(View.GONE);
-                if (!currentQuery.isEmpty()) {
-                    currentQuery = "";
-                    selectTab("bg");
-                }
+                moviesRecycler.requestFocus();
                 return true;
             }
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        hideSystemUI();
     }
 
     private void hideSystemUI() {

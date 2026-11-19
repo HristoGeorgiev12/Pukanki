@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private static final String[] SORT_LABELS = new String[]{
-        "Препоръчани", "Най-нови", "Най-висок рейтинг", "А – Я", "Най-кратки", "Най-дълги"
+        "Препоръчани", "Най-нови", "Най-стари", "Най-висок рейтинг", "А – Я", "Най-кратки", "Най-дълги"
     };
     private static final String[] SORT_VALUES = new String[]{
-        "default", "newest", "rating", "title", "shortest", "longest"
+        "default", "newest", "oldest", "rating", "title", "shortest", "longest"
     };
 
     private static final String[] YEAR_LABELS = new String[]{
