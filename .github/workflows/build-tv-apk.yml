@@ -34,13 +34,25 @@ jobs:
       - name: Build APK with Gradle
         run: |
           export PATH="$PWD/gradle-8.4/bin:$PATH"
+          export BUILD_VERSION_CODE=$((GITHUB_RUN_NUMBER + 100))
+          TASK="assembleDebug"
+          if [ -n "$PUKANKI_KEYSTORE_BASE64" ] && [ -n "$PUKANKI_KEYSTORE_PASSWORD" ]; then
+            echo "$PUKANKI_KEYSTORE_BASE64" | base64 --decode > "$PWD/pukanki-release.p12"
+            export PUKANKI_KEYSTORE_PATH="$PWD/pukanki-release.p12"
+            TASK="assembleRelease"
+            echo "Building signed Release APK (versionCode=$BUILD_VERSION_CODE)"
+          else
+            echo "No release keystore secret found; building Debug APK (versionCode=$BUILD_VERSION_CODE)"
+          fi
           cd android-tv
-          gradle assembleDebug --stacktrace --no-daemon > ../gradle_build.log 2>&1 || {
+          gradle $TASK --stacktrace --no-daemon > ../gradle_build.log 2>&1 || {
             tail -n 120 ../gradle_build.log
             exit 1
           }
         env:
           ANDROID_HOME: /usr/local/lib/android/sdk
+          PUKANKI_KEYSTORE_BASE64: ${{ secrets.PUKANKI_KEYSTORE_BASE64 }}
+          PUKANKI_KEYSTORE_PASSWORD: ${{ secrets.PUKANKI_KEYSTORE_PASSWORD }}
 
       - name: Upload Build Log on Failure
         if: failure()

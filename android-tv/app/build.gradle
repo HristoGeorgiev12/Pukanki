@@ -10,13 +10,30 @@ android {
         applicationId "com.pukanki.tv"
         minSdk 21
         targetSdk 34
-        versionCode 8
+        versionCode Integer.parseInt(System.getenv("BUILD_VERSION_CODE") ?: "8")
         versionName "2.0.5"
+    }
+
+    signingConfigs {
+        release {
+            def ksPath = System.getenv("PUKANKI_KEYSTORE_PATH")
+            def ksPass = System.getenv("PUKANKI_KEYSTORE_PASSWORD")
+            if (ksPath && file(ksPath).exists() && ksPass) {
+                storeFile file(ksPath)
+                storeType 'PKCS12'
+                storePassword ksPass
+                keyAlias 'pukanki'
+                keyPassword ksPass
+            }
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            if (System.getenv("PUKANKI_KEYSTORE_PATH")) {
+                signingConfig signingConfigs.release
+            }
         }
         debug {
             applicationIdSuffix ".debug"
