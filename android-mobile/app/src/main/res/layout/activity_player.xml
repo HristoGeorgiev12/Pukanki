@@ -77,18 +77,12 @@
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/hudCastBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
+        <androidx.mediarouter.app.MediaRouteButton
+            android:id="@+id/mediaRouteButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_btn_secondary"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="📺 Cast"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp" />
+            android:mediaRouteTypes="user" />
 
         <Button
             android:id="@+id/hudNextSourceBtn"

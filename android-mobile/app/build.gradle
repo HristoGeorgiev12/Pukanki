@@ -11,7 +11,7 @@ android {
         minSdk 21
         targetSdk 34
         versionCode Integer.parseInt(System.getenv("BUILD_VERSION_CODE") ?: "1")
-        versionName "1.0.1"
+        versionName "1.0.2"
     }
 
     signingConfigs {
@@ -56,4 +56,6 @@ dependencies {
     implementation 'androidx.media3:media3-exoplayer-hls:1.2.1'
     implementation 'androidx.media3:media3-ui:1.2.1'
     implementation 'androidx.media3:media3-datasource:1.2.1'
+    implementation 'androidx.mediarouter:mediarouter:1.7.0'
+    implementation 'com.google.android.gms:play-services-cast-framework:21.4.0'
 }

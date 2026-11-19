@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media3.common.MediaItem;
@@ -33,6 +34,17 @@ import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.ui.PlayerView;
+import androidx.mediarouter.app.MediaRouteButton;
+
+import com.google.android.gms.cast.MediaInfo;
+import com.google.android.gms.cast.MediaLoadRequestData;
+import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.framework.CastButtonFactory;
+import com.google.android.gms.cast.framework.CastContext;
+import com.google.android.gms.cast.framework.CastSession;
+import com.google.android.gms.cast.framework.SessionManager;
+import com.google.android.gms.cast.framework.SessionManagerListener;
+import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
@@ -52,9 +64,13 @@ public class PlayerActivity extends AppCompatActivity {
     private PlayerView exoPlayerView;
     private LinearLayout playerTopHud, loadingOverlay;
     private TextView hudMovieTitle, hudSourceInfo, loadingStatusText;
-    private Button hudBackBtn, hudCastBtn, hudNextSourceBtn, loadingNextBtn;
+    private Button hudBackBtn, hudNextSourceBtn, loadingNextBtn;
+    private MediaRouteButton mediaRouteButton;
 
     private ExoPlayer exoPlayer;
+    private CastContext castContext;
+    private SessionManager castSessionManager;
+    private CastSession castSession;
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private String movieTitle = "";
@@ -91,7 +107,7 @@ public class PlayerActivity extends AppCompatActivity {
         hudSourceInfo = findViewById(R.id.hudSourceInfo);
         loadingStatusText = findViewById(R.id.loadingStatusText);
         hudBackBtn = findViewById(R.id.hudBackBtn);
-        hudCastBtn = findViewById(R.id.hudCastBtn);
+        mediaRouteButton = findViewById(R.id.mediaRouteButton);
         hudNextSourceBtn = findViewById(R.id.hudNextSourceBtn);
         loadingNextBtn = findViewById(R.id.loadingNextBtn);
 
@@ -104,9 +120,10 @@ public class PlayerActivity extends AppCompatActivity {
         hudMovieTitle.setText(movieTitle);
 
         hudBackBtn.setOnClickListener(v -> finish());
-        hudCastBtn.setOnClickListener(v -> castCurrentStream());
         hudNextSourceBtn.setOnClickListener(v -> switchToNextSource());
         loadingNextBtn.setOnClickListener(v -> switchToNextSource());
+
+        setupGoogleCast();
 
         exoPlayerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) visibility -> {
             if (playerTopHud != null) {
@@ -124,18 +141,80 @@ public class PlayerActivity extends AppCompatActivity {
         loadSource(currentIndex);
     }
 
-    private void castCurrentStream() {
-        if (currentStreamUrl == null || currentStreamUrl.isEmpty()) {
-            Toast.makeText(this, "Изчакай видеото да зареди, за да го изпратиш към TV.", Toast.LENGTH_SHORT).show();
-            return;
+    private final SessionManagerListener<CastSession> castSessionListener = new SessionManagerListener<CastSession>() {
+        @Override public void onSessionStarting(@NonNull CastSession session) {}
+        @Override public void onSessionStarted(@NonNull CastSession session, @NonNull String sessionId) {
+            castSession = session;
+            loadCurrentStreamOnCast();
         }
+        @Override public void onSessionStartFailed(@NonNull CastSession session, int error) {
+            Toast.makeText(PlayerActivity.this, "Неуспешно свързване с Cast устройство.", Toast.LENGTH_SHORT).show();
+        }
+        @Override public void onSessionEnding(@NonNull CastSession session) {}
+        @Override public void onSessionEnded(@NonNull CastSession session, int error) {
+            castSession = null;
+            if (exoPlayer != null) {
+                exoPlayer.play();
+            }
+        }
+        @Override public void onSessionResuming(@NonNull CastSession session, @NonNull String sessionId) {}
+        @Override public void onSessionResumed(@NonNull CastSession session, boolean wasSuspended) {
+            castSession = session;
+            loadCurrentStreamOnCast();
+        }
+        @Override public void onSessionResumeFailed(@NonNull CastSession session, int error) {}
+        @Override public void onSessionSuspended(@NonNull CastSession session, int reason) {}
+    };
+
+    private void setupGoogleCast() {
         try {
-            Intent castIntent = new Intent(Intent.ACTION_VIEW);
-            castIntent.setDataAndType(Uri.parse(currentStreamUrl), "video/*");
-            castIntent.putExtra("title", movieTitle);
-            startActivity(Intent.createChooser(castIntent, "Изпрати към TV / Cast / Плеър"));
+            castContext = CastContext.getSharedInstance(this);
+            castSessionManager = castContext.getSessionManager();
+            castSession = castSessionManager.getCurrentCastSession();
+            if (mediaRouteButton != null) {
+                CastButtonFactory.setUpMediaRouteButton(getApplicationContext(), mediaRouteButton);
+            }
+        } catch (Exception ignored) {
+            if (mediaRouteButton != null) {
+                mediaRouteButton.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void loadCurrentStreamOnCast() {
+        if (castSession == null || !castSession.isConnected()) return;
+        if (currentStreamUrl == null || currentStreamUrl.isEmpty()) return;
+        try {
+            RemoteMediaClient remote = castSession.getRemoteMediaClient();
+            if (remote == null) return;
+
+            MediaMetadata metadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
+            metadata.putString(MediaMetadata.KEY_TITLE, movieTitle);
+
+            String contentType = currentStreamUrl.toLowerCase(Locale.ROOT).contains(".m3u8")
+                ? "application/x-mpegURL"
+                : "video/mp4";
+
+            MediaInfo mediaInfo = new MediaInfo.Builder(currentStreamUrl)
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setContentType(contentType)
+                .setMetadata(metadata)
+                .build();
+
+            long pos = (exoPlayer != null) ? Math.max(0, exoPlayer.getCurrentPosition()) : 0;
+            if (exoPlayer != null && exoPlayer.isPlaying()) {
+                exoPlayer.pause();
+            }
+
+            remote.load(new MediaLoadRequestData.Builder()
+                .setMediaInfo(mediaInfo)
+                .setAutoplay(true)
+                .setCurrentTime(pos)
+                .build());
+
+            Toast.makeText(this, "📺 Предаване към телевизора...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Toast.makeText(this, "Няма инсталирано Cast приложение.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Грешка при Cast: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -545,6 +624,10 @@ public class PlayerActivity extends AppCompatActivity {
         exoPlayer.prepare();
         exoPlayer.setPlayWhenReady(true);
 
+        if (castSession != null && castSession.isConnected()) {
+            loadCurrentStreamOnCast();
+        }
+
         showTopHudTemporarily();
     }
 
@@ -607,8 +690,20 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (castSessionManager != null) {
+            castSessionManager.addSessionManagerListener(castSessionListener, CastSession.class);
+            castSession = castSessionManager.getCurrentCastSession();
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        if (castSessionManager != null) {
+            castSessionManager.removeSessionManagerListener(castSessionListener, CastSession.class);
+        }
         if (exoPlayer != null) exoPlayer.pause();
         if (snifferWebView != null) snifferWebView.onPause();
     }
