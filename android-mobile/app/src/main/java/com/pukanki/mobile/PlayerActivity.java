@@ -39,6 +39,7 @@ import androidx.mediarouter.app.MediaRouteButton;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaLoadRequestData;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.MediaSeekOptions;
 import com.google.android.gms.cast.framework.CastButtonFactory;
 import com.google.android.gms.cast.framework.CastContext;
 import com.google.android.gms.cast.framework.CastSession;
@@ -160,6 +161,7 @@ public class PlayerActivity extends AppCompatActivity {
         @Override public void onSessionEnded(@NonNull CastSession session, int error) {
             castSession = null;
             if (exoPlayer != null) {
+                exoPlayer.setVolume(1.0f);
                 exoPlayer.play();
             }
         }
@@ -187,6 +189,10 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isCastingNow() {
+        return castSession != null && castSession.isConnected() && castSession.getRemoteMediaClient() != null;
+    }
+
     private void loadCurrentStreamOnCast() {
         if (castSession == null || !castSession.isConnected()) return;
         if (currentStreamUrl == null || currentStreamUrl.isEmpty()) return;
@@ -208,8 +214,9 @@ public class PlayerActivity extends AppCompatActivity {
                 .build();
 
             long pos = (exoPlayer != null) ? Math.max(0, exoPlayer.getCurrentPosition()) : 0;
-            if (exoPlayer != null && exoPlayer.isPlaying()) {
-                exoPlayer.pause();
+            if (exoPlayer != null) {
+                exoPlayer.setVolume(0f);
+                exoPlayer.setPlayWhenReady(true);
             }
 
             remote.load(new MediaLoadRequestData.Builder()
@@ -218,7 +225,7 @@ public class PlayerActivity extends AppCompatActivity {
                 .setCurrentTime(pos)
                 .build());
 
-            Toast.makeText(this, "📺 Предаване към телевизора...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "📺 Предаване към телевизора (контролите управляват TV)...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(this, "Грешка при Cast: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -638,6 +645,30 @@ public class PlayerActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onPositionDiscontinuity(Player.PositionInfo oldPosition, Player.PositionInfo newPosition, int reason) {
+                if (reason == Player.DISCONTINUITY_REASON_SEEK && isCastingNow()) {
+                    try {
+                        castSession.getRemoteMediaClient().seek(
+                            new MediaSeekOptions.Builder().setPosition(newPosition.positionMs).build()
+                        );
+                    } catch (Exception ignored) {}
+                }
+            }
+
+            @Override
+            public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
+                if (isCastingNow()) {
+                    try {
+                        if (playWhenReady) {
+                            castSession.getRemoteMediaClient().play();
+                        } else {
+                            castSession.getRemoteMediaClient().pause();
+                        }
+                    } catch (Exception ignored) {}
+                }
+            }
+
+            @Override
             public void onPlayerError(PlaybackException error) {
                 Toast.makeText(PlayerActivity.this, "Плеърът (" + src.name + ") отказа — опитай следващ.", Toast.LENGTH_SHORT).show();
                 if (sources.size() > 1) {
@@ -675,9 +706,18 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void saveCurrentWatchProgress() {
-        if (exoPlayer != null && historyKey != null && !historyKey.isEmpty()) {
-            long pos = exoPlayer.getCurrentPosition();
-            long dur = Math.max(0L, exoPlayer.getDuration());
+        if (historyKey != null && !historyKey.isEmpty()) {
+            long pos = 0L;
+            long dur = 0L;
+            if (isCastingNow()) {
+                try {
+                    pos = castSession.getRemoteMediaClient().getApproximateStreamPosition();
+                    dur = Math.max(0L, castSession.getRemoteMediaClient().getStreamDuration());
+                } catch (Exception ignored) {}
+            } else if (exoPlayer != null) {
+                pos = exoPlayer.getCurrentPosition();
+                dur = Math.max(0L, exoPlayer.getDuration());
+            }
             if (pos >= 10000L) {
                 WatchHistoryStore.saveProgress(this, movieJson, historyKey, pos, dur);
             }
