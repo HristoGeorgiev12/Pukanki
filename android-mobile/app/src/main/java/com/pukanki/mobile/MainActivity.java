@@ -353,6 +353,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateUnfinishedBadge() {
         int n = WatchHistoryStore.getUnfinishedCount(this);
         tabContinueBtn.setText(n > 0 ? "⏱ Недовършени (" + n + ")" : "⏱ Недовършени");
+        tabContinueBtn.setBackgroundResource(n > 0 ? R.drawable.bg_tab_unfinished_active : R.drawable.bg_tab_selector);
     }
 
     private void loadUnfinishedList() {
@@ -538,7 +539,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия • v1.1.1");
+                statusText.setText(totalCount + " заглавия • v1.1.2");
             }
 
             @Override

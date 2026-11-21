@@ -425,6 +425,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         int unfinishedCount = WatchHistoryStore.getUnfinishedCount(this);
+        tabContinueBtn.setBackgroundResource(unfinishedCount > 0 ? R.drawable.bg_tab_unfinished_active : R.drawable.bg_tab_selector);
         if (isSidebarExpanded) {
             sidebarLogoText.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
             sidebarLogoText.setText("🍿 Пуканки");
@@ -616,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия\nv2.1.1");
+                statusText.setText(totalCount + " заглавия\nv2.1.2");
             }
 
             @Override

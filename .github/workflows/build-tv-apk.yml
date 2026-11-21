@@ -64,31 +64,26 @@ jobs:
       - name: Copy & Prepare APK
         run: |
           mkdir -p output
-          find android-tv/app/build/outputs/apk -name "*.apk" -exec cp {} output/Pukanki-TV.apk \;
+          find android-tv/app/build/outputs/apk -name "*.apk" -exec cp {} output/Pukanki-TV-v2.1.2.apk \;
           ls -lh output/
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pukanki-TV-APK
-          path: output/Pukanki-TV.apk
+          name: Pukanki-TV-v2.1.2-APK
+          path: output/Pukanki-TV-v2.1.2.apk
 
       - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: tv-v2.1.1
-          name: Pukanki TV v2.1.1 (Auto-Updater + Resume + Unfinished Tab + Videa)
+          tag_name: tv-v2.1.2
+          name: Pukanki TV v2.1.2 (Popcorn Icon + Red Unfinished Tab + Auto-Updater)
           body: |
-            ### 🍿 Пуканки TV v2.0.0 (Нативно Android TV приложение + ExoPlayer)
+            ### 🍿 Пуканки TV v2.1.2 (Нативно Android TV приложение + ExoPlayer)
             
-            - **100% нативен Android TV интерфейс:** 6 компактни постера на ред, 60 FPS навигация, без WebView лаг.
-            - **Бърз сървърен каталог (`/api/catalog`):** Зарежда само по 30 филма на страница (~15 KB вместо 85 MB).
-            - **Google Media3 ExoPlayer:** Пауза (`OK`), превъртане напред/назад (`◀ ▶` ±15 сек), цял екран и смяна на плеъра (`▲`).
-            - Сайтът и мобилната версия са напълно недокоснати.
-            
-            **Директен линк за сваляне в Downloader:**
-            `https://github.com/HristoGeorgiev12/Pukanki/releases/download/tv-v2.0.0/Pukanki-TV.apk`
-          files: output/Pukanki-TV.apk
+            - **Нова официална икона на Пуканки** и **светещ в червено таб `⏱ Недовършени (N)`** при недовършени филми.
+            - **Памет докъде си гледал + Auto-Updater + Netflix ляво меню + Пълни филтри и сортиране.**
+          files: output/Pukanki-TV-v2.1.2.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

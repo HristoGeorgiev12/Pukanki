@@ -66,7 +66,7 @@ public class AppUpdater {
                     if (assets != null) {
                         for (int j = 0; j < assets.length(); j++) {
                             JSONObject a = assets.optJSONObject(j);
-                            if (a != null && apkAssetName.equalsIgnoreCase(a.optString("name", ""))) {
+                            if (a != null && a.optString("name", "").toLowerCase().endsWith(".apk")) {
                                 apkUrl = a.optString("browser_download_url", "");
                                 break;
                             }

@@ -64,25 +64,25 @@ jobs:
       - name: Copy & Prepare Mobile APK
         run: |
           mkdir -p output-mobile
-          find android-mobile/app/build/outputs/apk -name "*.apk" -exec cp {} output-mobile/Pukanki-Mobile.apk \;
+          find android-mobile/app/build/outputs/apk -name "*.apk" -exec cp {} output-mobile/Pukanki-Mobile-v1.1.2.apk \;
           ls -lh output-mobile/
 
       - name: Upload Mobile APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pukanki-Mobile-APK
-          path: output-mobile/Pukanki-Mobile.apk
+          name: Pukanki-Mobile-v1.1.2-APK
+          path: output-mobile/Pukanki-Mobile-v1.1.2.apk
 
       - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: mobile-v1.1.1
-          name: Pukanki Mobile v1.1.1 (Auto-Updater + Resume + Cast + Videa)
+          tag_name: mobile-v1.1.2
+          name: Pukanki Mobile v1.1.2 (Popcorn Icon + Red Unfinished Tab + Versioned APK)
           body: |
-            ### 🍿 Пуканки Mobile v1.0.0 (Android приложение за телефон)
+            ### 🍿 Пуканки Mobile v1.1.2 (Android приложение за телефон)
 
-            - **100% нативен вертикален интерфейс за телефон** с 3 колони постери и сензорно управление.
-            - **Всички филтри от сайта:** Сортиране, Включване/Изключване на жанрове, Година (от–до), Времетраене, Конкретен плеър и Търсене.
-            - **Нативен ExoPlayer без реклами:** VOE, Vidon, Streamtape, OK.ru, Filemoon + бутон **📺 Cast** за препращане към телевизор.
-          files: output-mobile/Pukanki-Mobile.apk
+            - **Нова официална икона на Пуканки** за Android телефон.
+            - **Светещ в червено таб `⏱ Недовършени (N)`** при наличие на недовършени филми.
+            - **Вграден Auto-Updater + Google Cast + VOE без реклами + Videa.hu.**
+          files: output-mobile/Pukanki-Mobile-v1.1.2.apk
