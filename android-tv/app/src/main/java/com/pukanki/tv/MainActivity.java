@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         setupRecycler();
         setupListeners();
         selectTab("bg");
+        AppUpdater.checkForUpdate(this, "tv-v", "Pukanki-TV.apk");
     }
 
     private void bindViews() {
@@ -615,7 +616,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия\nv2.1.0");
+                statusText.setText(totalCount + " заглавия\nv2.1.1");
             }
 
             @Override

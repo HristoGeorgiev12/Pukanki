@@ -77,8 +77,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: tv-v2.1.0
-          name: Pukanki TV v2.1.0 (Resume Playback + Unfinished Tab + Videa.hu)
+          tag_name: tv-v2.1.1
+          name: Pukanki TV v2.1.1 (Auto-Updater + Resume + Unfinished Tab + Videa)
           body: |
             ### 🍿 Пуканки TV v2.0.0 (Нативно Android TV приложение + ExoPlayer)
             
