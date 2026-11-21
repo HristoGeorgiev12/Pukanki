@@ -64,26 +64,26 @@ jobs:
       - name: Copy & Prepare APK
         run: |
           mkdir -p output
-          find android-tv/app/build/outputs/apk -name "*.apk" -exec cp {} output/Pukanki-TV-v2.1.2.apk \;
+          find android-tv/app/build/outputs/apk -name "*.apk" -exec cp {} output/Pukanki-TV-v2.1.3.apk \;
           ls -lh output/
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pukanki-TV-v2.1.2-APK
-          path: output/Pukanki-TV-v2.1.2.apk
+          name: Pukanki-TV-v2.1.3-APK
+          path: output/Pukanki-TV-v2.1.3.apk
 
       - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: tv-v2.1.2
-          name: Pukanki TV v2.1.2 (Popcorn Icon + Red Unfinished Tab + Auto-Updater)
+          tag_name: tv-v2.1.3
+          name: Pukanki TV v2.1.3 (New 3D Popcorn Icon & TV Banner + Red Unfinished Tab)
           body: |
-            ### 🍿 Пуканки TV v2.1.2 (Нативно Android TV приложение + ExoPlayer)
+            ### 🍿 Пуканки TV v2.1.3 (Нативно Android TV приложение + ExoPlayer)
             
-            - **Нова официална икона на Пуканки** и **светещ в червено таб `⏱ Недовършени (N)`** при недовършени филми.
-            - **Памет докъде си гледал + Auto-Updater + Netflix ляво меню + Пълни филтри и сортиране.**
-          files: output/Pukanki-TV-v2.1.2.apk
+            - **Нова 3D икона на Пуканки и нов Android TV банер.**
+            - **Светещ в червено таб `⏱ Недовършени (N)` + памет докъде си гледал + Auto-Updater.**
+          files: output/Pukanki-TV-v2.1.3.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

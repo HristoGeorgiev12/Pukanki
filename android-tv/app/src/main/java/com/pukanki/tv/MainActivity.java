@@ -617,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия\nv2.1.2");
+                statusText.setText(totalCount + " заглавия\nv2.1.3");
             }
 
             @Override

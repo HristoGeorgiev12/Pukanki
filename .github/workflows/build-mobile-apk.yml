@@ -64,25 +64,25 @@ jobs:
       - name: Copy & Prepare Mobile APK
         run: |
           mkdir -p output-mobile
-          find android-mobile/app/build/outputs/apk -name "*.apk" -exec cp {} output-mobile/Pukanki-Mobile-v1.1.2.apk \;
+          find android-mobile/app/build/outputs/apk -name "*.apk" -exec cp {} output-mobile/Pukanki-Mobile-v1.1.3.apk \;
           ls -lh output-mobile/
 
       - name: Upload Mobile APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pukanki-Mobile-v1.1.2-APK
-          path: output-mobile/Pukanki-Mobile-v1.1.2.apk
+          name: Pukanki-Mobile-v1.1.3-APK
+          path: output-mobile/Pukanki-Mobile-v1.1.3.apk
 
       - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: mobile-v1.1.2
-          name: Pukanki Mobile v1.1.2 (Popcorn Icon + Red Unfinished Tab + Versioned APK)
+          tag_name: mobile-v1.1.3
+          name: Pukanki Mobile v1.1.3 (New 3D Popcorn Icon + Red Unfinished Tab + Cast)
           body: |
-            ### 🍿 Пуканки Mobile v1.1.2 (Android приложение за телефон)
+            ### 🍿 Пуканки Mobile v1.1.3 (Android приложение за телефон)
 
-            - **Нова официална икона на Пуканки** за Android телефон.
+            - **Нова 3D икона на Пуканки** с лилаво-малинов кино градиент и Play бутон.
             - **Светещ в червено таб `⏱ Недовършени (N)`** при наличие на недовършени филми.
             - **Вграден Auto-Updater + Google Cast + VOE без реклами + Videa.hu.**
-          files: output-mobile/Pukanki-Mobile-v1.1.2.apk
+          files: output-mobile/Pukanki-Mobile-v1.1.3.apk
