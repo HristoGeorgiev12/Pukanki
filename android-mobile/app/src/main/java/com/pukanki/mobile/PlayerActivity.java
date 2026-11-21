@@ -21,6 +21,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,10 +64,15 @@ public class PlayerActivity extends AppCompatActivity {
 
     private WebView snifferWebView;
     private PlayerView exoPlayerView;
-    private LinearLayout playerTopHud, loadingOverlay;
+    private LinearLayout playerTopHud, loadingOverlay, castRemoteOverlay;
     private TextView hudMovieTitle, hudSourceInfo, loadingStatusText;
+    private TextView castTitleText, castPosText, castDurText;
+    private SeekBar castSeekBar;
     private Button hudBackBtn, hudNextSourceBtn, loadingNextBtn;
+    private Button castRewBtn, castPlayPauseBtn, castFwdBtn;
     private MediaRouteButton mediaRouteButton;
+    private boolean isUserSeekingCast = false;
+    private long lastKnownCastPosMs = 0L;
 
     private ExoPlayer exoPlayer;
     private CastContext castContext;
@@ -107,9 +113,17 @@ public class PlayerActivity extends AppCompatActivity {
         exoPlayerView = findViewById(R.id.exoPlayerView);
         playerTopHud = findViewById(R.id.playerTopHud);
         loadingOverlay = findViewById(R.id.loadingOverlay);
+        castRemoteOverlay = findViewById(R.id.castRemoteOverlay);
         hudMovieTitle = findViewById(R.id.hudMovieTitle);
         hudSourceInfo = findViewById(R.id.hudSourceInfo);
         loadingStatusText = findViewById(R.id.loadingStatusText);
+        castTitleText = findViewById(R.id.castTitleText);
+        castPosText = findViewById(R.id.castPosText);
+        castDurText = findViewById(R.id.castDurText);
+        castSeekBar = findViewById(R.id.castSeekBar);
+        castRewBtn = findViewById(R.id.castRewBtn);
+        castPlayPauseBtn = findViewById(R.id.castPlayPauseBtn);
+        castFwdBtn = findViewById(R.id.castFwdBtn);
         hudBackBtn = findViewById(R.id.hudBackBtn);
         mediaRouteButton = findViewById(R.id.mediaRouteButton);
         hudNextSourceBtn = findViewById(R.id.hudNextSourceBtn);
@@ -125,11 +139,13 @@ public class PlayerActivity extends AppCompatActivity {
         if (currentIndex < 0 || currentIndex >= sources.size()) currentIndex = 0;
 
         hudMovieTitle.setText(movieTitle);
+        castTitleText.setText(movieTitle);
 
         hudBackBtn.setOnClickListener(v -> finish());
         hudNextSourceBtn.setOnClickListener(v -> switchToNextSource());
         loadingNextBtn.setOnClickListener(v -> switchToNextSource());
 
+        setupCastRemoteControls();
         setupGoogleCast();
 
         exoPlayerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) visibility -> {
@@ -160,10 +176,7 @@ public class PlayerActivity extends AppCompatActivity {
         @Override public void onSessionEnding(@NonNull CastSession session) {}
         @Override public void onSessionEnded(@NonNull CastSession session, int error) {
             castSession = null;
-            if (exoPlayer != null) {
-                exoPlayer.setVolume(1.0f);
-                exoPlayer.play();
-            }
+            exitCastRemoteUi();
         }
         @Override public void onSessionResuming(@NonNull CastSession session, @NonNull String sessionId) {}
         @Override public void onSessionResumed(@NonNull CastSession session, boolean wasSuspended) {
@@ -187,6 +200,127 @@ public class PlayerActivity extends AppCompatActivity {
                 mediaRouteButton.setVisibility(View.GONE);
             }
         }
+    }
+
+    private void setupCastRemoteControls() {
+        castPlayPauseBtn.setOnClickListener(v -> {
+            if (!isCastingNow()) return;
+            RemoteMediaClient remote = castSession.getRemoteMediaClient();
+            if (remote.isPlaying()) {
+                remote.pause();
+                castPlayPauseBtn.setText("▶ Продължи");
+            } else {
+                remote.play();
+                castPlayPauseBtn.setText("⏸ Пауза");
+            }
+        });
+
+        castRewBtn.setOnClickListener(v -> {
+            if (!isCastingNow()) return;
+            RemoteMediaClient remote = castSession.getRemoteMediaClient();
+            long target = Math.max(0L, remote.getApproximateStreamPosition() - SEEK_STEP_MS);
+            remote.seek(new MediaSeekOptions.Builder().setPosition(target).build());
+            castPosText.setText(formatTime(target));
+        });
+
+        castFwdBtn.setOnClickListener(v -> {
+            if (!isCastingNow()) return;
+            RemoteMediaClient remote = castSession.getRemoteMediaClient();
+            long dur = remote.getStreamDuration();
+            long target = remote.getApproximateStreamPosition() + SEEK_STEP_MS;
+            if (dur > 0 && target > dur) target = dur;
+            remote.seek(new MediaSeekOptions.Builder().setPosition(target).build());
+            castPosText.setText(formatTime(target));
+        });
+
+        castSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser && isCastingNow()) {
+                    long dur = castSession.getRemoteMediaClient().getStreamDuration();
+                    if (dur > 0) {
+                        long previewMs = (dur * progress) / 1000L;
+                        castPosText.setText(formatTime(previewMs));
+                    }
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                isUserSeekingCast = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                isUserSeekingCast = false;
+                if (isCastingNow()) {
+                    RemoteMediaClient remote = castSession.getRemoteMediaClient();
+                    long dur = remote.getStreamDuration();
+                    if (dur > 0) {
+                        long targetMs = (dur * seekBar.getProgress()) / 1000L;
+                        remote.seek(new MediaSeekOptions.Builder().setPosition(targetMs).build());
+                    }
+                }
+            }
+        });
+    }
+
+    private final Runnable castUiUpdater = new Runnable() {
+        @Override
+        public void run() {
+            if (!isCastingNow() || isFinishing()) return;
+            try {
+                RemoteMediaClient remote = castSession.getRemoteMediaClient();
+                long pos = Math.max(0L, remote.getApproximateStreamPosition());
+                long dur = Math.max(0L, remote.getStreamDuration());
+                lastKnownCastPosMs = pos;
+                if (!isUserSeekingCast) {
+                    castPosText.setText(formatTime(pos));
+                    castDurText.setText(formatTime(dur));
+                    if (dur > 0) {
+                        castSeekBar.setProgress((int) ((pos * 1000L) / dur));
+                    }
+                }
+                castPlayPauseBtn.setText(remote.isPlaying() ? "⏸ Пауза" : "▶ Продължи");
+            } catch (Exception ignored) {}
+            handler.postDelayed(this, 1000L);
+        }
+    };
+
+    private String formatTime(long ms) {
+        if (ms < 0) ms = 0;
+        long totalSec = ms / 1000L;
+        long hrs = totalSec / 3600L;
+        long mins = (totalSec % 3600L) / 60L;
+        long secs = totalSec % 60L;
+        if (hrs > 0) return String.format(Locale.US, "%d:%02d:%02d", hrs, mins, secs);
+        return String.format(Locale.US, "%02d:%02d", mins, secs);
+    }
+
+    private void enterCastRemoteUi() {
+        handler.removeCallbacks(hideHudRunnable);
+        if (exoPlayer != null) {
+            exoPlayer.pause();
+        }
+        exoPlayerView.setVisibility(View.GONE);
+        castRemoteOverlay.setVisibility(View.VISIBLE);
+        playerTopHud.setVisibility(View.VISIBLE);
+        handler.removeCallbacks(castUiUpdater);
+        handler.post(castUiUpdater);
+    }
+
+    private void exitCastRemoteUi() {
+        handler.removeCallbacks(castUiUpdater);
+        castRemoteOverlay.setVisibility(View.GONE);
+        exoPlayerView.setVisibility(View.VISIBLE);
+        if (exoPlayer != null) {
+            exoPlayer.setVolume(1.0f);
+            if (lastKnownCastPosMs > 0) {
+                exoPlayer.seekTo(lastKnownCastPosMs);
+            }
+            exoPlayer.play();
+        }
+        showTopHudTemporarily();
     }
 
     private boolean isCastingNow() {
@@ -214,10 +348,9 @@ public class PlayerActivity extends AppCompatActivity {
                 .build();
 
             long pos = (exoPlayer != null) ? Math.max(0, exoPlayer.getCurrentPosition()) : 0;
-            if (exoPlayer != null) {
-                exoPlayer.setVolume(0f);
-                exoPlayer.setPlayWhenReady(true);
-            }
+            lastKnownCastPosMs = pos;
+
+            enterCastRemoteUi();
 
             remote.load(new MediaLoadRequestData.Builder()
                 .setMediaInfo(mediaInfo)
@@ -225,7 +358,7 @@ public class PlayerActivity extends AppCompatActivity {
                 .setCurrentTime(pos)
                 .build());
 
-            Toast.makeText(this, "📺 Предаване към телевизора (контролите управляват TV)...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "📺 Предаване към телевизора", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(this, "Грешка при Cast: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }

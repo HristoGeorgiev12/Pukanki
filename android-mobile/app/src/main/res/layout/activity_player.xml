@@ -22,6 +22,124 @@
         app:show_timeout="3500"
         app:use_controller="true" />
 
+    <!-- Dedicated Cast Remote Control Screen (Phone video stopped, controls TV directly) -->
+    <LinearLayout
+        android:id="@+id/castRemoteOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#0B0F19"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="32dp"
+        android:paddingTop="56dp"
+        android:paddingRight="32dp"
+        android:paddingBottom="24dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📺 Предаване към телевизора"
+            android:textColor="#34D399"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/castTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="Филм"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/castPosText"
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="00:00"
+                android:textColor="#CBD5E1"
+                android:textSize="12sp" />
+
+            <SeekBar
+                android:id="@+id/castSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="1000" />
+
+            <TextView
+                android:id="@+id/castDurText"
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="00:00"
+                android:textColor="#CBD5E1"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/castRewBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/bg_btn_secondary"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:text="⏪ -15с"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/castPlayPauseBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/bg_btn_primary"
+                android:paddingLeft="26dp"
+                android:paddingRight="26dp"
+                android:text="⏸ Пауза"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/castFwdBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:background="@drawable/bg_btn_secondary"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:text="⏩ +15с"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
     <!-- Top Mobile Player HUD -->
     <LinearLayout
         android:id="@+id/playerTopHud"
