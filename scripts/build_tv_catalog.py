@@ -48,6 +48,8 @@ def host_priority(url):
         return 1
     if "voe.sx" in u or "voe." in u:
         return 2
+    if "videa.hu" in u:
+        return 2
     if "ok.ru" in u:
         return 3
     if "vidon.to" in u:
@@ -73,6 +75,8 @@ def clean_source_name(name, url):
             n = "Vidon"
         elif "ok.ru" in u:
             n = "OK.ru"
+        elif "videa.hu" in u:
+            n = "Videa"
         elif "filemoon" in u or "byse" in u:
             n = "Filemoon"
         elif "vsembed" in u:
@@ -106,6 +110,7 @@ def main():
         ("bg_serials.json", True, False),
         ("filmi9_data.json", False, True),
         ("filmi2k_sub.json", False, True),
+        ("videa_dock.json", False, True),
         ("subtitled_movies.json", False, True),
     ]
 

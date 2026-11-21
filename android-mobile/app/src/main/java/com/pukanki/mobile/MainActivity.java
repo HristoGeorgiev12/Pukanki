@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         "", "voe", "vidon", "streamtape", "ok.ru", "filemoon"
     };
 
-    private Button tabBgBtn, tabSubBtn, tabSeriesBtn, tabAllBtn;
+    private Button tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabAllBtn;
     private Button openFiltersBtn, searchGoBtn, searchClearBtn;
     private EditText searchInput;
     private TextView statusText, emptyText;
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindViews() {
+        tabContinueBtn = findViewById(R.id.tabContinueBtn);
         tabBgBtn = findViewById(R.id.tabBgBtn);
         tabSubBtn = findViewById(R.id.tabSubBtn);
         tabSeriesBtn = findViewById(R.id.tabSeriesBtn);
@@ -277,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        tabContinueBtn.setOnClickListener(v -> selectTab("continue"));
         tabBgBtn.setOnClickListener(v -> selectTab("bg"));
         tabSubBtn.setOnClickListener(v -> selectTab("sub"));
         tabSeriesBtn.setOnClickListener(v -> selectTab("series"));
@@ -335,11 +337,42 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectTab(String tab) {
         filters.tab = tab;
+        tabContinueBtn.setSelected("continue".equals(tab));
         tabBgBtn.setSelected("bg".equals(tab));
         tabSubBtn.setSelected("sub".equals(tab));
         tabSeriesBtn.setSelected("series".equals(tab));
         tabAllBtn.setSelected("all".equals(tab));
-        loadPage(1, true);
+        if ("continue".equals(tab)) {
+            loadUnfinishedList();
+        } else {
+            loadPage(1, true);
+        }
+    }
+
+    private void updateUnfinishedBadge() {
+        int n = WatchHistoryStore.getUnfinishedCount(this);
+        tabContinueBtn.setText(n > 0 ? "⏱ Недовършени (" + n + ")" : "⏱ Недовършени");
+    }
+
+    private void loadUnfinishedList() {
+        isLoading = false;
+        hasMore = false;
+        mainProgress.setVisibility(View.GONE);
+        List<MovieItem> list = WatchHistoryStore.getUnfinishedMovies(this);
+        adapter.setItems(list);
+        moviesRecycler.scrollToPosition(0);
+        emptyText.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+        statusText.setText(list.size() + " недовършени • v1.1.0");
+        updateUnfinishedBadge();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUnfinishedBadge();
+        if ("continue".equals(filters.tab)) {
+            loadUnfinishedList();
+        }
     }
 
     private void applyFiltersFromModal() {
@@ -504,7 +537,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия • v1.0.2");
+                statusText.setText(totalCount + " заглавия • v1.1.0");
             }
 
             @Override
@@ -578,6 +611,8 @@ public class MainActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, PlayerActivity.class);
         intent.putExtra("title", item.title);
+        intent.putExtra("history_key", item.getHistoryKey());
+        intent.putExtra("movie_json", item.toJsonObject().toString());
         intent.putExtra("sources_json", MovieItem.sourcesToJson(item.sources));
         intent.putExtra("start_index", startIndex);
         startActivity(intent);

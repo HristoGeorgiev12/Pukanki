@@ -58,13 +58,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.VH> {
         MovieItem item = items.get(position);
         h.title.setText(item.title);
 
-        StringBuilder meta = new StringBuilder();
-        if (item.year > 0) meta.append(item.year);
-        if (item.duration > 0) {
-            if (meta.length() > 0) meta.append(" • ");
-            meta.append(item.duration).append(" мин");
+        if (item.resumePositionMs > 0) {
+            h.meta.setText(WatchHistoryStore.formatProgressShort(item.resumePositionMs, item.resumeDurationMs));
+            h.meta.setTextColor(Color.parseColor("#34D399"));
+        } else {
+            StringBuilder meta = new StringBuilder();
+            if (item.year > 0) meta.append(item.year);
+            if (item.duration > 0) {
+                if (meta.length() > 0) meta.append(" • ");
+                meta.append(item.duration).append(" мин");
+            }
+            h.meta.setText(meta.toString());
+            h.meta.setTextColor(Color.parseColor("#94A3B8"));
         }
-        h.meta.setText(meta.toString());
 
         if (item.rating > 0) {
             h.rating.setVisibility(View.VISIBLE);

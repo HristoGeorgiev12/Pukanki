@@ -20,6 +20,42 @@ public class MovieItem {
     public String type; // "m" or "s"
     public List<String> genres = new ArrayList<>();
     public List<PlayerSource> sources = new ArrayList<>();
+    public long resumePositionMs = 0L;
+    public long resumeDurationMs = 0L;
+
+    public String getHistoryKey() {
+        return (title != null ? title.trim().toLowerCase() : "") + "|" + year;
+    }
+
+    public JSONObject toJsonObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("t", title != null ? title : "");
+            obj.put("ot", originalTitle != null ? originalTitle : "");
+            obj.put("y", year);
+            obj.put("r", rating);
+            obj.put("d", duration);
+            obj.put("p", posterUrl != null ? posterUrl : "");
+            obj.put("b", backdropUrl != null ? backdropUrl : "");
+            obj.put("o", overview != null ? overview : "");
+            obj.put("bg", isBgAudio ? 1 : 0);
+            obj.put("sub", isSubtitled ? 1 : 0);
+            obj.put("tp", type != null ? type : "m");
+            JSONArray gArr = new JSONArray();
+            for (String g : genres) gArr.put(g);
+            obj.put("g", gArr);
+            JSONArray sArr = new JSONArray();
+            for (PlayerSource s : sources) {
+                JSONArray row = new JSONArray();
+                row.put(s.name);
+                row.put(s.group);
+                row.put(s.url);
+                sArr.put(row);
+            }
+            obj.put("s", sArr);
+        } catch (Exception ignored) {}
+        return obj;
+    }
 
     public static class PlayerSource {
         public String name;

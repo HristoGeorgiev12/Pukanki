@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         "", "voe", "vidon", "streamtape", "ok.ru", "filemoon"
     };
 
-    private Button tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, searchGoBtn;
+    private Button tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, searchGoBtn;
     private LinearLayout leftSidebar, searchRow;
     private EditText searchInput;
     private TextView sidebarLogoText, statusText, emptyText;
@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         browseContainer = findViewById(R.id.browseContainer);
         leftSidebar = findViewById(R.id.leftSidebar);
         sidebarLogoText = findViewById(R.id.sidebarLogoText);
+        tabContinueBtn = findViewById(R.id.tabContinueBtn);
         tabBgBtn = findViewById(R.id.tabBgBtn);
         tabSubBtn = findViewById(R.id.tabSubBtn);
         tabSeriesBtn = findViewById(R.id.tabSeriesBtn);
@@ -394,8 +395,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isAnySidebarChildFocused() {
-        return tabBgBtn.hasFocus() || tabSubBtn.hasFocus() || tabSeriesBtn.hasFocus()
-            || tabGenreBtn.hasFocus() || tabSearchBtn.hasFocus();
+        return tabContinueBtn.hasFocus() || tabBgBtn.hasFocus() || tabSubBtn.hasFocus()
+            || tabSeriesBtn.hasFocus() || tabGenreBtn.hasFocus() || tabSearchBtn.hasFocus();
     }
 
     private void setSidebarExpanded(boolean expanded) {
@@ -416,15 +417,17 @@ public class MainActivity extends AppCompatActivity {
         int btnPad = (int) ((isSidebarExpanded ? 14 : 0) * d);
         int grav = isSidebarExpanded ? (Gravity.START | Gravity.CENTER_VERTICAL) : Gravity.CENTER;
 
-        Button[] navBtns = new Button[]{tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn};
+        Button[] navBtns = new Button[]{tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn};
         for (Button b : navBtns) {
             b.setGravity(grav);
             b.setPadding(btnPad, 0, isSidebarExpanded ? (int) (10 * d) : 0, 0);
         }
 
+        int unfinishedCount = WatchHistoryStore.getUnfinishedCount(this);
         if (isSidebarExpanded) {
             sidebarLogoText.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
             sidebarLogoText.setText("🍿 Пуканки");
+            tabContinueBtn.setText(unfinishedCount > 0 ? "⏱  Недовършени (" + unfinishedCount + ")" : "⏱  Недовършени");
             tabBgBtn.setText("🇧🇬  БГ Аудио");
             tabSubBtn.setText("💬  Субтитри");
             tabSeriesBtn.setText("📺  Сериали");
@@ -434,6 +437,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             sidebarLogoText.setGravity(Gravity.CENTER);
             sidebarLogoText.setText("🍿");
+            tabContinueBtn.setText(unfinishedCount > 0 ? "⏱" + unfinishedCount : "⏱");
             tabBgBtn.setText("🇧🇬");
             tabSubBtn.setText("💬");
             tabSeriesBtn.setText("📺");
@@ -455,11 +459,17 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         };
+        tabContinueBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabBgBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabSubBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabSeriesBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabGenreBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabSearchBtn.setOnFocusChangeListener(sidebarFocusListener);
+        tabContinueBtn.setOnClickListener(v -> {
+            searchRow.setVisibility(View.GONE);
+            filters.query = "";
+            selectTab("continue");
+        });
         tabBgBtn.setOnClickListener(v -> {
             searchRow.setVisibility(View.GONE);
             filters.query = "";
@@ -520,14 +530,52 @@ public class MainActivity extends AppCompatActivity {
     private void selectTab(String tab) {
         filters.tab = tab;
         updateTabStyles();
-        loadPage(1, true);
+        if ("continue".equals(tab)) {
+            loadUnfinishedList();
+        } else {
+            loadPage(1, true);
+        }
+    }
+
+    private void loadUnfinishedList() {
+        isLoading = false;
+        hasMore = false;
+        mainProgress.setVisibility(View.GONE);
+        List<MovieItem> list = WatchHistoryStore.getUnfinishedMovies(this);
+        adapter.setItems(list);
+        moviesRecycler.scrollToPosition(0);
+        if (list.isEmpty()) {
+            emptyText.setText("Няма недовършени филми.");
+            emptyText.setVisibility(View.VISIBLE);
+        } else {
+            emptyText.setVisibility(View.GONE);
+            moviesRecycler.post(() -> {
+                RecyclerView.ViewHolder first = moviesRecycler.findViewHolderForAdapterPosition(0);
+                if (first != null && detailOverlay.getVisibility() != View.VISIBLE) {
+                    first.itemView.requestFocus();
+                    setSidebarExpanded(false);
+                }
+            });
+        }
+        statusText.setText(list.size() + " недовършени\nv2.1.0");
+        updateSidebarVisuals();
     }
 
     private void updateTabStyles() {
+        tabContinueBtn.setSelected("continue".equals(filters.tab));
         tabBgBtn.setSelected("bg".equals(filters.tab));
         tabSubBtn.setSelected("sub".equals(filters.tab));
         tabSeriesBtn.setSelected("series".equals(filters.tab));
         tabSearchBtn.setSelected("all".equals(filters.tab));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateSidebarVisuals();
+        if ("continue".equals(filters.tab)) {
+            loadUnfinishedList();
+        }
     }
 
     private void loadPage(final int page, final boolean reset) {
@@ -567,7 +615,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия\nv2.0.7");
+                statusText.setText(totalCount + " заглавия\nv2.1.0");
             }
 
             @Override
@@ -668,6 +716,8 @@ public class MainActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, PlayerActivity.class);
         intent.putExtra("title", item.title);
+        intent.putExtra("history_key", item.getHistoryKey());
+        intent.putExtra("movie_json", item.toJsonObject().toString());
         intent.putExtra("sources_json", MovieItem.sourcesToJson(item.sources));
         intent.putExtra("start_index", startIndex);
         startActivity(intent);

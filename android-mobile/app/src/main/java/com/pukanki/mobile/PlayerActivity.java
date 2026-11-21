@@ -74,6 +74,9 @@ public class PlayerActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private String movieTitle = "";
+    private String historyKey = "";
+    private String movieJson = "";
+    private boolean resumedOnce = false;
     private List<MovieItem.PlayerSource> sources;
     private int currentIndex = 0;
 
@@ -113,6 +116,9 @@ public class PlayerActivity extends AppCompatActivity {
 
         movieTitle = getIntent().getStringExtra("title");
         if (movieTitle == null) movieTitle = "Пуканки";
+        historyKey = getIntent().getStringExtra("history_key");
+        if (historyKey == null) historyKey = movieTitle.trim().toLowerCase(Locale.ROOT) + "|0";
+        movieJson = getIntent().getStringExtra("movie_json");
         sources = MovieItem.sourcesFromJson(getIntent().getStringExtra("sources_json"));
         currentIndex = getIntent().getIntExtra("start_index", 0);
         if (currentIndex < 0 || currentIndex >= sources.size()) currentIndex = 0;
@@ -471,6 +477,12 @@ public class PlayerActivity extends AppCompatActivity {
                 && (low.contains("ct=0") || low.contains(".m3u8") || low.contains("/video"));
         }
 
+        // 2b. Videa.hu: official videa / videakid / mediaworks mp4 or m3u8 streams
+        if (currentEmbedHost.contains("videa.hu")) {
+            return (low.contains(".mp4") || low.contains(".m3u8"))
+                && (lowHost.contains("videa.hu") || lowHost.contains("videakid") || lowHost.contains("mediaworks"));
+        }
+
         // 3. HLS (.m3u8) streams across VOE, Vidon, Filemoon, Byse, Dropload, Vsembed
         if (low.contains(".m3u8")) {
             return true;
@@ -609,6 +621,23 @@ public class PlayerActivity extends AppCompatActivity {
         exoPlayerView.setPlayer(exoPlayer);
         exoPlayer.addListener(new Player.Listener() {
             @Override
+            public void onPlaybackStateChanged(int playbackState) {
+                if (playbackState == Player.STATE_READY && !resumedOnce && exoPlayer != null) {
+                    resumedOnce = true;
+                    long saved = WatchHistoryStore.getSavedPositionMs(PlayerActivity.this, historyKey);
+                    long dur = exoPlayer.getDuration();
+                    if (saved >= 10000L && (dur <= 0 || saved < dur - 15000L)) {
+                        exoPlayer.seekTo(saved);
+                        long min = saved / 60000L;
+                        long sec = (saved % 60000L) / 1000L;
+                        Toast.makeText(PlayerActivity.this,
+                            String.format(Locale.US, "▶ Продължаване от %02d:%02d", min, sec),
+                            Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
             public void onPlayerError(PlaybackException error) {
                 Toast.makeText(PlayerActivity.this, "Плеърът (" + src.name + ") отказа — опитай следващ.", Toast.LENGTH_SHORT).show();
                 if (sources.size() > 1) {
@@ -629,6 +658,30 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         showTopHudTemporarily();
+        startProgressSaver();
+    }
+
+    private final Runnable progressSaverRunnable = new Runnable() {
+        @Override
+        public void run() {
+            saveCurrentWatchProgress();
+            handler.postDelayed(this, 10000L);
+        }
+    };
+
+    private void startProgressSaver() {
+        handler.removeCallbacks(progressSaverRunnable);
+        handler.postDelayed(progressSaverRunnable, 10000L);
+    }
+
+    private void saveCurrentWatchProgress() {
+        if (exoPlayer != null && historyKey != null && !historyKey.isEmpty()) {
+            long pos = exoPlayer.getCurrentPosition();
+            long dur = Math.max(0L, exoPlayer.getDuration());
+            if (pos >= 10000L) {
+                WatchHistoryStore.saveProgress(this, movieJson, historyKey, pos, dur);
+            }
+        }
     }
 
     private void enterWebFallbackMode() {
@@ -700,6 +753,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        saveCurrentWatchProgress();
         super.onPause();
         if (castSessionManager != null) {
             castSessionManager.removeSessionManagerListener(castSessionListener, CastSession.class);
@@ -710,6 +764,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        saveCurrentWatchProgress();
         handler.removeCallbacksAndMessages(null);
         releaseExoPlayer();
         if (snifferWebView != null) {

@@ -27,11 +27,27 @@
                 android:id="@+id/sidebarLogoText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
+                android:layout_marginBottom="14dp"
                 android:gravity="center_vertical"
                 android:text="🍿 Пуканки"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/tabContinueBtn"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_tab_selector"
+                android:gravity="start|center_vertical"
+                android:nextFocusRight="@id/moviesRecycler"
+                android:paddingLeft="14dp"
+                android:paddingRight="12dp"
+                android:text="⏱  Недовършени"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
             <Button

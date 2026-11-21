@@ -77,8 +77,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: mobile-v1.0.2
-          name: Pukanki Mobile v1.0.2 (Built-in Google Cast + Zero-Ad VOE + All Filters)
+          tag_name: mobile-v1.1.0
+          name: Pukanki Mobile v1.1.0 (Resume Playback + Unfinished Tab + Cast + Videa.hu)
           body: |
             ### 🍿 Пуканки Mobile v1.0.0 (Android приложение за телефон)
 

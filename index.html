@@ -4966,6 +4966,9 @@
             <button type="button" class="type-tab-btn" data-type-filter="watchlist">
                 🔖 За по-късно <span class="tab-count" id="countWatchlist">0</span>
             </button>
+            <button type="button" class="type-tab-btn" data-type-filter="unfinished">
+                ⏱ Недовършени <span class="tab-count" id="countUnfinished" style="display: none;">0</span>
+            </button>
             <button type="button" id="tvFiltersToggleBtn" class="tv-filters-toggle-btn" title="Покажи или скрий търсачката и филтрите">
                 🔍 Търсене &amp; Филтри
             </button>
@@ -5270,6 +5273,7 @@
     <script>
         const PAGE_BATCH_SIZE = 60;
         const WATCHLIST_STORAGE_KEY = "local_media_watchlist_v1";
+        const UNFINISHED_STORAGE_KEY = "pukanki_unfinished_v1";
 
         const TV_EMBED_TEMPLATES = [];
 
@@ -5881,6 +5885,53 @@
                 state.watchlist = new Set(parsed);
             } catch (err) {
                 state.watchlist = new Set();
+            }
+            loadUnfinishedFromStorage();
+        }
+
+        function loadUnfinishedFromStorage() {
+            try {
+                const raw = localStorage.getItem(UNFINISHED_STORAGE_KEY);
+                const parsed = raw ? JSON.parse(raw) : {};
+                state.unfinished = (parsed && typeof parsed === "object" && !Array.isArray(parsed)) ? parsed : {};
+            } catch (err) {
+                state.unfinished = {};
+            }
+        }
+
+        function saveUnfinishedToStorage() {
+            try {
+                localStorage.setItem(UNFINISHED_STORAGE_KEY, JSON.stringify(state.unfinished || {}));
+            } catch (err) {}
+        }
+
+        function isInUnfinished(item) {
+            return Boolean(state.unfinished && state.unfinished[getItemKey(item)]);
+        }
+
+        function markAsUnfinished(item) {
+            if (!item) return;
+            if (!state.unfinished) state.unfinished = {};
+            const k = getItemKey(item);
+            const prev = state.unfinished[k] || {};
+            state.unfinished[k] = {
+                ts: Date.now(),
+                minutes: prev.minutes || 0
+            };
+            saveUnfinishedToStorage();
+            updateTabCounts();
+        }
+
+        function removeFromUnfinished(item) {
+            if (!item || !state.unfinished) return;
+            const k = getItemKey(item);
+            if (state.unfinished[k]) {
+                delete state.unfinished[k];
+                saveUnfinishedToStorage();
+                updateTabCounts();
+                if (state.typeFilter === "unfinished") {
+                    applyFilters();
+                }
             }
         }
 
@@ -6573,6 +6624,15 @@
                 countBgAudio.textContent = `${bgAudioCount}`;
             }
             countWatchlist.textContent = `${watchlistCount}`;
+            const countUnfinishedEl = document.getElementById("countUnfinished");
+            if (countUnfinishedEl) {
+                let unfinishedCount = 0;
+                for (const item of state.items) {
+                    if (isInUnfinished(item)) unfinishedCount++;
+                }
+                countUnfinishedEl.textContent = `${unfinishedCount}`;
+                countUnfinishedEl.style.display = unfinishedCount > 0 ? "" : "none";
+            }
 
             const setChipCount = (id, count) => {
                 const el = document.getElementById(id);
@@ -7228,6 +7288,9 @@
             }
             if (state.typeFilter === "watchlist") {
                 return isInWatchlist(item);
+            }
+            if (state.typeFilter === "unfinished") {
+                return isInUnfinished(item);
             }
             return true;
         }
@@ -8924,6 +8987,7 @@
             state.activeModalItem = item;
             state.activeSeasonIndex = 0;
             state.activeEpisodeIndex = 0;
+            markAsUnfinished(item);
 
             const movieIdentifier = getMovieIdentifier(item);
             const targetHash = `#movie=${encodeURIComponent(movieIdentifier)}`;
@@ -9897,6 +9961,13 @@
             await loadScriptAsync(`data/playtube_bg_data.js?v=${v}`);
             if (Array.isArray(window.PLAYTUBE_BG_DATA) && window.PLAYTUBE_BG_DATA.length > 0) {
                 mergeFilmi2kCatalog(combined, window.PLAYTUBE_BG_DATA, "PlayTube");
+                updateTabCounts();
+            }
+
+            // 8b. Load Videa.hu DOCK Movies
+            await loadScriptAsync(`data/videa_dock_data.js?v=${v}`);
+            if (Array.isArray(window.VIDEA_DOCK_DATA) && window.VIDEA_DOCK_DATA.length > 0) {
+                mergeFilmi2kCatalog(combined, window.VIDEA_DOCK_DATA, "Videa");
                 updateTabCounts();
             }
 
