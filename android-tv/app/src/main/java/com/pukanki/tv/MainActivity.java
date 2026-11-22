@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         "", "voe", "vidon", "streamtape", "ok.ru", "filemoon"
     };
 
-    private Button tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, tabProfileBtn, searchGoBtn;
+    private Button tabContinueBtn, tabFavBtn, tabLaterBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, tabProfileBtn, searchGoBtn;
     private LinearLayout profileOverlay, profileCardsRow;
     private Button profileAddBtn, profileCloseBtn;
     private LinearLayout leftSidebar, searchRow;
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout detailOverlay;
     private ImageView detailBackdrop, detailPoster;
     private TextView detailTitle, detailMeta, detailOverview;
-    private Button detailPlayBtn, detailBackBtn;
+    private Button detailPlayBtn, detailFavBtn, detailLaterBtn, detailBackBtn;
     private LinearLayout detailSourcesContainer;
 
     // Dedicated TV Filters & Sort Overlay
@@ -135,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         leftSidebar = findViewById(R.id.leftSidebar);
         sidebarLogoText = findViewById(R.id.sidebarLogoText);
         tabContinueBtn = findViewById(R.id.tabContinueBtn);
+        tabFavBtn = findViewById(R.id.tabFavBtn);
+        tabLaterBtn = findViewById(R.id.tabLaterBtn);
         tabBgBtn = findViewById(R.id.tabBgBtn);
         tabSubBtn = findViewById(R.id.tabSubBtn);
         tabSeriesBtn = findViewById(R.id.tabSeriesBtn);
@@ -160,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
         detailMeta = findViewById(R.id.detailMeta);
         detailOverview = findViewById(R.id.detailOverview);
         detailPlayBtn = findViewById(R.id.detailPlayBtn);
+        detailFavBtn = findViewById(R.id.detailFavBtn);
+        detailLaterBtn = findViewById(R.id.detailLaterBtn);
         detailBackBtn = findViewById(R.id.detailBackBtn);
         detailSourcesContainer = findViewById(R.id.detailSourcesContainer);
 
@@ -368,7 +372,8 @@ public class MainActivity extends AppCompatActivity {
     private void saveActiveProfileFilters() {
         try {
             JSONObject obj = new JSONObject();
-            obj.put("tab", "continue".equals(filters.tab) ? "bg" : filters.tab);
+            boolean isLocalTab = "continue".equals(filters.tab) || "favorites".equals(filters.tab) || "later".equals(filters.tab);
+            obj.put("tab", isLocalTab ? "bg" : filters.tab);
             obj.put("sortIdx", selectedSortIdx);
             obj.put("yearIdx", selectedYearIdx);
             obj.put("durIdx", selectedDurationIdx);
@@ -584,7 +589,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isAnySidebarChildFocused() {
-        return tabContinueBtn.hasFocus() || tabBgBtn.hasFocus() || tabSubBtn.hasFocus()
+        return tabContinueBtn.hasFocus() || tabFavBtn.hasFocus() || tabLaterBtn.hasFocus()
+            || tabBgBtn.hasFocus() || tabSubBtn.hasFocus()
             || tabSeriesBtn.hasFocus() || tabGenreBtn.hasFocus() || tabSearchBtn.hasFocus()
             || tabProfileBtn.hasFocus();
     }
@@ -607,19 +613,23 @@ public class MainActivity extends AppCompatActivity {
         int btnPad = (int) ((isSidebarExpanded ? 14 : 0) * d);
         int grav = isSidebarExpanded ? (Gravity.START | Gravity.CENTER_VERTICAL) : Gravity.CENTER;
 
-        Button[] navBtns = new Button[]{tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, tabProfileBtn};
+        Button[] navBtns = new Button[]{tabContinueBtn, tabFavBtn, tabLaterBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, tabProfileBtn};
         for (Button b : navBtns) {
             b.setGravity(grav);
             b.setPadding(btnPad, 0, isSidebarExpanded ? (int) (10 * d) : 0, 0);
         }
 
         int unfinishedCount = WatchHistoryStore.getUnfinishedCount(this);
+        int favCount = UserListsStore.getFavoritesCount(this);
+        int laterCount = UserListsStore.getWatchLaterCount(this);
         ProfileStore.Profile activeProfile = ProfileStore.getActiveProfile(this);
         tabContinueBtn.setBackgroundResource(unfinishedCount > 0 ? R.drawable.bg_tab_unfinished_active : R.drawable.bg_tab_selector);
         if (isSidebarExpanded) {
             sidebarLogoText.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
             sidebarLogoText.setText("🍿 Пуканки");
             tabContinueBtn.setText(unfinishedCount > 0 ? "⏱  Недовършени (" + unfinishedCount + ")" : "⏱  Недовършени");
+            tabFavBtn.setText(favCount > 0 ? "❤️  Любими (" + favCount + ")" : "❤️  Любими");
+            tabLaterBtn.setText(laterCount > 0 ? "🔖  За по-късно (" + laterCount + ")" : "🔖  За по-късно");
             tabBgBtn.setText("🇧🇬  БГ Аудио");
             tabSubBtn.setText("💬  Субтитри");
             tabSeriesBtn.setText("📺  Сериали");
@@ -631,6 +641,8 @@ public class MainActivity extends AppCompatActivity {
             sidebarLogoText.setGravity(Gravity.CENTER);
             sidebarLogoText.setText("🍿");
             tabContinueBtn.setText(unfinishedCount > 0 ? "⏱" + unfinishedCount : "⏱");
+            tabFavBtn.setText(favCount > 0 ? "❤️" + favCount : "❤️");
+            tabLaterBtn.setText(laterCount > 0 ? "🔖" + laterCount : "🔖");
             tabBgBtn.setText("🇧🇬");
             tabSubBtn.setText("💬");
             tabSeriesBtn.setText("📺");
@@ -654,6 +666,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         tabContinueBtn.setOnFocusChangeListener(sidebarFocusListener);
+        tabFavBtn.setOnFocusChangeListener(sidebarFocusListener);
+        tabLaterBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabBgBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabSubBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabSeriesBtn.setOnFocusChangeListener(sidebarFocusListener);
@@ -667,6 +681,16 @@ public class MainActivity extends AppCompatActivity {
             searchRow.setVisibility(View.GONE);
             filters.query = "";
             selectTab("continue");
+        });
+        tabFavBtn.setOnClickListener(v -> {
+            searchRow.setVisibility(View.GONE);
+            filters.query = "";
+            selectTab("favorites");
+        });
+        tabLaterBtn.setOnClickListener(v -> {
+            searchRow.setVisibility(View.GONE);
+            filters.query = "";
+            selectTab("later");
         });
         tabBgBtn.setOnClickListener(v -> {
             searchRow.setVisibility(View.GONE);
@@ -729,38 +753,44 @@ public class MainActivity extends AppCompatActivity {
         filters.tab = tab;
         updateTabStyles();
         if ("continue".equals(tab)) {
-            loadUnfinishedList();
+            loadLocalMovieList(WatchHistoryStore.getUnfinishedMovies(this), "Няма недовършени филми.", "недовършени");
+        } else if ("favorites".equals(tab)) {
+            loadLocalMovieList(UserListsStore.getFavorites(this), "Няма добавени любими филми.", "любими");
+        } else if ("later".equals(tab)) {
+            loadLocalMovieList(UserListsStore.getWatchLater(this), "Няма филми в „За по-късно“.", "за по-късно");
         } else {
             loadPage(1, true);
         }
     }
 
-    private void loadUnfinishedList() {
+    private void loadLocalMovieList(List<MovieItem> list, String emptyMsg, String label) {
         isLoading = false;
         hasMore = false;
         mainProgress.setVisibility(View.GONE);
-        List<MovieItem> list = WatchHistoryStore.getUnfinishedMovies(this);
         adapter.setItems(list);
         moviesRecycler.scrollToPosition(0);
         if (list.isEmpty()) {
-            emptyText.setText("Няма недовършени филми.");
+            emptyText.setText(emptyMsg);
             emptyText.setVisibility(View.VISIBLE);
         } else {
             emptyText.setVisibility(View.GONE);
             moviesRecycler.post(() -> {
                 RecyclerView.ViewHolder first = moviesRecycler.findViewHolderForAdapterPosition(0);
-                if (first != null && detailOverlay.getVisibility() != View.VISIBLE) {
+                if (first != null && detailOverlay.getVisibility() != View.VISIBLE
+                    && profileOverlay.getVisibility() != View.VISIBLE) {
                     first.itemView.requestFocus();
                     setSidebarExpanded(false);
                 }
             });
         }
-        statusText.setText(list.size() + " недовършени\nv2.1.0");
+        statusText.setText(list.size() + " " + label + "\nv2.4.0");
         updateSidebarVisuals();
     }
 
     private void updateTabStyles() {
         tabContinueBtn.setSelected("continue".equals(filters.tab));
+        tabFavBtn.setSelected("favorites".equals(filters.tab));
+        tabLaterBtn.setSelected("later".equals(filters.tab));
         tabBgBtn.setSelected("bg".equals(filters.tab));
         tabSubBtn.setSelected("sub".equals(filters.tab));
         tabSeriesBtn.setSelected("series".equals(filters.tab));
@@ -772,7 +802,11 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         updateSidebarVisuals();
         if ("continue".equals(filters.tab)) {
-            loadUnfinishedList();
+            loadLocalMovieList(WatchHistoryStore.getUnfinishedMovies(this), "Няма недовършени филми.", "недовършени");
+        } else if ("favorites".equals(filters.tab)) {
+            loadLocalMovieList(UserListsStore.getFavorites(this), "Няма добавени любими филми.", "любими");
+        } else if ("later".equals(filters.tab)) {
+            loadLocalMovieList(UserListsStore.getWatchLater(this), "Няма филми в „За по-късно“.", "за по-късно");
         }
     }
 
@@ -813,7 +847,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия\nv2.3.0");
+                statusText.setText(totalCount + " заглавия\nv2.4.0");
             }
 
             @Override
@@ -885,15 +919,48 @@ public class MainActivity extends AppCompatActivity {
         }
         if (firstBtn != null) {
             detailPlayBtn.setNextFocusDownId(firstBtn.getId());
+            detailFavBtn.setNextFocusDownId(firstBtn.getId());
+            detailLaterBtn.setNextFocusDownId(firstBtn.getId());
             detailBackBtn.setNextFocusDownId(firstBtn.getId());
         } else {
             detailPlayBtn.setNextFocusDownId(View.NO_ID);
+            detailFavBtn.setNextFocusDownId(View.NO_ID);
+            detailLaterBtn.setNextFocusDownId(View.NO_ID);
             detailBackBtn.setNextFocusDownId(View.NO_ID);
         }
+
+        updateDetailListButtons(item);
+        detailFavBtn.setOnClickListener(v -> {
+            boolean added = UserListsStore.toggleFavorite(this, item);
+            updateDetailListButtons(item);
+            updateSidebarVisuals();
+            Toast.makeText(this, added ? "❤️ Добавен в Любими" : "Премахнат от Любими", Toast.LENGTH_SHORT).show();
+            if ("favorites".equals(filters.tab)) {
+                loadLocalMovieList(UserListsStore.getFavorites(this), "Няма добавени любими филми.", "любими");
+            }
+        });
+        detailLaterBtn.setOnClickListener(v -> {
+            boolean added = UserListsStore.toggleWatchLater(this, item);
+            updateDetailListButtons(item);
+            updateSidebarVisuals();
+            Toast.makeText(this, added ? "🔖 Добавен в „За по-късно“" : "Премахнат от „За по-късно“", Toast.LENGTH_SHORT).show();
+            if ("later".equals(filters.tab)) {
+                loadLocalMovieList(UserListsStore.getWatchLater(this), "Няма филми в „За по-късно“.", "за по-късно");
+            }
+        });
 
         browseContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         detailOverlay.setVisibility(View.VISIBLE);
         detailPlayBtn.post(() -> detailPlayBtn.requestFocus());
+    }
+
+    private void updateDetailListButtons(MovieItem item) {
+        boolean isFav = UserListsStore.isFavorite(this, item.getHistoryKey());
+        boolean isLater = UserListsStore.isWatchLater(this, item.getHistoryKey());
+        detailFavBtn.setText(isFav ? "❤️ Любим ✓" : "🤍 Любим");
+        detailFavBtn.setSelected(isFav);
+        detailLaterBtn.setText(isLater ? "🔖 Запазен ✓" : "🔖 За по-късно");
+        detailLaterBtn.setSelected(isLater);
     }
 
     private void closeDetails() {
