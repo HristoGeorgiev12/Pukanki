@@ -1,5 +1,6 @@
 package com.pukanki.tv;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -22,6 +23,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -64,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
         "", "voe", "vidon", "streamtape", "ok.ru", "filemoon"
     };
 
-    private Button tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, searchGoBtn;
+    private Button tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, tabProfileBtn, searchGoBtn;
+    private LinearLayout profileOverlay, profileCardsRow;
+    private Button profileAddBtn, profileCloseBtn;
     private LinearLayout leftSidebar, searchRow;
     private EditText searchInput;
     private TextView sidebarLogoText, statusText, emptyText;
@@ -117,8 +123,11 @@ public class MainActivity extends AppCompatActivity {
         buildFiltersOverlay();
         setupRecycler();
         setupListeners();
-        selectTab("bg");
+        loadActiveProfileState();
         AppUpdater.checkForUpdate(this, "tv-v", "Pukanki-TV.apk");
+        if (ProfileStore.getProfiles(this).size() > 1) {
+            openProfileOverlay();
+        }
     }
 
     private void bindViews() {
@@ -131,6 +140,11 @@ public class MainActivity extends AppCompatActivity {
         tabSeriesBtn = findViewById(R.id.tabSeriesBtn);
         tabGenreBtn = findViewById(R.id.tabGenreBtn);
         tabSearchBtn = findViewById(R.id.tabSearchBtn);
+        tabProfileBtn = findViewById(R.id.tabProfileBtn);
+        profileOverlay = findViewById(R.id.profileOverlay);
+        profileCardsRow = findViewById(R.id.profileCardsRow);
+        profileAddBtn = findViewById(R.id.profileAddBtn);
+        profileCloseBtn = findViewById(R.id.profileCloseBtn);
         searchRow = findViewById(R.id.searchRow);
         searchInput = findViewById(R.id.searchInput);
         searchGoBtn = findViewById(R.id.searchGoBtn);
@@ -343,11 +357,185 @@ public class MainActivity extends AppCompatActivity {
         if (selectedPlayerIdx > 0) activeCount++;
 
         activeFilterCount = activeCount;
+        saveActiveProfileFilters();
         updateSidebarVisuals();
 
         filtersOverlay.setVisibility(View.GONE);
         browseContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         loadPage(1, true);
+    }
+
+    private void saveActiveProfileFilters() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("tab", "continue".equals(filters.tab) ? "bg" : filters.tab);
+            obj.put("sortIdx", selectedSortIdx);
+            obj.put("yearIdx", selectedYearIdx);
+            obj.put("durIdx", selectedDurationIdx);
+            obj.put("playerIdx", selectedPlayerIdx);
+            JSONObject gObj = new JSONObject();
+            for (Map.Entry<String, Integer> e : genreStates.entrySet()) {
+                if (e.getValue() != 0) gObj.put(e.getKey(), e.getValue());
+            }
+            obj.put("genres", gObj);
+            ProfileStore.saveFiltersJson(this, ProfileStore.getActiveProfileId(this), obj);
+        } catch (Exception ignored) {}
+    }
+
+    private void loadActiveProfileState() {
+        String pid = ProfileStore.getActiveProfileId(this);
+        JSONObject obj = ProfileStore.loadFiltersJson(this, pid);
+        selectedSortIdx = 0;
+        selectedYearIdx = 0;
+        selectedDurationIdx = 0;
+        selectedPlayerIdx = 0;
+        String savedTab = "bg";
+
+        for (Map.Entry<String, Button> e : genreBtns.entrySet()) {
+            genreStates.put(e.getKey(), 0);
+            updateGenreChipVisual(e.getValue(), e.getKey(), 0);
+        }
+
+        if (obj != null) {
+            savedTab = obj.optString("tab", "bg");
+            selectedSortIdx = Math.min(SORT_VALUES.length - 1, Math.max(0, obj.optInt("sortIdx", 0)));
+            selectedYearIdx = Math.min(YEAR_FROM.length - 1, Math.max(0, obj.optInt("yearIdx", 0)));
+            selectedDurationIdx = Math.min(DURATION_VALUES.length - 1, Math.max(0, obj.optInt("durIdx", 0)));
+            selectedPlayerIdx = Math.min(PLAYER_VALUES.length - 1, Math.max(0, obj.optInt("playerIdx", 0)));
+            JSONObject gObj = obj.optJSONObject("genres");
+            if (gObj != null) {
+                for (Map.Entry<String, Button> e : genreBtns.entrySet()) {
+                    int st = gObj.optInt(e.getKey(), 0);
+                    if (st == 1 || st == 2) {
+                        genreStates.put(e.getKey(), st);
+                        updateGenreChipVisual(e.getValue(), e.getKey(), st);
+                    }
+                }
+            }
+        }
+
+        updateSingleSelectRow(sortBtns, selectedSortIdx);
+        updateSingleSelectRow(yearBtns, selectedYearIdx);
+        updateSingleSelectRow(durationBtns, selectedDurationIdx);
+        updateSingleSelectRow(playerBtns, selectedPlayerIdx);
+
+        filters.sort = SORT_VALUES[selectedSortIdx];
+        filters.yearFrom = YEAR_FROM[selectedYearIdx];
+        filters.yearTo = YEAR_TO[selectedYearIdx];
+        filters.duration = DURATION_VALUES[selectedDurationIdx];
+        filters.player = PLAYER_VALUES[selectedPlayerIdx];
+
+        List<String> inc = new ArrayList<>();
+        List<String> exc = new ArrayList<>();
+        for (Map.Entry<String, Integer> e : genreStates.entrySet()) {
+            if (e.getValue() == 1) inc.add(e.getKey());
+            else if (e.getValue() == 2) exc.add(e.getKey());
+        }
+        filters.genre = joinCsv(inc);
+        filters.excludeGenre = joinCsv(exc);
+
+        int activeCount = inc.size() + exc.size();
+        if (selectedSortIdx > 0) activeCount++;
+        if (selectedYearIdx > 0) activeCount++;
+        if (selectedDurationIdx > 0) activeCount++;
+        if (selectedPlayerIdx > 0) activeCount++;
+        activeFilterCount = activeCount;
+
+        updateSidebarVisuals();
+        selectTab(savedTab);
+    }
+
+    private void openProfileOverlay() {
+        searchRow.setVisibility(View.GONE);
+        profileCardsRow.removeAllViews();
+        List<ProfileStore.Profile> profiles = ProfileStore.getProfiles(this);
+        String activeId = ProfileStore.getActiveProfileId(this);
+        float d = getResources().getDisplayMetrics().density;
+
+        Button firstFocusBtn = null;
+        for (final ProfileStore.Profile p : profiles) {
+            LinearLayout card = new LinearLayout(this);
+            card.setOrientation(LinearLayout.VERTICAL);
+            card.setGravity(Gravity.CENTER);
+            LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            clp.setMargins((int) (10 * d), 0, (int) (10 * d), 0);
+            card.setLayoutParams(clp);
+
+            Button btn = new Button(this);
+            String initial = p.name.isEmpty() ? "?" : p.name.substring(0, 1).toUpperCase(Locale.ROOT);
+            btn.setText(initial + "\n" + p.name + (p.id.equals(activeId) ? " ✓" : ""));
+            btn.setAllCaps(false);
+            btn.setTextColor(0xFFFFFFFF);
+            btn.setTextSize(15f);
+            btn.setBackgroundResource(R.drawable.bg_tab_selector);
+            btn.setSelected(p.id.equals(activeId));
+            btn.setFocusable(true);
+            LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams((int) (140 * d), (int) (110 * d));
+            btn.setLayoutParams(blp);
+            btn.setOnClickListener(v -> {
+                ProfileStore.setActiveProfileId(this, p.id);
+                closeProfileOverlay();
+                loadActiveProfileState();
+                Toast.makeText(this, "👤 Профил: " + p.name, Toast.LENGTH_SHORT).show();
+            });
+            card.addView(btn);
+
+            if (!ProfileStore.DEFAULT_ID.equals(p.id)) {
+                Button del = new Button(this);
+                del.setText("🗑 Изтрий");
+                del.setAllCaps(false);
+                del.setTextColor(0xFFFCA5A5);
+                del.setTextSize(11f);
+                del.setBackgroundResource(R.drawable.bg_btn_secondary);
+                del.setFocusable(true);
+                LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams((int) (110 * d), (int) (32 * d));
+                dlp.topMargin = (int) (6 * d);
+                del.setLayoutParams(dlp);
+                del.setOnClickListener(v -> {
+                    ProfileStore.deleteProfile(this, p.id);
+                    openProfileOverlay();
+                });
+                card.addView(del);
+            }
+
+            if (firstFocusBtn == null || p.id.equals(activeId)) {
+                firstFocusBtn = btn;
+            }
+            profileCardsRow.addView(card);
+        }
+
+        browseContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        profileOverlay.setVisibility(View.VISIBLE);
+        final Button focusTarget = firstFocusBtn != null ? firstFocusBtn : profileAddBtn;
+        focusTarget.post(() -> focusTarget.requestFocus());
+    }
+
+    private void closeProfileOverlay() {
+        profileOverlay.setVisibility(View.GONE);
+        browseContainer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        tabProfileBtn.post(() -> tabProfileBtn.requestFocus());
+    }
+
+    private void showCreateProfileDialog() {
+        final EditText input = new EditText(this);
+        input.setHint("Име (напр. Христо, Мария, Деца)");
+        input.setSingleLine(true);
+        new AlertDialog.Builder(this)
+            .setTitle("➕ Нов локален профил")
+            .setView(input)
+            .setPositiveButton("Създай", (d, w) -> {
+                String name = input.getText().toString().trim();
+                if (!name.isEmpty()) {
+                    ProfileStore.Profile created = ProfileStore.createProfile(this, name);
+                    closeProfileOverlay();
+                    loadActiveProfileState();
+                    Toast.makeText(this, "Създаден профил: " + created.name, Toast.LENGTH_SHORT).show();
+                }
+            })
+            .setNegativeButton("Отказ", null)
+            .show();
     }
 
     private void resetAllFilters() {
@@ -397,7 +585,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isAnySidebarChildFocused() {
         return tabContinueBtn.hasFocus() || tabBgBtn.hasFocus() || tabSubBtn.hasFocus()
-            || tabSeriesBtn.hasFocus() || tabGenreBtn.hasFocus() || tabSearchBtn.hasFocus();
+            || tabSeriesBtn.hasFocus() || tabGenreBtn.hasFocus() || tabSearchBtn.hasFocus()
+            || tabProfileBtn.hasFocus();
     }
 
     private void setSidebarExpanded(boolean expanded) {
@@ -418,13 +607,14 @@ public class MainActivity extends AppCompatActivity {
         int btnPad = (int) ((isSidebarExpanded ? 14 : 0) * d);
         int grav = isSidebarExpanded ? (Gravity.START | Gravity.CENTER_VERTICAL) : Gravity.CENTER;
 
-        Button[] navBtns = new Button[]{tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn};
+        Button[] navBtns = new Button[]{tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabGenreBtn, tabSearchBtn, tabProfileBtn};
         for (Button b : navBtns) {
             b.setGravity(grav);
             b.setPadding(btnPad, 0, isSidebarExpanded ? (int) (10 * d) : 0, 0);
         }
 
         int unfinishedCount = WatchHistoryStore.getUnfinishedCount(this);
+        ProfileStore.Profile activeProfile = ProfileStore.getActiveProfile(this);
         tabContinueBtn.setBackgroundResource(unfinishedCount > 0 ? R.drawable.bg_tab_unfinished_active : R.drawable.bg_tab_selector);
         if (isSidebarExpanded) {
             sidebarLogoText.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
@@ -435,6 +625,7 @@ public class MainActivity extends AppCompatActivity {
             tabSeriesBtn.setText("📺  Сериали");
             tabGenreBtn.setText(activeFilterCount > 0 ? "⚙  Филтри (" + activeFilterCount + ")" : "⚙  Филтри");
             tabSearchBtn.setText("🔍  Търси");
+            tabProfileBtn.setText("👤  " + activeProfile.name);
             statusText.setVisibility(View.VISIBLE);
         } else {
             sidebarLogoText.setGravity(Gravity.CENTER);
@@ -445,6 +636,7 @@ public class MainActivity extends AppCompatActivity {
             tabSeriesBtn.setText("📺");
             tabGenreBtn.setText(activeFilterCount > 0 ? "⚙" + activeFilterCount : "⚙");
             tabSearchBtn.setText("🔍");
+            tabProfileBtn.setText("👤");
             statusText.setVisibility(View.GONE);
         }
     }
@@ -467,6 +659,10 @@ public class MainActivity extends AppCompatActivity {
         tabSeriesBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabGenreBtn.setOnFocusChangeListener(sidebarFocusListener);
         tabSearchBtn.setOnFocusChangeListener(sidebarFocusListener);
+        tabProfileBtn.setOnFocusChangeListener(sidebarFocusListener);
+        tabProfileBtn.setOnClickListener(v -> openProfileOverlay());
+        profileAddBtn.setOnClickListener(v -> showCreateProfileDialog());
+        profileCloseBtn.setOnClickListener(v -> closeProfileOverlay());
         tabContinueBtn.setOnClickListener(v -> {
             searchRow.setVisibility(View.GONE);
             filters.query = "";
@@ -617,7 +813,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия\nv2.2.0");
+                statusText.setText(totalCount + " заглавия\nv2.3.0");
             }
 
             @Override
@@ -730,6 +926,10 @@ public class MainActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (detailOverlay.getVisibility() == View.VISIBLE) {
                 closeDetails();
+                return true;
+            }
+            if (profileOverlay.getVisibility() == View.VISIBLE) {
+                closeProfileOverlay();
                 return true;
             }
             if (filtersOverlay.getVisibility() == View.VISIBLE) {

@@ -1,5 +1,6 @@
 package com.pukanki.mobile;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private Button tabContinueBtn, tabBgBtn, tabSubBtn, tabSeriesBtn, tabAllBtn;
-    private Button openFiltersBtn, searchGoBtn, searchClearBtn;
+    private Button openProfileBtn, openFiltersBtn, searchGoBtn, searchClearBtn;
     private EditText searchInput;
     private TextView statusText, emptyText;
     private ProgressBar mainProgress;
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         buildGenreFilterChips();
         setupRecycler();
         setupListeners();
-        selectTab("bg");
+        loadActiveProfileState();
         AppUpdater.checkForUpdate(this, "mobile-v", "Pukanki-Mobile.apk");
     }
 
@@ -125,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         tabSeriesBtn = findViewById(R.id.tabSeriesBtn);
         tabAllBtn = findViewById(R.id.tabAllBtn);
 
+        openProfileBtn = findViewById(R.id.openProfileBtn);
         openFiltersBtn = findViewById(R.id.openFiltersBtn);
         searchInput = findViewById(R.id.searchInput);
         searchGoBtn = findViewById(R.id.searchGoBtn);
@@ -309,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
+        openProfileBtn.setOnClickListener(v -> showProfileSwitcherDialog());
         openFiltersBtn.setOnClickListener(v -> {
             hideKeyboard();
             filtersOverlay.setVisibility(View.VISIBLE);
@@ -392,7 +397,110 @@ public class MainActivity extends AppCompatActivity {
         }
         filters.genresCsv = joinCsv(inc);
         filters.excludeGenresCsv = joinCsv(exc);
+        saveActiveProfileFilters();
         refreshActiveFiltersStrip();
+    }
+
+    private void saveActiveProfileFilters() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("tab", "continue".equals(filters.tab) ? "bg" : filters.tab);
+            obj.put("sortIdx", sortSpinner.getSelectedItemPosition());
+            obj.put("yearFromIdx", yearFromSpinner.getSelectedItemPosition());
+            obj.put("yearToIdx", yearToSpinner.getSelectedItemPosition());
+            obj.put("durIdx", durationSpinner.getSelectedItemPosition());
+            obj.put("playerIdx", playerSpinner.getSelectedItemPosition());
+            JSONObject gObj = new JSONObject();
+            for (Map.Entry<String, Integer> entry : genreStates.entrySet()) {
+                if (entry.getValue() != 0) gObj.put(entry.getKey(), entry.getValue());
+            }
+            obj.put("genres", gObj);
+            ProfileStore.saveFiltersJson(this, ProfileStore.getActiveProfileId(this), obj);
+        } catch (Exception ignored) {}
+    }
+
+    private void loadActiveProfileState() {
+        ProfileStore.Profile p = ProfileStore.getActiveProfile(this);
+        openProfileBtn.setText("👤 " + p.name);
+        JSONObject obj = ProfileStore.loadFiltersJson(this, p.id);
+
+        sortSpinner.setSelection(0);
+        yearFromSpinner.setSelection(0);
+        yearToSpinner.setSelection(0);
+        durationSpinner.setSelection(0);
+        playerSpinner.setSelection(0);
+        for (Map.Entry<String, Button> entry : genreButtons.entrySet()) {
+            genreStates.put(entry.getKey(), 0);
+            updateGenreChipVisual(entry.getValue(), entry.getKey(), 0);
+        }
+
+        String savedTab = "bg";
+        if (obj != null) {
+            savedTab = obj.optString("tab", "bg");
+            sortSpinner.setSelection(Math.min(SORT_VALUES.length - 1, Math.max(0, obj.optInt("sortIdx", 0))));
+            yearFromSpinner.setSelection(Math.min(YEAR_VALUES.length - 1, Math.max(0, obj.optInt("yearFromIdx", 0))));
+            yearToSpinner.setSelection(Math.min(YEAR_VALUES.length - 1, Math.max(0, obj.optInt("yearToIdx", 0))));
+            durationSpinner.setSelection(Math.min(DURATION_VALUES.length - 1, Math.max(0, obj.optInt("durIdx", 0))));
+            playerSpinner.setSelection(Math.min(PLAYER_VALUES.length - 1, Math.max(0, obj.optInt("playerIdx", 0))));
+            JSONObject gObj = obj.optJSONObject("genres");
+            if (gObj != null) {
+                for (Map.Entry<String, Button> entry : genreButtons.entrySet()) {
+                    int st = gObj.optInt(entry.getKey(), 0);
+                    if (st == 1 || st == 2) {
+                        genreStates.put(entry.getKey(), st);
+                        updateGenreChipVisual(entry.getValue(), entry.getKey(), st);
+                    }
+                }
+            }
+        }
+        applyFiltersFromModal();
+        updateUnfinishedBadge();
+        selectTab(savedTab);
+    }
+
+    private void showProfileSwitcherDialog() {
+        final List<ProfileStore.Profile> profiles = ProfileStore.getProfiles(this);
+        final String activeId = ProfileStore.getActiveProfileId(this);
+        String[] labels = new String[profiles.size() + 1];
+        for (int i = 0; i < profiles.size(); i++) {
+            ProfileStore.Profile p = profiles.get(i);
+            labels[i] = (p.id.equals(activeId) ? "✓ " : "   ") + p.name;
+        }
+        labels[profiles.size()] = "➕ Създай нов профил";
+
+        new AlertDialog.Builder(this)
+            .setTitle("👤 Избери профил")
+            .setItems(labels, (dialog, which) -> {
+                if (which == profiles.size()) {
+                    showCreateProfileDialog();
+                } else {
+                    ProfileStore.Profile chosen = profiles.get(which);
+                    ProfileStore.setActiveProfileId(this, chosen.id);
+                    loadActiveProfileState();
+                    Toast.makeText(this, "👤 Профил: " + chosen.name, Toast.LENGTH_SHORT).show();
+                }
+            })
+            .setNegativeButton("Затвори", null)
+            .show();
+    }
+
+    private void showCreateProfileDialog() {
+        final EditText input = new EditText(this);
+        input.setHint("Име (напр. Христо, Мария, Деца)");
+        input.setSingleLine(true);
+        new AlertDialog.Builder(this)
+            .setTitle("➕ Нов локален профил")
+            .setView(input)
+            .setPositiveButton("Създай", (d, w) -> {
+                String name = input.getText().toString().trim();
+                if (!name.isEmpty()) {
+                    ProfileStore.Profile created = ProfileStore.createProfile(this, name);
+                    loadActiveProfileState();
+                    Toast.makeText(this, "Създаден профил: " + created.name, Toast.LENGTH_SHORT).show();
+                }
+            })
+            .setNegativeButton("Отказ", null)
+            .show();
     }
 
     private void resetAllFilters() {
@@ -539,7 +647,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.appendItems(result.items);
                 }
-                statusText.setText(totalCount + " заглавия • v1.2.2");
+                statusText.setText(totalCount + " заглавия • v1.3.0");
             }
 
             @Override

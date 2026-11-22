@@ -42,6 +42,20 @@
                 android:textSize="12sp" />
 
             <Button
+                android:id="@+id/openProfileBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_btn_secondary"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="👤"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <Button
                 android:id="@+id/openFiltersBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"

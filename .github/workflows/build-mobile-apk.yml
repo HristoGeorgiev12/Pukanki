@@ -64,23 +64,24 @@ jobs:
       - name: Copy & Prepare Mobile APK
         run: |
           mkdir -p output-mobile
-          find android-mobile/app/build/outputs/apk -name "*.apk" -exec cp {} output-mobile/Pukanki-Mobile-v1.2.2.apk \;
+          find android-mobile/app/build/outputs/apk -name "*.apk" -exec cp {} output-mobile/Pukanki-Mobile-v1.3.0.apk \;
           ls -lh output-mobile/
 
       - name: Upload Mobile APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pukanki-Mobile-v1.2.2-APK
-          path: output-mobile/Pukanki-Mobile-v1.2.2.apk
+          name: Pukanki-Mobile-v1.3.0-APK
+          path: output-mobile/Pukanki-Mobile-v1.3.0.apk
 
       - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: mobile-v1.2.2
-          name: Pukanki Mobile v1.2.2 (Dedicated Cast Remote Screen — Phone Video Stopped)
+          tag_name: mobile-v1.3.0
+          name: Pukanki Mobile v1.3.0 (Local Family Profiles + Dedicated Cast Remote)
           body: |
-            ### 🍿 Пуканки Mobile v1.2.2 (Постоянно подписана Release версия)
+            ### 🍿 Пуканки Mobile v1.3.0 (Локални профили)
 
-            - **Отделен екран „Дистанционно за TV“ при Cast:** видеото на телефона спира напълно, а плъзгачът, ±15 сек и Пауза/Плей управляват директно телевизора.
-          files: output-mobile/Pukanki-Mobile-v1.2.2.apk
+            - **Локални профили (`👤`):** създавай и сменяй профили — всеки пази собствени филтри, сортиране и „Недовършени“ филми.
+            - **Отделен екран „Дистанционно за TV“ при Cast + Постоянен подпис.**
+          files: output-mobile/Pukanki-Mobile-v1.3.0.apk

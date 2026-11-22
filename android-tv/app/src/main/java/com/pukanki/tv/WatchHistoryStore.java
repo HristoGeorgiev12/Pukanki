@@ -91,9 +91,14 @@ public class WatchHistoryStore {
         return String.format(Locale.US, "▶ %d мин", posMin);
     }
 
+    private static String activeItemsKey(Context ctx) {
+        String pid = ProfileStore.getActiveProfileId(ctx);
+        return ProfileStore.DEFAULT_ID.equals(pid) ? KEY_ITEMS : (KEY_ITEMS + "_" + pid);
+    }
+
     private static List<JSONObject> loadRawList(Context ctx) {
         List<JSONObject> out = new ArrayList<>();
-        String raw = prefs(ctx).getString(KEY_ITEMS, "[]");
+        String raw = prefs(ctx).getString(activeItemsKey(ctx), "[]");
         try {
             JSONArray arr = new JSONArray(raw);
             for (int i = 0; i < arr.length(); i++) {
@@ -107,6 +112,6 @@ public class WatchHistoryStore {
     private static void saveRawList(Context ctx, List<JSONObject> list) {
         JSONArray arr = new JSONArray();
         for (JSONObject o : list) arr.put(o);
-        prefs(ctx).edit().putString(KEY_ITEMS, arr.toString()).apply();
+        prefs(ctx).edit().putString(activeItemsKey(ctx), arr.toString()).apply();
     }
 }

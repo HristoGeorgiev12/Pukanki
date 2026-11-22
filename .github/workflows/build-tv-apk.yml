@@ -64,26 +64,26 @@ jobs:
       - name: Copy & Prepare APK
         run: |
           mkdir -p output
-          find android-tv/app/build/outputs/apk -name "*.apk" -exec cp {} output/Pukanki-TV-v2.2.0.apk \;
+          find android-tv/app/build/outputs/apk -name "*.apk" -exec cp {} output/Pukanki-TV-v2.3.0.apk \;
           ls -lh output/
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Pukanki-TV-v2.2.0-APK
-          path: output/Pukanki-TV-v2.2.0.apk
+          name: Pukanki-TV-v2.3.0-APK
+          path: output/Pukanki-TV-v2.3.0.apk
 
       - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: tv-v2.2.0
-          name: Pukanki TV v2.2.0 (Signed Release + Auto-Update + 3D Icon)
+          tag_name: tv-v2.3.0
+          name: Pukanki TV v2.3.0 (Local Family Profiles + Per-Profile Filters & History)
           body: |
-            ### 🍿 Пуканки TV v2.2.0 (Постоянно подписана Release версия)
+            ### 🍿 Пуканки TV v2.3.0 (Семейни локални профили)
             
-            - **Постоянен подпис:** всички бъдещи версии ще се обновяват директно с „Обнови сега“ без деинсталиране.
-            - **Нова 3D икона, TV банер, светещ в червено таб `⏱ Недовършени (N)` и Auto-Updater.**
-          files: output/Pukanki-TV-v2.2.0.apk
+            - **Локални профили (`👤 Кой гледа?`):** всеки член на семейството може да има собствен профил със свои филтри, сортиране и списък „Недовършени“.
+            - **Постоянно подписана Release версия:** обновява се директно с „Обнови сега“.
+          files: output/Pukanki-TV-v2.3.0.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
